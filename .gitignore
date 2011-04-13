@@ -1,0 +1,19 @@
+syntax: glob
+*.ser
+*.class
+*~
+*.bak
+*.off
+*.old
+.DS_Store
+*.swo
+*.swp
+
+# eclipse conf file
+.settings
+.classpath
+.project
+.manager
+
+# building
+target
