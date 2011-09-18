@@ -158,14 +158,18 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      super.onResume();
      // Register this class as a listener for the accelerometer sensor
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+     
      // ...and the orientation sensor
-     sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
+     // FIXME this breaks in Gingerbread it seems
+     //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
    
     @Override
     protected void onStop() {
      // Unregister the listener
-     sensorManager.unregisterListener(this);
+     
+     //FIXME this breaks the app in Gingerbread (see above)
+     //sensorManager.unregisterListener(this);
      super.onStop();
     } 
     

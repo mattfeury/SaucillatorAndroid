@@ -9,11 +9,7 @@ syntax: glob
 *.swo
 *.swp
 
-# eclipse conf file
-.settings
-.classpath
-.project
-.manager
-
 # building
 target
+bin/
+gen/

@@ -4,7 +4,15 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 
-
+/*
+ * A lot of this code was provided by Adam Smith from EtherealDialpad: https://gist.github.com/376028
+ * 
+ * I really like his project and recommend you check it out. It seems that we both share a similar vision
+ * for transforming android devices into instruments.
+ * 
+ * It has been touched up and modified slightly 
+ * 
+ */
 public class Dac extends UGen {
 	private final float[] localBuffer;
 	private boolean isClean, playing;
