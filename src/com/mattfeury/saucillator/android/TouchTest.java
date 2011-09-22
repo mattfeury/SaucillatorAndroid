@@ -170,6 +170,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
+     android.os.Process.killProcess(android.os.Process.myPid());
      super.onStop();
     } 
     
