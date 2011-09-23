@@ -1,6 +1,7 @@
 package com.mattfeury.saucillator.android;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.LinkedList;
 
 import com.sauce.touch.R;
@@ -50,6 +51,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
+    private Map<Integer,String> instruments = new HashMap<Integer,String>() {{
+        put(0, "sine");
+        put(1, "square");
+        put(2, "saw");
+    }};
 	
     private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
@@ -229,34 +235,17 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
     
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-    	int groupNum = 0;
+      // Handle item selection
     	switch (item.getGroupId()) {
     		case R.id.instrumentsA:
-    			groupNum = 1;
-    			break;
+    			return instrumentSelection(item, 0);
     		case R.id.instrumentsB:
-    			groupNum = 2;
-    			break;
+    			return instrumentSelection(item, 1);
     		case R.id.scales:
     			return scaleSelection(item);
     		default:
+          return false;
     	}
-    	
-    	if (groupNum != 0)
-    		return instrumentSelection(item, groupNum);
-        
-    	switch (item.getItemId()) {
-	        case R.id.instrument1:
-	            return true;
-	        case R.id.instrument2:
-	            return true;
-	        case R.id.quit:
-	        	onStop();
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-        }
     }
     
     private boolean scaleSelection(MenuItem item) {
@@ -264,15 +253,39 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     		return true;
     	}
     	item.setChecked(true);
+      int scaleId = item.getItemId();
     	
     	return false;
     }
     
-    private boolean instrumentSelection(MenuItem item, int groupNum) {
+    private boolean instrumentSelection(MenuItem item, int oscNum) {
     	if (item.isChecked()) {
     		return true;
     	}
     	item.setChecked(true);
+      int instrumentId = item.getItemId();
+
+      WtOsc osc;
+      try {
+        osc = oscs.get(oscNum);
+      } catch(Exception e){
+        Log.d(TAG, "wtf ? " + e.toString());
+        return false;
+      }
+
+      Log.i(TAG, "i#: " + oscNum);
+      switch (instrumentId) {
+        case R.id.sine: //sine
+          osc.fillWithSin();
+          break;
+        case R.id.square: //square
+          osc.fillWithSqr();
+          break;
+        case R.id.saw: //saw
+          osc.fillWithSaw();
+          break;
+        default:
+      }
     	
     	return false;
     }
