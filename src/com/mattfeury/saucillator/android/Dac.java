@@ -21,6 +21,7 @@ public class Dac extends UGen {
 	private final short [] silentTarget = new short[UGen.CHUNK_SIZE];
 	int minSize, added;
 	boolean started = false;
+  boolean recording = true;
 	
 	public Dac() {
 		playing = false;
@@ -39,6 +40,23 @@ public class Dac extends UGen {
         		Math.max(UGen.CHUNK_SIZE*4, minSize),
         		AudioTrack.MODE_STREAM);
 	}
+
+  public void record() {
+    if ( ! recording) {
+      WavWriter.clear();
+      recording = true;
+    }
+  }
+  public void stopRecording() {
+    if (recording) {
+      recording = false;
+      WavWriter.writeWav();
+    }
+  }
+  public void toggleRecording() {
+    if (recording) stopRecording();
+    else record();
+  }
 	
 	public boolean render(final float[] _buffer) {
 		if(!isClean) {
@@ -75,15 +93,18 @@ public class Dac extends UGen {
 		if(isClean || !playing) {
 			// sleeping is messy, so lets just queue this silent buffer
 			track.write(silentTarget, 0, silentTarget.length);
-			for(int i = 0; i < CHUNK_SIZE; i++) {
-				WavWriter.PushShort((short)0);
-			}
+      if (recording) {
+        for(int i = 0; i < CHUNK_SIZE; i++) {
+          WavWriter.PushShort((short)0);
+        }
+      }
 			//write silence to the wav buffer.
 		} else {
 			for(int i = 0; i < CHUNK_SIZE; i++) {
 				target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
 				//Write dat shit into dat wav buffa.
-				WavWriter.PushShort(target[i]);
+        if (recording)
+  				WavWriter.PushShort(target[i]);
 			}
 			
 			track.write(target, 0, target.length);

@@ -263,7 +263,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private boolean toggleSelection(MenuItem item) {
     	item.setChecked(!item.isChecked());
     	switch (item.getItemId()) {
-    		case R.id.toggle_delay: 
+    		case R.id.toggle_delay:
+          dac.toggleRecording();
     		default:
     	}
     	return true;
