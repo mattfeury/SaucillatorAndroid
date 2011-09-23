@@ -288,10 +288,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         @Override
         public void onDraw(Canvas canvas) {
             Log.i("touch", "started");
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.BLACK);
             for(Finger f : fingers.values())
             	f.draw(canvas);
-
         }
     }
 
