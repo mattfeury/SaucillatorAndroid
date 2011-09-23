@@ -1,23 +1,16 @@
 package com.mattfeury.saucillator.android;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 import android.util.Log;
 
 public class WavWriter {
-	
 	static int numWavFiles  = 0;
-	/*String filename;*/
 	static ByteArrayOutputStream data = new ByteArrayOutputStream();
-	
-	
-	static void PushShort(short s){
-	
-		data.write((byte)s);
-		data.write((byte) s >> 8);
-	
+
+	static void pushShort(short s){
+		data.write((byte)(s & 0xff));
+		data.write((byte)((s >> 8) & 0xff));
 	}
   static void clear() {
     data = new ByteArrayOutputStream();
@@ -27,47 +20,61 @@ public class WavWriter {
   	try{
   		writeWav(data.toByteArray());
   	}catch(IOException e){
-  		
   		Log.e("blow", "blew it : " + e.toString());  	
   	}
   	
   }
-	static void writeWav(byte[] buffer) throws IOException{
-		
-		File file = new File("/sdcard/Recording" + numWavFiles + ".wav");
-	  OutputStream out = new BufferedOutputStream(new FileOutputStream(file));	 
 
-		//FileWriter writer = new FileWriter("/sdcard/recording0.wav");
-		
-		ByteBuffer bytes = ByteBuffer.allocate(buffer.length + 44);
-		
-		bytes.put((byte)'R'); bytes.put((byte)'I'); bytes.put((byte)'F'); bytes.put((byte)'F'); // "RIFF"
-		bytes.putInt(buffer.length * 2 + 36); //Total length of the file - 8. Header is 44 bits, so buf size * 2 - 8 + 44 => buf size * 2 + 36
-		bytes.put((byte)'W'); bytes.put((byte)'A'); bytes.put((byte)'V'); bytes.put((byte)'E'); // "WAVE"
-		
-		bytes.put((byte)'f'); bytes.put((byte)'m'); bytes.put((byte)'t'); bytes.put((byte)0); //'fmt\0'     <---- MAY BE WRONG
-		bytes.putInt(16);
-		bytes.putShort((short)1);
-		bytes.putShort((short)1);
-		bytes.putInt(11025);
-		bytes.putInt(11025 * 2);
-		bytes.putShort((short)2);
-		bytes.putShort((short)16);
-		
-		bytes.put((byte)'d'); bytes.put((byte)'a'); bytes.put((byte)'t'); bytes.put((byte)'a');
-		bytes.putInt(buffer.length);
-		
-		//for(int i = 0; i < buffer.length; i++)
-	  bytes.put(buffer);
-		
-		//CharBuffer wavFileArray = bytes.asCharBuffer();
-		//char[] array = wavFileArray.array();
-	  byte[] array = bytes.array();
-	  out.write(array, 0, array.length);
+  private static int sampleRate = 11025;
+  private static int numChannels = 1;
+  private static int bitDepth = 16;
+  static void writeWav(byte[] buffer) throws IOException{
+    int numSamples = buffer.length;
 
-    out.flush();
-		out.close();	
+    DataOutputStream outFile  = new DataOutputStream(new FileOutputStream("/sdcard/Recording2" + numWavFiles + ".wav"));
+
+    // write the header
+    outFile.writeBytes("RIFF");
+    outFile.write(intToByteArray((int)(numSamples + 36)), 0, 4);
+    outFile.writeBytes("WAVE");
+    outFile.writeBytes("fmt ");
+    outFile.write(intToByteArray((int)16), 0, 4); //16 for PCM
+    outFile.write(shortToByteArray((short)1), 0, 2); //1 for PCM
+    outFile.write(shortToByteArray((short)numChannels), 0, 2); //Mono
+    outFile.write(intToByteArray((int)sampleRate), 0, 4);
+    outFile.write(intToByteArray((int)11025 * numChannels * bitDepth / 8), 0, 4);
+    outFile.write(shortToByteArray((short)(numChannels * bitDepth / 8)), 0, 2);
+    outFile.write(shortToByteArray((short)bitDepth), 0, 2);
+
+    // write the data
+    outFile.writeBytes("data");
+    outFile.write(intToByteArray((int)numSamples), 0, 4);
+    outFile.write(buffer);
+
+    // save
+    outFile.flush();
+		outFile.close();	
 	}
 
-	
+  //===========================
+  // CONVERT JAVA TYPES TO BYTES
+  // based on code by Evan Merz
+  //===========================
+	// returns a byte array of length 4
+	private static byte[] intToByteArray(int i)
+	{
+		byte[] b = new byte[4];
+		b[0] = (byte) (i & 0x00FF);
+		b[1] = (byte) ((i >> 8) & 0x000000FF);
+		b[2] = (byte) ((i >> 16) & 0x000000FF);
+		b[3] = (byte) ((i >> 24) & 0x000000FF);
+		return b;
+	}
+
+	// convert a short to a byte array
+	public static byte[] shortToByteArray(short data)
+	{
+		return new byte[]{(byte)(data & 0xff),(byte)((data >>> 8) & 0xff)};
+	}
+
 }

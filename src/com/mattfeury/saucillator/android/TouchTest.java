@@ -197,8 +197,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
         //dac.toggle();
-    	for(WtOsc osc : oscs)
-        osc.stop();
+        for(WtOsc osc : oscs)
+          osc.stop();
     	
         fingers.clear();
         p.invalidate();

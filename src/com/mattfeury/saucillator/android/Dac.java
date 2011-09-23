@@ -91,35 +91,35 @@ public class Dac extends UGen {
 		render(localBuffer);
 		
 		if(isClean || !playing) {
-			// sleeping is messy, so lets just queue this silent buffer
-			track.write(silentTarget, 0, silentTarget.length);
+      // sleeping is messy, so lets just queue this silent buffer
+      track.write(silentTarget, 0, silentTarget.length);
       if (recording) {
         for(int i = 0; i < CHUNK_SIZE; i++) {
-          WavWriter.PushShort((short)0);
+          WavWriter.pushShort((short)0);
         }
       }
-			//write silence to the wav buffer.
-		} else {
-			for(int i = 0; i < CHUNK_SIZE; i++) {
-				target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
-				//Write dat shit into dat wav buffa.
+      //write silence to the wav buffer.
+    } else {
+      for(int i = 0; i < CHUNK_SIZE; i++) {
+        target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
+        //Write dat shit into dat wav buffa.
         if (recording)
-  				WavWriter.PushShort(target[i]);
+          WavWriter.pushShort(target[i]);
 			}
-			
-			track.write(target, 0, target.length);
-			
-		      added += target.length;
-		      
-		      if(! started && added > minSize) {
-		          track.play();        
-		          started = true;
-		      }
+
+      track.write(target, 0, target.length);
+
+      added += target.length;
+
+      if(! started && added > minSize) {
+        track.play();
+        started = true;
+      }
 		}
 	}
 	
 	public void close() {
-		track.stop();
-        track.release();
+    track.stop();
+    track.release();
 	}
 }
