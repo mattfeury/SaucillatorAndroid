@@ -8,6 +8,7 @@ public class Instrument {
   public static int[] majorScale = {0,2,4,5,7,9,11};
   public static int[] minorScale = {0,2,3,5,7,8,10};
   public static int[] minorBluesScale = {0,3,5,6,7,10,12};
+  public static int[] pentatonic = {0,3,5,7,10,12};
 
   public Instrument() {
   }

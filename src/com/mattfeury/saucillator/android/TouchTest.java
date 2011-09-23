@@ -39,7 +39,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private Panel p;
 
     //music shtuffs
-    public int[] scale = Instrument.minorBluesScale;
+    public int[] scale = Instrument.pentatonic;
 
     //synth elements
     Dac dac;
@@ -70,41 +70,34 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	
-
       	    	ugOscA1 = new WtOsc();
       	    	ugOscA2 = new WtOsc();
-      	    	
+
       	    	oscs.add(ugOscA1);
       	    	oscs.add(ugOscA2);
-      	    	
+
       	    	ExpEnv ugEnvA = new ExpEnv();
-      	    	
+
       	    	ugOscA1.fillWithSin();
       	    	ugOscA2.fillWithSqrWithAmp(0.5f);
-      	    	
+
       	    	dac = new Dac();
 
       	    	Delay ugDelay = new Delay(UGen.SAMPLE_RATE/2);
-      	    	
+
       	    	ugEnvA.chuck(dac);
       	    	//ugEnvA.chuck(ugDelay);
       	    	ugDelay.chuck(ugEnvA);
-      	    	
+
       	    	//ugOscA1.chuck(ugEnvA);
       	    	ugOscA2.chuck(ugDelay);
       	    	ugOscA1.chuck(ugDelay);
-      	    	
+
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
-      	    	ugOscA1.setFreq(440.0f);
-      	    	ugOscA2.setFreq(880f);
-      	    	dac.open();        	    	
+      	    	dac.open();
 
-      	      //float freq = 440f;
       	      while (true) {
-      	    	//freq += 1f;
-        	    //	ugOscA1.setFreq(freq);
         	    	dac.tick();
       	      }
       	    }
