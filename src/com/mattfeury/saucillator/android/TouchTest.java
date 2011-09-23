@@ -83,8 +83,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       	    	oscs.add(ugOscA2);
       	    	
       	    	ExpEnv ugEnvA = new ExpEnv();
-      	    	
-      	    	ugOscA1.fillWithSin();
+      	    	ugOscA1.fillWithSaw();
       	    	ugOscA2.fillWithSqrWithAmp(0.5f);
       	    	
       	    	dac = new Dac();
@@ -101,7 +100,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       	    	
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
-      	    	ugOscA1.setFreq(440.0f);
+      	    	ugOscA1.setFreq(880.0f);
       	    	ugOscA2.setFreq(880f);
       	    	dac.open();        	    	
 
@@ -170,7 +169,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
-     android.os.Process.killProcess(android.os.Process.myPid());
      super.onStop();
     } 
     
@@ -184,12 +182,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     @Override
     public boolean onTouch(View v, MotionEvent event) {
       // Handle touch events here...
-      //dumpEvent(event);
+      dumpEvent(event);
       int maxHeight = v.getHeight();
       int maxWidth = v.getWidth();
 
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
+
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
         //dac.toggle();
@@ -206,28 +205,27 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       
       //each finger
       for (int i = 0; i < event.getPointerCount(); i++) {
-        int id = event.getPointerId(i);
+    	  int id = event.getPointerId(i);
+    	  Finger f = new Finger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+    	  fingers.put((Integer)id, f);  
+        
+          
+          //final int pointerIndex = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 
-        if ((id + 1) > oscs.size()) break;
 
-        Finger f = new Finger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-        fingers.put((Integer)id, f);  
-        
-        //make noise
-
-        WtOsc sine = (WtOsc)oscs.get(id);
-        if(! sine.isPlaying())
-          sine.togglePlayback(); //play if we were stopped
-        
-        float thisY = event.getY(i);
-        
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-          updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
-        } else { //kill
-          fingers.remove((Integer)i);
-          sine.togglePlayback();
-        }
-        
+	      //make noise
+    	  WtOsc sine = (WtOsc)oscs.get(id);
+	      if(! sine.isPlaying())
+	        sine.togglePlayback(); //play if we were stopped
+	      
+	      float thisY = event.getY(i);
+	      
+	      if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+	        updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
+	      } else { //kill
+	    	fingers.remove((Integer)i);
+	    	sine.togglePlayback();
+	      }
       }
       p.invalidate();
 
