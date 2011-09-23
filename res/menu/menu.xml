@@ -1,6 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/new_game"
-          android:title="New Game" />
+
+    <item android:title="Instrument 1 .." android:id="@+id/instrument1">
+        <menu>
+            <group android:id="@+id/instruments" android:checkableBehavior="single">
+                <item android:id="@+id/instrumentA" android:title="Instrument A" android:checked="true"></item>
+                <item android:id="@+id/instrumentB" android:title="Instrument B"></item>
+            </group>
+        </menu>
+    </item>
+    
+    <item android:title="Instrument 2 .." android:id="@+id/instrument2">
+        <menu>
+            <group android:id="@+id/instruments" android:checkableBehavior="single">
+                <item android:id="@+id/instrumentA" android:title="Instrument A"></item>
+                <item android:id="@+id/instrumentB" android:title="Instrument B" android:checked="true"></item>
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Scale .." android:id="@+id/scale">
+        <menu>
+            <group android:id="@+id/instruments" android:checkableBehavior="single">
+                <item android:id="@+id/scaleA" android:title="Scale A"></item>
+                <item android:id="@+id/scaleB" android:title="Scale B" android:checked="true"></item>
+            </group>
+        </menu>
+    </item>
+    
     <item android:id="@+id/quit"
           android:title="Quit" />
+    
 </menu>
