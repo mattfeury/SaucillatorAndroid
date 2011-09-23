@@ -230,19 +230,52 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch (item.getItemId()) {
-        case R.id.instrument1:
-            return true;
-        case R.id.instrument2:
-            return true;
-        case R.id.quit:
-        	onStop();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+    	int groupNum = 0;
+    	switch (item.getGroupId()) {
+    		case R.id.instrumentsA:
+    			groupNum = 1;
+    			break;
+    		case R.id.instrumentsB:
+    			groupNum = 2;
+    			break;
+    		case R.id.scales:
+    			return scaleSelection(item);
+    		default:
+    	}
+    	
+    	if (groupNum != 0)
+    		return instrumentSelection(item, groupNum);
+        
+    	switch (item.getItemId()) {
+	        case R.id.instrument1:
+	            return true;
+	        case R.id.instrument2:
+	            return true;
+	        case R.id.quit:
+	        	onStop();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
         }
     }
     
+    private boolean scaleSelection(MenuItem item) {
+    	if (item.isChecked()) {
+    		return true;
+    	}
+    	item.setChecked(true);
+    	
+    	return false;
+    }
+    
+    private boolean instrumentSelection(MenuItem item, int groupNum) {
+    	if (item.isChecked()) {
+    		return true;
+    	}
+    	item.setChecked(true);
+    	
+    	return false;
+    }
     
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
