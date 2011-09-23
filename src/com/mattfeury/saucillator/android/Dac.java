@@ -14,14 +14,14 @@ import android.media.AudioTrack;
  * 
  */
 public class Dac extends UGen {
-	private final float[] localBuffer;
-	private boolean isClean, playing;
-	private final AudioTrack track;
-	private final short [] target = new short[UGen.CHUNK_SIZE];
-	private final short [] silentTarget = new short[UGen.CHUNK_SIZE];
-	int minSize, added;
-	boolean started = false;
-  boolean recording = true;
+  private final float[] localBuffer;
+  private boolean isClean, playing;
+  private final AudioTrack track;
+  private final short [] target = new short[UGen.CHUNK_SIZE];
+  private final short [] silentTarget = new short[UGen.CHUNK_SIZE];
+  int minSize, added;
+  boolean started = false;
+  boolean recording = false;
 	
 	public Dac() {
 		playing = false;

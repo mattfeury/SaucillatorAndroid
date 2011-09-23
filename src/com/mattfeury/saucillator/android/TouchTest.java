@@ -204,10 +204,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         p.invalidate();
         return true;
       }
-      //if (actionCode == MotionEvent.ACTION_DOWN && ! dac.isPlaying()) { //first finger pressed. start DAC.
-        //dac.toggle();
-      //}
-      
+
       //each finger
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
@@ -220,16 +217,16 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         WtOsc sine = oscs.get(id);
         if(! sine.isPlaying())
           sine.togglePlayback(); //play if we were stopped
-        
+
         float thisY = event.getY(i);
-        
+
         if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
           updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
         } else { //kill
           fingers.remove((Integer)i);
           sine.togglePlayback();
         }
-        
+
       }
       p.invalidate();
 
@@ -241,7 +238,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
-    
+
     public boolean onOptionsItemSelected(MenuItem item) {
       // Handle item selection
     	switch (item.getGroupId()) {
