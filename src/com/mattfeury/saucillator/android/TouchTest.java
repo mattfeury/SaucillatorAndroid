@@ -1,7 +1,10 @@
 package com.mattfeury.saucillator.android;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.LinkedList;
+
+import com.sauce.touch.R;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,6 +19,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -30,84 +36,74 @@ import android.view.View.OnTouchListener;
  */
 public class TouchTest extends Activity implements OnTouchListener, SensorEventListener {
 
-    private static final String TAG = "Sauce" ;
+    private static final String TAG = "Sauce";
     private Panel p;
-    public static float x,y;
-    private float freq = 440;
-    
+
+    //music shtuffs
+    public int[] scale = Instrument.pentatonic;
+
     //synth elements
-    private Sine sine;	
     Dac dac;
-	WtOsc ugOscA1, ugOscA2;
-	private LinkedList<UGen> oscs = new LinkedList<UGen>();
+    WtOsc ugOscA1, ugOscA2;
+    private LinkedList<WtOsc> oscs = new LinkedList<WtOsc>();
 
-	private SensorManager sensorManager = null;
-	
-	
-	//graphics elements
-	private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
+    private SensorManager sensorManager = null;
 
+    //graphics elements
+    private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
+    private Map<Integer,String> instruments = new HashMap<Integer,String>() {{
+        put(0, "sine");
+        put(1, "square");
+        put(2, "saw");
+    }};
 	
-    private float BASE_FREQ = 220;
+    private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
   
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.i(TAG, "TouchTest");
+      Log.i(TAG, "TouchTest");
         super.onCreate(savedInstanceState);
 
-        //        setContentView(R.layout.main);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         p = new Panel(this);
         setContentView(p);
         p.setOnTouchListener(this);
-        
-        //start engine
-        
-        //old style
-        //sine = new Sine(freq);
-        //new Thread(sine).start();
 
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	
-
       	    	ugOscA1 = new WtOsc();
       	    	ugOscA2 = new WtOsc();
-      	    	
+
       	    	oscs.add(ugOscA1);
       	    	oscs.add(ugOscA2);
-      	    	
+
       	    	ExpEnv ugEnvA = new ExpEnv();
-      	    	ugOscA1.fillWithSaw();
+
+      	    	ugOscA1.fillWithSin();
       	    	ugOscA2.fillWithSqrWithAmp(0.5f);
-      	    	
+
       	    	dac = new Dac();
 
       	    	Delay ugDelay = new Delay(UGen.SAMPLE_RATE/2);
-      	    	
+
       	    	ugEnvA.chuck(dac);
       	    	//ugEnvA.chuck(ugDelay);
       	    	ugDelay.chuck(ugEnvA);
-      	    	
+
       	    	//ugOscA1.chuck(ugEnvA);
       	    	ugOscA2.chuck(ugDelay);
       	    	ugOscA1.chuck(ugDelay);
-      	    	
+
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
-      	    	ugOscA1.setFreq(880.0f);
-      	    	ugOscA2.setFreq(880f);
-      	    	dac.open();        	    	
+      	    	dac.open();
 
-      	      //float freq = 440f;
       	      while (true) {
-      	    	//freq += 1f;
-        	    //	ugOscA1.setFreq(freq);
         	    	dac.tick();
       	      }
       	    }
@@ -169,6 +165,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
+     android.os.Process.killProcess(android.os.Process.myPid());
      super.onStop();
     } 
     
@@ -178,22 +175,30 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
+      Finger maybe = fingers.get((Integer)id);
+      if (maybe != null) {
+        maybe.update(x, y, size, pressure);
+      } else {
+        Finger f = new Finger(id, x, y, size, pressure);
+        fingers.put((Integer)id, f);
+      }
+    }
     
     @Override
     public boolean onTouch(View v, MotionEvent event) {
       // Handle touch events here...
-      dumpEvent(event);
+      //dumpEvent(event);
       int maxHeight = v.getHeight();
       int maxWidth = v.getWidth();
 
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
-
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
         //dac.toggle();
-    	for(UGen osc : oscs)
-    		((WtOsc)osc).stop();
+    	for(WtOsc osc : oscs)
+        osc.stop();
     	
         fingers.clear();
         p.invalidate();
@@ -205,36 +210,131 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       
       //each finger
       for (int i = 0; i < event.getPointerCount(); i++) {
-    	  int id = event.getPointerId(i);
-    	  Finger f = new Finger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-    	  fingers.put((Integer)id, f);  
+        int id = event.getPointerId(i);
+
+        if ((id + 1) > oscs.size()) break;
+
+        updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+
+        //make noise
+        WtOsc sine = oscs.get(id);
+        if(! sine.isPlaying())
+          sine.togglePlayback(); //play if we were stopped
         
-          
-          //final int pointerIndex = (action & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-
-
-	      //make noise
-    	  WtOsc sine = (WtOsc)oscs.get(id);
-	      if(! sine.isPlaying())
-	        sine.togglePlayback(); //play if we were stopped
-	      
-	      float thisY = event.getY(i);
-	      
-	      if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-	        updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
-	      } else { //kill
-	    	fingers.remove((Integer)i);
-	    	sine.togglePlayback();
-	      }
+        float thisY = event.getY(i);
+        
+        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+          updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
+        } else { //kill
+          fingers.remove((Integer)i);
+          sine.togglePlayback();
+        }
+        
       }
       p.invalidate();
 
       return true; // indicate event was handled
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+      // Handle item selection
+    	switch (item.getGroupId()) {
+    		case R.id.instrumentsA:
+    			return instrumentSelection(item, 0);
+    		case R.id.instrumentsB:
+    			return instrumentSelection(item, 1);
+    		case R.id.scales:
+    			return scaleSelection(item);
+    		case R.id.toggles:
+    			return toggleSelection(item);
+    		default:
+    	}
+    	if (item.getItemId() == R.id.quit)
+    		onStop();
+        return false;
+    }
+    
+    private boolean toggleSelection(MenuItem item) {
+    	item.setChecked(!item.isChecked());
+    	switch (item.getItemId()) {
+    		case R.id.toggle_delay: 
+    		default:
+    	}
+    	return true;
+    }
+    
+    private boolean scaleSelection(MenuItem item) {
+    	if (item.isChecked()) {
+    		return true;
+    	}
+    	item.setChecked(true);
+      int scaleId = item.getItemId();
+
+      switch (scaleId) {
+        case R.id.pentatonic: //pentatonic
+          scale = Instrument.pentatonic;
+          break;
+        case R.id.major: //major
+          scale = Instrument.majorScale;
+          break;
+        case R.id.minor: //minor
+          scale = Instrument.minorScale;
+          break;
+        case R.id.blues: //blues
+          scale = Instrument.minorBluesScale;
+          break;
+        case R.id.chromatic: //chromatic
+          scale = Instrument.chromaticScale;
+          break;
+        default:
+      }
+    	
+    	return false;
+    }
+    
+    private boolean instrumentSelection(MenuItem item, int oscNum) {
+    	if (item.isChecked()) {
+    		return true;
+    	}
+    	item.setChecked(true);
+      int instrumentId = item.getItemId();
+
+      WtOsc osc;
+      try {
+        osc = oscs.get(oscNum);
+      } catch(Exception e){
+        return false;
+      }
+
+      switch (instrumentId) {
+        case R.id.sine: //sine
+          osc.fillWithSin();
+          break;
+        case R.id.square: //square
+          osc.fillWithSqr();
+          break;
+        case R.id.saw: //saw
+          osc.fillWithSaw();
+          break;
+        default:
+      }
+    	
+    	return false;
+    }
+    
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
-    	((WtOsc)oscs.get(sineKey)).setFreq(BASE_FREQ * (sineKey+1.0f) * (float) Math.pow(2, offset / 12.0));
+    	WtOsc osc = oscs.get(sineKey);
+
+      //TODO should we set the two oscillators an octave apart? probs
+      float freq = Instrument.getFrequencyForScaleNote(scale, (int)((sineKey+1.0) * BASE_FREQ), offset);
+      osc.setFreq(freq);
     }
 
     /** Show an event in the LogCat view, for debugging */
@@ -272,10 +372,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         @Override
         public void onDraw(Canvas canvas) {
             Log.i("touch", "started");
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.BLACK);
             for(Finger f : fingers.values())
             	f.draw(canvas);
-
         }
     }
 

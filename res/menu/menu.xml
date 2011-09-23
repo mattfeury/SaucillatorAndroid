@@ -1,0 +1,45 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Instrument 1 .." android:id="@+id/instrument1">
+        <menu>
+            <group android:checkableBehavior="single" android:id="@+id/instrumentsA">
+                <item android:id="@+id/sine" android:title="Sin Wave" android:checked="true"></item>
+                <item android:id="@+id/square" android:title="Square Wave"></item>
+                <item android:id="@+id/saw" android:title="Saw Wave"></item>
+            </group>
+        </menu>
+    </item>
+    
+    <item android:title="Instrument 2 .." android:id="@+id/instrument2">
+        <menu>
+            <group android:checkableBehavior="single" android:id="@+id/instrumentsB">
+                <item android:id="@+id/sine" android:title="Sin Wave"></item>
+                <item android:id="@+id/square" android:title="Square Wave" android:checked="true"></item>
+                <item android:id="@+id/saw" android:title="Saw Wave" ></item>
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Scale .." android:id="@+id/scale">
+        <menu>
+            <group android:checkableBehavior="single" android:id="@+id/scales">
+                <item android:id="@+id/pentatonic" android:title="Pentatonic" android:checked="true"></item>
+                <item android:id="@+id/major" android:title="Major"></item>
+                <item android:id="@+id/minor" android:title="Minor"></item>
+                <item android:id="@+id/blues" android:title="Blues"></item>
+                <item android:id="@+id/chromatic" android:title="Chromatic"></item>
+            </group>
+        </menu>
+    </item>
+            
+    <item android:title="Toggle .." android:id="@+id/toggle">
+        <menu>
+            <group android:checkableBehavior="all" android:id="@+id/toggles">
+                <item android:id="@+id/toggle_delay" android:title="Delay" android:checked="true"></item>
+            </group>
+        </menu>
+    </item>    
+    
+    <item android:id="@+id/quit" android:title="Quit" />
+    
+</menu>
