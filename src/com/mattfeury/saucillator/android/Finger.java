@@ -18,7 +18,11 @@ public class Finger {
 		this.y = y;
 		this.size = size;
 		this.pressure = pressure;
-    color.setColor(Color.GREEN);
+
+    if (id == 0)
+      color.setColor(Color.GREEN);
+    else
+      color.setColor(Color.CYAN);
 	}
 	
 	public void setX(float x)
@@ -30,6 +34,13 @@ public class Finger {
 	{
 		this.y = y;
 	}
+
+  public void update(float x, float y, float size, float pressure) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.pressure = pressure;
+  }
 	
 	public void draw(Canvas canvas)
 	{

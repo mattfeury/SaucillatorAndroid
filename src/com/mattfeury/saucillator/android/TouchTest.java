@@ -175,6 +175,15 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
+      Finger maybe = fingers.get((Integer)id);
+      if (maybe != null) {
+        maybe.update(x, y, size, pressure);
+      } else {
+        Finger f = new Finger(id, x, y, size, pressure);
+        fingers.put((Integer)id, f);
+      }
+    }
     
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -205,9 +214,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
         if ((id + 1) > oscs.size()) break;
 
-        Finger f = new Finger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-        fingers.put((Integer)id, f);  
-        
+        updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+
         //make noise
         WtOsc sine = oscs.get(id);
         if(! sine.isPlaying())
@@ -237,13 +245,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     public boolean onOptionsItemSelected(MenuItem item) {
       // Handle item selection
     	switch (item.getGroupId()) {
-    		case R.id.instrumentsA:
-    			return instrumentSelection(item, 0);
-    		case R.id.instrumentsB:
-    			return instrumentSelection(item, 1);
-    		case R.id.scales:
-    			return scaleSelection(item);
-    		default:
+        case R.id.instrumentsA:
+          return instrumentSelection(item, 0);
+        case R.id.instrumentsB:
+          return instrumentSelection(item, 1);
+        case R.id.scales:
+          return scaleSelection(item);
+        default:
           return false;
     	}
     }
@@ -254,6 +262,25 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	}
     	item.setChecked(true);
       int scaleId = item.getItemId();
+
+      switch (scaleId) {
+        case R.id.pentatonic: //pentatonic
+          scale = Instrument.pentatonic;
+          break;
+        case R.id.major: //major
+          scale = Instrument.majorScale;
+          break;
+        case R.id.minor: //minor
+          scale = Instrument.minorScale;
+          break;
+        case R.id.blues: //blues
+          scale = Instrument.minorBluesScale;
+          break;
+        case R.id.chromatic: //chromatic
+          scale = Instrument.chromaticScale;
+          break;
+        default:
+      }
     	
     	return false;
     }
@@ -269,11 +296,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       try {
         osc = oscs.get(oscNum);
       } catch(Exception e){
-        Log.d(TAG, "wtf ? " + e.toString());
         return false;
       }
 
-      Log.i(TAG, "i#: " + oscNum);
       switch (instrumentId) {
         case R.id.sine: //sine
           osc.fillWithSin();

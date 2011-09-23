@@ -23,9 +23,11 @@
     <item android:title="Scale .." android:id="@+id/scale">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/scales">
-                <item android:id="@+id/scaleA" android:title="Scale A" android:checked="true"></item>
-                <item android:id="@+id/scaleB" android:title="Scale B"></item>
-                <item android:id="@+id/scaleC" android:title="Scale C"></item>
+                <item android:id="@+id/pentatonic" android:title="Pentatonic" android:checked="true"></item>
+                <item android:id="@+id/major" android:title="Major"></item>
+                <item android:id="@+id/minor" android:title="Minor"></item>
+                <item android:id="@+id/blues" android:title="Blues"></item>
+                <item android:id="@+id/chromatic" android:title="Chromatic"></item>
             </group>
         </menu>
     </item>
