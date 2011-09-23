@@ -245,15 +245,28 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     public boolean onOptionsItemSelected(MenuItem item) {
       // Handle item selection
     	switch (item.getGroupId()) {
-        case R.id.instrumentsA:
-          return instrumentSelection(item, 0);
-        case R.id.instrumentsB:
-          return instrumentSelection(item, 1);
-        case R.id.scales:
-          return scaleSelection(item);
-        default:
-          return false;
+    		case R.id.instrumentsA:
+    			return instrumentSelection(item, 0);
+    		case R.id.instrumentsB:
+    			return instrumentSelection(item, 1);
+    		case R.id.scales:
+    			return scaleSelection(item);
+    		case R.id.toggles:
+    			return toggleSelection(item);
+    		default:
     	}
+    	if (item.getItemId() == R.id.quit)
+    		onStop();
+        return false;
+    }
+    
+    private boolean toggleSelection(MenuItem item) {
+    	item.setChecked(!item.isChecked());
+    	switch (item.getItemId()) {
+    		case R.id.toggle_delay: 
+    		default:
+    	}
+    	return true;
     }
     
     private boolean scaleSelection(MenuItem item) {
