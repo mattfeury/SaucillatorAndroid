@@ -30,46 +30,37 @@ import android.view.View.OnTouchListener;
  */
 public class TouchTest extends Activity implements OnTouchListener, SensorEventListener {
 
-    private static final String TAG = "Sauce" ;
+    private static final String TAG = "Sauce";
     private Panel p;
-    public static float x,y;
-    private float freq = 440;
-    
+
+    //music shtuffs
+    public int[] scale = Instrument.minorBluesScale;
+
     //synth elements
-    private Sine sine;	
     Dac dac;
-	WtOsc ugOscA1, ugOscA2;
-	private LinkedList<UGen> oscs = new LinkedList<UGen>();
+    WtOsc ugOscA1, ugOscA2;
+    private LinkedList<WtOsc> oscs = new LinkedList<WtOsc>();
 
-	private SensorManager sensorManager = null;
-	
-	
-	//graphics elements
-	private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
+    private SensorManager sensorManager = null;
 
+    //graphics elements
+    private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
 	
-    private float BASE_FREQ = 220;
+    private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
   
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.i(TAG, "TouchTest");
+      Log.i(TAG, "TouchTest");
         super.onCreate(savedInstanceState);
 
-        //        setContentView(R.layout.main);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         p = new Panel(this);
         setContentView(p);
         p.setOnTouchListener(this);
-        
-        //start engine
-        
-        //old style
-        //sine = new Sine(freq);
-        //new Thread(sine).start();
 
         Thread t = new Thread() {
       	  public void run() {
@@ -193,8 +184,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
         //dac.toggle();
-    	for(UGen osc : oscs)
-    		((WtOsc)osc).stop();
+    	for(WtOsc osc : oscs)
+        osc.stop();
     	
         fingers.clear();
         p.invalidate();
@@ -214,8 +205,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         fingers.put((Integer)id, f);  
         
         //make noise
-
-        WtOsc sine = (WtOsc)oscs.get(id);
+        WtOsc sine = oscs.get(id);
         if(! sine.isPlaying())
           sine.togglePlayback(); //play if we were stopped
         
@@ -236,7 +226,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
-    	((WtOsc)oscs.get(sineKey)).setFreq(BASE_FREQ * (sineKey+1.0f) * (float) Math.pow(2, offset / 12.0));
+    	WtOsc osc = oscs.get(sineKey);
+
+      //TODO should we set the two oscillators an octave apart? probs
+      float freq = Instrument.getFrequencyForScaleNote(scale, (int)((sineKey+1.0) * BASE_FREQ), offset);
+      osc.setFreq(freq);
     }
 
     /** Show an event in the LogCat view, for debugging */
