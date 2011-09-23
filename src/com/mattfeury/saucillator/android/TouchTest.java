@@ -238,7 +238,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-        case R.id.new_game:
+        case R.id.instrument1:
+            return true;
+        case R.id.instrument2:
             return true;
         case R.id.quit:
         	onStop();
@@ -247,6 +249,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             return super.onOptionsItemSelected(item);
         }
     }
+    
     
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
