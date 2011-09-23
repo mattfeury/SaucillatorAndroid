@@ -3,6 +3,8 @@ package com.mattfeury.saucillator.android;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.sauce.touch.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Context;
@@ -16,6 +18,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -224,6 +229,25 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       return true; // indicate event was handled
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.new_game:
+            return true;
+        case R.id.quit:
+        	onStop();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
     	WtOsc osc = oscs.get(sineKey);
