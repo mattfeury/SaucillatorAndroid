@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.android;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 
 import android.util.Log;
 
@@ -22,30 +23,29 @@ public class WavWriter {
     data = new ByteArrayOutputStream();
   }
 
-  static File writeWav(){
+  static void writeWav(){
   	try{
-  		return writeWav(data.toByteArray());
+  		writeWav(data.toByteArray());
   	}catch(IOException e){
   		
-  		Log.e("blow", "blew it : " + e.toString());
-  		return null;
-  	
+  		Log.e("blow", "blew it : " + e.toString());  	
   	}
   	
   }
-	static File writeWav(byte[] buffer) throws IOException{
+	static void writeWav(byte[] buffer) throws IOException{
 		
-		File file = new File("Recording " + numWavFiles + ".wav");
-		
-		FileWriter writer = new FileWriter(file);
+		File file = new File("/sdcard/Recording" + numWavFiles + ".wav");
+	  OutputStream out = new BufferedOutputStream(new FileOutputStream(file));	 
+
+		//FileWriter writer = new FileWriter("/sdcard/recording0.wav");
 		
 		ByteBuffer bytes = ByteBuffer.allocate(buffer.length + 44);
 		
-		bytes.putChar('R'); bytes.putChar('I'); bytes.putChar('F'); bytes.putChar('F'); // "RIFF"
+		bytes.put((byte)'R'); bytes.put((byte)'I'); bytes.put((byte)'F'); bytes.put((byte)'F'); // "RIFF"
 		bytes.putInt(buffer.length * 2 + 36); //Total length of the file - 8. Header is 44 bits, so buf size * 2 - 8 + 44 => buf size * 2 + 36
-		bytes.putChar('W'); bytes.putChar('A'); bytes.putChar('V'); bytes.putChar('E'); // "WAVE"
+		bytes.put((byte)'W'); bytes.put((byte)'A'); bytes.put((byte)'V'); bytes.put((byte)'E'); // "WAVE"
 		
-		bytes.putChar('f'); bytes.putChar('m'); bytes.putChar('t'); bytes.put((byte)0); //'fmt\0'     <---- MAY BE WRONG
+		bytes.put((byte)'f'); bytes.put((byte)'m'); bytes.put((byte)'t'); bytes.put((byte)0); //'fmt\0'     <---- MAY BE WRONG
 		bytes.putInt(16);
 		bytes.putShort((short)1);
 		bytes.putShort((short)1);
@@ -54,20 +54,19 @@ public class WavWriter {
 		bytes.putShort((short)2);
 		bytes.putShort((short)16);
 		
-		bytes.putChar('d'); bytes.putChar('a'); bytes.putChar('t'); bytes.putChar('a');
+		bytes.put((byte)'d'); bytes.put((byte)'a'); bytes.put((byte)'t'); bytes.put((byte)'a');
 		bytes.putInt(buffer.length);
 		
-		for(int i = 0; i < buffer.length; i++)
-			bytes.put(buffer[i]);
+		//for(int i = 0; i < buffer.length; i++)
+	  bytes.put(buffer);
 		
-		char[] wavFileArray = bytes.asCharBuffer().array();
-		
-		writer.write(wavFileArray);
-		writer.close();
+		//CharBuffer wavFileArray = bytes.asCharBuffer();
+		//char[] array = wavFileArray.array();
+	  byte[] array = bytes.array();
+	  out.write(array, 0, array.length);
 
-		
-		return file;
-	
+    out.flush();
+		out.close();	
 	}
 
 	
