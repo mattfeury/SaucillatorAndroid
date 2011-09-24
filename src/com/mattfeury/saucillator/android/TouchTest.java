@@ -44,8 +44,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //synth elements
     Dac dac;
-    WtOsc ugOscA1, ugOscA2;
+    LfoOsc ugOscA1;
+    WtOsc ugOscA2;
     private LinkedList<WtOsc> oscs = new LinkedList<WtOsc>();
+    private LfoOsc osc;
+
+    public final static int MOD_RATE_MAX = 20;
+    public final static int MOD_DEPTH_MAX = 1000;
 
     private SensorManager sensorManager = null;
 
@@ -63,7 +68,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-      Log.i(TAG, "TouchTest");
+        Log.i(TAG, "Brewing sauce...");
         super.onCreate(savedInstanceState);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -76,28 +81,29 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	ugOscA1 = new WtOsc();
-      	    	ugOscA2 = new WtOsc();
+      	    	ugOscA1 = new LfoOsc();
+              osc = ugOscA1;
+      	    	//ugOscA2 = new WtOsc();
 
       	    	oscs.add(ugOscA1);
-      	    	oscs.add(ugOscA2);
+      	    	//oscs.add(ugOscA2);
 
       	    	ExpEnv ugEnvA = new ExpEnv();
 
       	    	ugOscA1.fillWithSin();
-      	    	ugOscA2.fillWithSqrWithAmp(0.5f);
+      	    	//ugOscA2.fillWithSqrWithAmp(0.5f);
 
       	    	dac = new Dac();
 
-      	    	Delay ugDelay = new Delay(UGen.SAMPLE_RATE/2);
+      	    	//Delay ugDelay = new Delay(UGen.SAMPLE_RATE/2);
 
       	    	ugEnvA.chuck(dac);
       	    	//ugEnvA.chuck(ugDelay);
-      	    	ugDelay.chuck(ugEnvA);
+      	    	//ugDelay.chuck(ugEnvA);
 
       	    	//ugOscA1.chuck(ugEnvA);
-      	    	ugOscA2.chuck(ugDelay);
-      	    	ugOscA1.chuck(ugDelay);
+      	    	//ugOscA2.chuck(ugEnvA);
+      	    	ugOscA1.chuck(ugEnvA);
 
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
@@ -208,23 +214,30 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       //each finger
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
+        float y = event.getY(i);
+        float x = event.getX(i);
 
-        if ((id + 1) > oscs.size()) break;
+        //if ((id + 1) > oscs.size()) break;
 
         updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
 
+        //WtOsc sine = oscs.get(id);
+
         //make noise
-        WtOsc sine = oscs.get(id);
-        if(! sine.isPlaying())
-          sine.togglePlayback(); //play if we were stopped
+        if (id == 0) { //update sine
+          if(! osc.isPlaying())
+            osc.togglePlayback(); //play if we were stopped
 
-        float thisY = event.getY(i);
-
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-          updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
-        } else { //kill
-          fingers.remove((Integer)i);
-          sine.togglePlayback();
+          if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+            updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
+          } else { //kill
+            fingers.remove((Integer)i);
+            osc.togglePlayback();
+          }
+        } else if (id == 1) { //lfo
+        	Log.i(TAG, "lfo");
+          osc.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          osc.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
         }
 
       }
