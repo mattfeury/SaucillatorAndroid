@@ -252,12 +252,23 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     			return toggleSelection(item);
     		default:
     	}
-    	if (item.getItemId() == R.id.quit)
-    		onStop();
+    	switch (item.getItemId()) {
+    		case R.id.quit:
+    			onStop();
+    			return true;
+    		case R.id.sendToSoundcloud:
+    			return sendToSoundcloud();
+    		default:
+    	}
         return false;
     }
     
-    private boolean toggleSelection(MenuItem item) {
+    private boolean sendToSoundcloud() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean toggleSelection(MenuItem item) {
     	item.setChecked(!item.isChecked());
     	switch (item.getItemId()) {
     		case R.id.toggle_delay:
