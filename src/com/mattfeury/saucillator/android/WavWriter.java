@@ -29,7 +29,7 @@ public class WavWriter {
   	
   }
 
-  private static int sampleRate = 11025;
+  private static int sampleRate = UGen.SAMPLE_RATE;
   private static int numChannels = 1;
   private static int bitDepth = 16;
   static void writeWav(byte[] buffer) throws IOException{
