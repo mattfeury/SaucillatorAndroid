@@ -5,7 +5,7 @@ import java.util.Random;
 
 public abstract class UGen {
 	public static final int CHUNK_SIZE = 256; //formerly 1024
-	public static final int SAMPLE_RATE = 11025 * 2;
+	public static final int SAMPLE_RATE = 11025;
 	
 	protected boolean isPlaying = false;
 	

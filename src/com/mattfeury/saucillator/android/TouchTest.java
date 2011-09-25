@@ -171,9 +171,14 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
-     android.os.Process.killProcess(android.os.Process.myPid());
+     //android.os.Process.killProcess(android.os.Process.myPid());
      super.onStop();
     } 
+    
+    
+    protected void onDestroy() {
+    	android.os.Process.killProcess(android.os.Process.myPid());
+    }
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -265,37 +270,47 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	}
     	switch (item.getItemId()) {
     		case R.id.quit:
-    			onStop();
+    			onDestroy();
     			return true;
+    		case R.id.settings:
+    			return launchSettings();
     		case R.id.record:
     			return record(item);
     		default:
     	}
         return false;
     }
+   
+    private boolean launchSettings() {
+    	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	startActivityForResult(intent, 0);
+    	return true;
+    }
     
     private boolean record(MenuItem item) {
-    	dac.toggleRecording();
-    	if (!recording) {
-        	item.setTitle("Stop Recording");
-        	Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
-        	
+      boolean isRecording = dac.toggleRecording();
+    	if (isRecording) {
+        item.setTitle("Stop Recording");
+        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
     	}
     	else {
 	    	item.setTitle("Record");
-	    	dac.toggleRecording();
-	    	if(WavWriter.getLastFile() == null)
-	    		return false;
-	    	//File audio = new File("/path/to/audio.mp3");
-	    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+	    	
+        if(WavWriter.getLastFile() == null)
+          return false;
+	    	
+        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
 	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
 	    	startActivity(Intent.createChooser(intent, "Share to"));
-        	Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
     	}
-    	recording = !recording;
-		return true;
-	}
+      return true;
+    }
 
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+    	
+    }
+    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;

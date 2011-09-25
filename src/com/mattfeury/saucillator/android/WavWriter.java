@@ -5,41 +5,44 @@ import java.io.*;
 import android.util.Log;
 
 public class WavWriter {
-	static int numWavFiles  = 0;
-	static ByteArrayOutputStream data = new ByteArrayOutputStream();
-	private static File lastFile = null;
-	
-	static File getLastFile(){
-		return lastFile;
-	}
-	static void pushShort(short s){
-		data.write((byte)(s & 0xff));
-		data.write((byte)((s >> 8) & 0xff));
-	}
+  static int numWavFiles  = 0;
+  static ByteArrayOutputStream data = new ByteArrayOutputStream();
+  private static File lastFile = null;
+
+  static File getLastFile(){
+    return lastFile;
+  }
+  static void pushShort(short s){
+    data.write((byte)(s & 0xff));
+    data.write((byte)((s >> 8) & 0xff));
+  }
+  static void pushFloat(float f){ //f should be between -1 and 1.
+    short i = (short)(f * Short.MAX_VALUE);
+    pushShort(i);
+  }
   static void clear() {
     data = new ByteArrayOutputStream();
   }
 
   static void writeWav(){
-  	try{
-  		writeWav(data.toByteArray());
-  	}catch(IOException e){
-  		Log.e("blow", "blew it : " + e.toString());  	
-  	}
-  	
+    try{
+      writeWav(data.toByteArray());
+    } catch(IOException e){
+      Log.e("blow", "blew it : " + e.toString());  	
+    }
   }
 
   private static int sampleRate = UGen.SAMPLE_RATE;
   private static int numChannels = 1;
   private static int bitDepth = 16;
   static void writeWav(byte[] buffer) throws IOException{
-    int numSamples = buffer.length;
+    int numSamples = buffer.length / 2;
     
     File file = new File("/sdcard/Recording2" + numWavFiles + ".wav");
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
 
     // write the header
-    outFile.writeBytes("RIFX");
+    outFile.writeBytes("RIFF");
     outFile.write(intToByteArray((int)(numSamples * numChannels * bitDepth / 8 + 36)), 0, 4);
     outFile.writeBytes("WAVE");
     outFile.writeBytes("fmt ");
