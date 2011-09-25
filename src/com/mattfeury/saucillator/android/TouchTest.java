@@ -7,8 +7,10 @@ import java.util.LinkedList;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -265,12 +267,31 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     			return toggleSelection(item);
     		default:
     	}
-    	if (item.getItemId() == R.id.quit)
-    		onStop();
+    	switch (item.getItemId()) {
+    		case R.id.quit:
+    			onStop();
+    			return true;
+    		case R.id.sendToSoundcloud:
+    			return sendToSoundcloud();
+    		default:
+    	}
         return false;
     }
     
-    private boolean toggleSelection(MenuItem item) {
+    private boolean sendToSoundcloud() {
+    	
+    	if(WavWriter.getLastFile() == null)
+    		return false;
+    	
+    	//File audio = new File("/path/to/audio.mp3");
+    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+    	startActivity(Intent.createChooser(intent, "Share to"));
+    	
+		return true;
+	}
+
+	private boolean toggleSelection(MenuItem item) {
     	item.setChecked(!item.isChecked());
     	switch (item.getItemId()) {
     		case R.id.toggle_delay:

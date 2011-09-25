@@ -7,7 +7,11 @@ import android.util.Log;
 public class WavWriter {
 	static int numWavFiles  = 0;
 	static ByteArrayOutputStream data = new ByteArrayOutputStream();
-
+	private static File lastFile = null;
+	
+	static File getLastFile(){
+		return lastFile;
+	}
 	static void pushShort(short s){
 		data.write((byte)(s & 0xff));
 		data.write((byte)((s >> 8) & 0xff));
@@ -30,8 +34,9 @@ public class WavWriter {
   private static int bitDepth = 16;
   static void writeWav(byte[] buffer) throws IOException{
     int numSamples = buffer.length;
-
-    DataOutputStream outFile  = new DataOutputStream(new FileOutputStream("/sdcard/Recording2" + numWavFiles + ".wav"));
+    
+    File file = new File("/sdcard/Recording2" + numWavFiles + ".wav");
+    DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
 
     // write the header
     outFile.writeBytes("RIFF");
@@ -53,7 +58,9 @@ public class WavWriter {
 
     // save
     outFile.flush();
-		outFile.close();	
+	outFile.close();
+	
+	lastFile = file;
 	}
 
   //===========================

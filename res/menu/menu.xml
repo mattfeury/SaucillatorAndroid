@@ -40,6 +40,8 @@
         </menu>
     </item>    
     
+    <item android:id="@+id/sendToSoundcloud" android:title="Send to Soundcloud" />
+    
     <item android:id="@+id/quit" android:title="Quit" />
     
 </menu>
