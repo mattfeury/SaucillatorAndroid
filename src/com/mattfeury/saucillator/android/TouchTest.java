@@ -56,11 +56,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-    private Map<Integer,String> instruments = new HashMap<Integer,String>() {{
-        put(0, "sine");
-        put(1, "square");
-        put(2, "saw");
-    }};
 	
     private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
