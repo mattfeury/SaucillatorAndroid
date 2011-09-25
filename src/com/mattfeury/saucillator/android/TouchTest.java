@@ -61,11 +61,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-    private Map<Integer,String> instruments = new HashMap<Integer,String>() {{
-        put(0, "sine");
-        put(1, "square");
-        put(2, "saw");
-    }};
 	
     private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
@@ -283,8 +278,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	dac.toggleRecording();
     	if (!recording) {
         	item.setTitle("Stop Recording");
-        	/*Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT);
-              Doesn't work for some reason.*/
+        	Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
+        	
     	}
     	else {
 	    	item.setTitle("Record");
@@ -295,7 +290,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 	    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
 	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
 	    	startActivity(Intent.createChooser(intent, "Share to"));
-        	//Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT);
+        	Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
     	}
     	recording = !recording;
 		return true;
