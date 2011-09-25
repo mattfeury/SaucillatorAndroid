@@ -13,11 +13,8 @@ public class LfoOsc extends WtOsc {
   private boolean lfoEnabled = true;
   public int modDepth = 0;
   public int modRate = 0; //in Hz
-<<<<<<< Updated upstream
-  private float rate = 0.2f; //rate at which the LFO lags between frequency changes
-=======
+
   private float rate = 1.0f; //rate at which the LFO lags between frequency changes
->>>>>>> Stashed changes
   private float t = 0f;
   private float frequency = 440f;
   private float lagOut;
