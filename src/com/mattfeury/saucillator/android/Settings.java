@@ -125,6 +125,7 @@ public class Settings extends Activity{
 		
 		delaySlider = (SeekBar) findViewById(R.id.delaySlider);
 		delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
+		delaySlider.setIndeterminate(false);
 		delaySlider.setMax(UGen.SAMPLE_RATE);
 		
 
