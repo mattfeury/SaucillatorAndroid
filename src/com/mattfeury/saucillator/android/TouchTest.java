@@ -47,7 +47,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private int sampleRate = UGen.SAMPLE_RATE;
     private int lag = 0;
     private String fileName = "Recording";
-    private String note = "A";
+    private int note = 2;
     private int octave = 1;
     
     
@@ -158,6 +158,18 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     @Override
     protected void onResume() {
      super.onResume();
+     Intent intent = getIntent();
+     if (intent != null) {
+    	Bundle extras = intent.getExtras();
+    	if (extras != null) {
+	 		fileName = extras.getString("file name");
+			note = extras.getInt("note");
+			octave = extras.getInt("octave");
+			sampleRate = extras.getInt("sample rate");
+			lag = extras.getInt("lag");
+			updateSettings();
+    	}
+     }
      // Register this class as a listener for the accelerometer sensor
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
      
@@ -166,7 +178,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
    
-    @Override
+    private void updateSettings() {
+		// TODO feury
+    	//use the variables I declared at the top to update your shit.
+		
+	}
+
+	@Override
     protected void onStop() {
      // Unregister the listener
      
@@ -306,10 +324,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       return true;
     }
 
-    public void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	
-    }
-    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;
