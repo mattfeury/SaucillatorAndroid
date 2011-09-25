@@ -6,9 +6,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class Settings extends Activity{
@@ -20,6 +22,8 @@ public class Settings extends Activity{
 	Button saveButton;
 	Button cancelButton;
 	EditText fileTextBox;
+	Spinner noteSpinner;
+	Spinner octaveSpinner;
 	
 	private class DelaySliderListener implements SeekBar.OnSeekBarChangeListener {
 
@@ -27,7 +31,8 @@ public class Settings extends Activity{
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			// TODO Auto-generated method stub
-			delayValue.setText(" " + progress + " ");
+			int val = UGen.SAMPLE_RATE * progress/100;
+			delayValue.setText(" " + val + " ");
 		}
 
 		@Override
@@ -50,7 +55,7 @@ public class Settings extends Activity{
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			// TODO Auto-generated method stub
-			lagValue.setText(" " + progress + " ");
+			lagValue.setText(" " + progress + "% ");
 		}
 
 		@Override
@@ -87,6 +92,7 @@ public class Settings extends Activity{
 		
 	}
 	
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
@@ -101,5 +107,13 @@ public class Settings extends Activity{
 		cancelButton = (Button) findViewById(R.id.cancel);
 		cancelButton.setOnClickListener(new CancelButtonListener());
 		fileTextBox = (EditText) findViewById(R.id.fileName);
+		noteSpinner = (Spinner) findViewById(R.id.noteChooser);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	    noteSpinner.setAdapter(adapter);
+		adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
+		octaveSpinner.setAdapter(adapter);
 	}
 }
