@@ -18,7 +18,6 @@ public class SingingSaw extends ComplexOsc {
   }
 
   public void setFreq(float freq) {
-  	Log.i("SAWS", ""+this.kids.size());
     frequency = freq;
     fundamental.setFreq(freq);
     third.setFreq(Instrument.getFrequencyForScaleNote(Instrument.majorScale, freq, 2));

@@ -15,6 +15,7 @@ public abstract class ComplexOsc extends Oscillator {
   }
   protected void fill(BasicOsc... oscs) {
     for(BasicOsc osc : oscs) {
+      osc.isPlaying = true; //we manage playback here, so all the children should be available for rendering
       components.add(osc);
       osc.chuck(this);
     }
@@ -22,9 +23,6 @@ public abstract class ComplexOsc extends Oscillator {
 
   public void togglePlayback() {
     isPlaying = !isPlaying;
-    for(BasicOsc osc : components) {
-      osc.togglePlayback();
-    }
   }
 
   public abstract void setFreq(float freq);

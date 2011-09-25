@@ -99,9 +99,8 @@ public class Dac extends UGen {
           WavWriter.pushShort((short)0);
         }
       }
-      //write silence to the wav buffer.
     } else {
-      short halfMax = Short.MAX_VALUE / 2;
+      //short halfMax = Short.MAX_VALUE / 2;
       for(int i = 0; i < CHUNK_SIZE; i++) {
         target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
         //Write dat shit into dat wav buffa.

@@ -41,8 +41,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     private static final String TAG = "Sauce";
     private Panel p;
-
-    private boolean recording = false;
     
     private int sampleRate = UGen.SAMPLE_RATE;
     private int lag = 0;
@@ -56,8 +54,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //synth elements
     Dac dac;
-    //BasicOsc ugOscA1;
-    //WtOsc ugOscA2;
     private LinkedList<Oscillator> oscs = new LinkedList<Oscillator>();
     private ComplexOsc osc;
     private BasicOsc osc2;
@@ -172,18 +168,20 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
    
     private void updateSettings() {
-		// TODO feury
-    	//use the variables I declared at the top to update your shit.
-		
-	}
+      // TODO feury
+      //use the variables I declared at the top to update your shit.
+    }
 
-	@Override
+    @Override
     protected void onStop() {
      // Unregister the listener
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
      //android.os.Process.killProcess(android.os.Process.myPid());
+
+     //TODO stop the DAC here or something
+     // remember: this is also called when we goto settings
      super.onStop();
     } 
     
