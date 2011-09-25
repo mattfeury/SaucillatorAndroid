@@ -165,9 +165,14 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
-     android.os.Process.killProcess(android.os.Process.myPid());
+     //android.os.Process.killProcess(android.os.Process.myPid());
      super.onStop();
     } 
+    
+    
+    protected void onDestroy() {
+    	android.os.Process.killProcess(android.os.Process.myPid());
+    }
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -252,13 +257,21 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	}
     	switch (item.getItemId()) {
     		case R.id.quit:
-    			onStop();
+    			onDestroy();
     			return true;
+    		case R.id.settings:
+    			return launchSettings();
     		case R.id.record:
     			return record(item);
     		default:
     	}
         return false;
+    }
+   
+    private boolean launchSettings() {
+    	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	startActivityForResult(intent, 0);
+    	return true;
     }
     
     private boolean record(MenuItem item) {
@@ -281,6 +294,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       return true;
     }
 
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+    	
+    }
+    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;
