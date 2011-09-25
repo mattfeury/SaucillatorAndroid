@@ -158,18 +158,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     @Override
     protected void onResume() {
      super.onResume();
-     Intent intent = getIntent();
-     if (intent != null) {
-    	Bundle extras = intent.getExtras();
-    	if (extras != null) {
-	 		fileName = extras.getString("file name");
-			note = extras.getInt("note");
-			octave = extras.getInt("octave");
-			sampleRate = extras.getInt("sample rate");
-			lag = extras.getInt("lag");
-			updateSettings();
-    	}
-     }
      // Register this class as a listener for the accelerometer sensor
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
      
@@ -291,6 +279,22 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     		default:
     	}
         return false;
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+	    	if (data != null) {
+		       	Bundle extras = data.getExtras();
+		       	if (extras != null) {
+		   	 		fileName = extras.getString("file name");
+		   			note = extras.getInt("note");
+		   			octave = extras.getInt("octave");
+		   			sampleRate = extras.getInt("sample rate");
+		   			lag = extras.getInt("lag");
+		   			updateSettings();
+		       	}
+	    	}
+        }
     }
    
     private boolean launchSettings() {

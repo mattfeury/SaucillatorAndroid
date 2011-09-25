@@ -95,8 +95,8 @@ public class Settings extends Activity{
 	    	intent.putExtra("file name", fileName);
 	    	intent.putExtra("sample rate", sampleRate);
 	    	intent.putExtra("lag", lag);
-			setIntent(intent);
-	    	startActivityForResult(intent, 0);
+			setResult(0, intent);
+			finish();
 		}
 		
 	}
