@@ -38,9 +38,22 @@ public class WavWriter {
   static void writeWav(byte[] buffer) throws IOException{
     int numSamples = buffer.length / 2;
     
-    File file = new File("/sdcard/Recording2" + numWavFiles + ".wav");
+    File file;
+    int i = 0;
+    
+    if (!(file = new File("/sdcard/sauce/")).exists()){
+    	if(!file.mkdir())
+    		throw new IOException("Died trying to make sauce directory");
+    }
+    	
+    
+    do{
+    	i++;
+    	file = new File("/sdcard/sauce/Recording" + i + ".wav");
+    }while(file.exists());
+    
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
-
+    
     // write the header
     outFile.writeBytes("RIFF");
     outFile.write(intToByteArray((int)(numSamples * numChannels * bitDepth / 8 + 36)), 0, 4);

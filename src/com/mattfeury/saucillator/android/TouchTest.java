@@ -44,6 +44,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     private boolean recording = false;
     
+    private int sampleRate = UGen.SAMPLE_RATE;
+    private int lag = 0;
+    private String fileName = "Recording";
+    private int note = 2;
+    private int octave = 1;
+    
+    
     //music shtuffs
     public int[] scale = Instrument.pentatonic;
 
@@ -164,7 +171,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
    
-    @Override
+    private void updateSettings() {
+		// TODO feury
+    	//use the variables I declared at the top to update your shit.
+		
+	}
+
+	@Override
     protected void onStop() {
      // Unregister the listener
      
@@ -283,9 +296,30 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	}
         return false;
     }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+	    	if (data != null) {
+		       	Bundle extras = data.getExtras();
+		       	if (extras != null) {
+		   	 		fileName = extras.getString("file name");
+		   			note = extras.getInt("note");
+		   			octave = extras.getInt("octave");
+		   			sampleRate = extras.getInt("sample rate");
+		   			lag = extras.getInt("lag");
+		   			updateSettings();
+		       	}
+	    	}
+        }
+    }
    
     private boolean launchSettings() {
     	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	intent.putExtra("octave", octave);
+    	intent.putExtra("note", note);
+    	intent.putExtra("file name", fileName);
+    	intent.putExtra("sample rate", sampleRate);
+    	intent.putExtra("lag", lag);
     	startActivityForResult(intent, 0);
     	return true;
     }
@@ -310,10 +344,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       return true;
     }
 
-    public void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	
-    }
-    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;

@@ -1,41 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:scrollbars="vertical"
     >
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_width="wrap_content" android:text="Delay: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+        <TextView android:layout_width="wrap_content" android:text="Sample Rate: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/delayValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
     </LinearLayout>
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/delaySlider" android:layout_width="fill_parent"></SeekBar>
+        <SeekBar android:layout_height="wrap_content" android:max="11025" android:id="@+id/delaySlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
         
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
         <TextView android:layout_width="wrap_content" android:text="Lag: " android:id="@+id/lagLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/lagValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
     </LinearLayout>
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/lagSlider" android:layout_width="fill_parent"></SeekBar>
+        <SeekBar android:layout_height="wrap_content" android:id="@+id/lagSlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
         <TextView android:layout_width="wrap_content" android:text="File Name:" android:id="@+id/fileLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <EditText android:layout_width="match_parent" android:id="@+id/fileName" android:layout_height="wrap_content">
             <requestFocus></requestFocus>
         </EditText>
         <TextView android:layout_width="wrap_content" android:text="Notes" android:id="@+id/notesLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout3">
-            <Button android:text=" - " android:id="@+id/decNotes" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-            <TextView android:layout_width="wrap_content" android:text="Note: A?" android:id="@+id/noteSelection" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-            <Button android:text=" + " android:id="@+id/incNotes" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-        </LinearLayout>
+        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/noteChooser"></Spinner>
         
-        <TextView android:layout_width="wrap_content" android:text="Scale?" android:id="@+id/notesLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout3">
-            <Button android:text=" - " android:id="@+id/decScale" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-            <TextView android:layout_width="wrap_content" android:text="Scale: A?" android:id="@+id/scaleSelection" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-            <Button android:text=" + " android:id="@+id/incScale" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-        </LinearLayout>
-        
-        <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout2">
-            <Button android:layout_width="wrap_content" android:text="Save" android:layout_height="wrap_content" android:id="@+id/save"></Button>
-            <Button android:text="Cancel" android:id="@+id/cancel" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-        </LinearLayout>
+        <TextView android:layout_width="wrap_content" android:text="Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
+        <Button android:text="Save" android:id="@+id/save" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+        <Button android:text="Cancel" android:id="@+id/cancel" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
 
 </LinearLayout>
+</ScrollView>

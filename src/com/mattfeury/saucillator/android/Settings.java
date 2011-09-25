@@ -3,13 +3,19 @@ package com.mattfeury.saucillator.android;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.app.PendingIntent.OnFinished;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Settings extends Activity{
 	
@@ -20,6 +26,14 @@ public class Settings extends Activity{
 	Button saveButton;
 	Button cancelButton;
 	EditText fileTextBox;
+	Spinner noteSpinner;
+	Spinner octaveSpinner;
+	
+	private int sampleRate = UGen.SAMPLE_RATE;
+    private int lag = 0;
+    private String fileName = "Recording";
+    private int note = 1;
+    private int octave = 4;
 	
 	private class DelaySliderListener implements SeekBar.OnSeekBarChangeListener {
 
@@ -27,7 +41,8 @@ public class Settings extends Activity{
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			// TODO Auto-generated method stub
-			delayValue.setText(" " + progress + " ");
+			sampleRate = progress;
+			delayValue.setText(" " + sampleRate + " ");
 		}
 
 		@Override
@@ -50,7 +65,8 @@ public class Settings extends Activity{
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			// TODO Auto-generated method stub
-			lagValue.setText(" " + progress + " ");
+			lag = progress;
+			lagValue.setText(" " + lag + "% ");
 		}
 
 		@Override
@@ -71,8 +87,19 @@ public class Settings extends Activity{
 
 		@Override
 		public void onClick(View arg0) {
-			// TODO Auto-generated method stub
-			
+	    	Intent intent = new Intent(Settings.this, TouchTest.class);
+	    	octave = octaveSpinner.getSelectedItemPosition() + 1;
+	    	note = noteSpinner.getSelectedItemPosition();
+	    	fileName = fileTextBox.getText().toString();
+	    	
+	    	intent.putExtra("octave", octave);
+	    	intent.putExtra("note", note);
+	    	intent.putExtra("file name", fileName);
+	    	intent.putExtra("sample rate", sampleRate);
+	    	intent.putExtra("lag", lag);
+			setResult(0, intent);
+			Toast.makeText(arg0.getContext(), "Changes Saved.", Toast.LENGTH_SHORT).show();
+			finish();
 		}
 		
 	}
@@ -82,24 +109,68 @@ public class Settings extends Activity{
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
-			
+			Toast.makeText(arg0.getContext(), "Changes Discarded.", Toast.LENGTH_SHORT).show();
+			finish();
 		}
-		
+
 	}
+	
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
-		delaySlider = (SeekBar) findViewById(R.id.delaySlider);
-		delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
-		lagSlider = (SeekBar) findViewById(R.id.lagSlider);
-		lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
-		delayValue = (TextView) findViewById(R.id.delayValue);
-		lagValue = (TextView) findViewById(R.id.lagValue);
-		saveButton = (Button) findViewById(R.id.save);
-		saveButton.setOnClickListener(new SaveButtonListener());
-		cancelButton = (Button) findViewById(R.id.cancel);
-		cancelButton.setOnClickListener(new CancelButtonListener());
-		fileTextBox = (EditText) findViewById(R.id.fileName);
+
+		Bundle extras = getIntent().getExtras();
+		fileName = extras.getString("file name");
+		note = extras.getInt("note");
+		octave = extras.getInt("octave");
+		sampleRate = extras.getInt("sample rate");
+		lag = extras.getInt("lag");
+		
+		try {
+			delaySlider = (SeekBar) findViewById(R.id.delaySlider);
+			delaySlider.setIndeterminate(false);
+			delaySlider.setMax(UGen.SAMPLE_RATE);
+			delaySlider.setProgress(sampleRate);
+			delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
+	
+			delayValue = (TextView) findViewById(R.id.delayValue);
+			delayValue.setText(" " + sampleRate);
+			
+			lagSlider = (SeekBar) findViewById(R.id.lagSlider);
+			lagSlider.setIndeterminate(false);
+			lagSlider.setMax(100);
+			lagSlider.setProgress(lag);
+			lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
+			
+
+			
+			lagValue = (TextView) findViewById(R.id.lagValue);
+			lagValue.setText(" " + lag + "%");
+			
+			saveButton = (Button) findViewById(R.id.save);
+			saveButton.setOnClickListener(new SaveButtonListener());
+			cancelButton = (Button) findViewById(R.id.cancel);
+			cancelButton.setOnClickListener(new CancelButtonListener());
+			
+			fileTextBox = (EditText) findViewById(R.id.fileName);
+			fileTextBox.setText(fileName);
+			
+			noteSpinner = (Spinner) findViewById(R.id.noteChooser);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    noteSpinner.setAdapter(adapter);
+		    noteSpinner.setSelection(note);
+		    
+			adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
+			octaveSpinner.setAdapter(adapter);
+			octaveSpinner.setSelection(octave - 1);
+		}
+		catch (Exception e) {
+			Log.e("settingsCreation", e.toString());
+		}
 	}
+	
 }
