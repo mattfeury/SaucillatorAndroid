@@ -262,26 +262,24 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
     
     private boolean record(MenuItem item) {
-    	dac.toggleRecording();
-    	if (!recording) {
-        	item.setTitle("Stop Recording");
-        	Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
-        	
+      boolean isRecording = dac.toggleRecording();
+    	if (isRecording) {
+        item.setTitle("Stop Recording");
+        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
     	}
     	else {
 	    	item.setTitle("Record");
-	    	dac.toggleRecording();
-	    	if(WavWriter.getLastFile() == null)
-	    		return false;
-	    	//File audio = new File("/path/to/audio.mp3");
-	    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+	    	
+        if(WavWriter.getLastFile() == null)
+          return false;
+	    	
+        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
 	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
 	    	startActivity(Intent.createChooser(intent, "Share to"));
-        	Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
     	}
-    	recording = !recording;
-		return true;
-	}
+      return true;
+    }
 
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {

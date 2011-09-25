@@ -53,9 +53,10 @@ public class Dac extends UGen {
       WavWriter.writeWav();
     }
   }
-  public void toggleRecording() {
+  public boolean toggleRecording() {
     if (recording) stopRecording();
     else record();
+    return recording;
   }
 	
 	public boolean render(final float[] _buffer) {
