@@ -33,6 +33,9 @@
     </item>
             
     <item android:title="Record" android:id="@+id/record"/>
+    
+    <item android:title="Settings" android:id="@+id/settings"/>
+    
     <item android:id="@+id/quit" android:title="Quit" />
     
 </menu>
