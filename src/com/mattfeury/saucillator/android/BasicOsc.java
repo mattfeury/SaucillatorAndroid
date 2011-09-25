@@ -2,7 +2,7 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
-public class LfoOsc extends WtOsc {
+public class BasicOsc extends Oscillator {
 	public static final int BITS = 16;
 	public static final int ENTRIES = 1<<(BITS-1); //bit depth: 2^(bits-1)
 	public static final int MASK = ENTRIES-1;
@@ -21,15 +21,16 @@ public class LfoOsc extends WtOsc {
 
   final float[] table;
 
-  public LfoOsc() {
+  public BasicOsc() {
     table = new float[ENTRIES];
   }
 
-  public synchronized void setFrequency(float freq) {
-    cyclesPerSample = freq/SAMPLE_RATE;
+  public synchronized void updateFrequency() {
+    cyclesPerSample = frequency/SAMPLE_RATE;
   }
   public synchronized void setFreq(float freq) {
     frequency = freq;
+    updateFrequency();
   }
 
   public void setModRate(int rate) {
@@ -38,6 +39,8 @@ public class LfoOsc extends WtOsc {
   public void setModDepth(int depth) {
     modDepth = depth;
   }
+
+	//abstract public void fill();  
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
@@ -61,7 +64,7 @@ public class LfoOsc extends WtOsc {
   public synchronized void modulate() {
   	float lfo = updateLfo();
   	float lag = updateLag();
-  	setFrequency(lfo + lag);
+  	setFreq(lfo + lag);
   }
   public synchronized float updateLfo() {
     if (modRate == 0) return 0f;
@@ -77,7 +80,7 @@ public class LfoOsc extends WtOsc {
     return lagOut;
   }
 
-  public LfoOsc fillWithSin() {
+  public BasicOsc fillWithSin() {
     final float dt = (float)(2.0*Math.PI/ENTRIES);
     for(int i = 0; i < ENTRIES; i++) {
       table[i] = FloatMath.sin(i*dt);
@@ -85,7 +88,16 @@ public class LfoOsc extends WtOsc {
     return this;
   }
 
-  public LfoOsc fillWithHardSin(final float exp) {
+  public BasicOsc fillWithSin(float amp) {
+    final float dt = (float)(2.0*Math.PI/ENTRIES);
+    for(int i = 0; i < ENTRIES; i++) {
+      table[i] = amp * FloatMath.sin(i*dt);
+    }
+    return this;
+  }
+
+
+  public BasicOsc fillWithHardSin(final float exp) {
     final float dt = (float)(2.0*Math.PI/ENTRIES);
     for(int i = 0; i < ENTRIES; i++) {
 			table[i] = (float) Math.pow(FloatMath.sin(i*dt),exp);
@@ -93,32 +105,32 @@ public class LfoOsc extends WtOsc {
 		return this;
 	}
 	
-	public LfoOsc fillWithZero() {
+	public BasicOsc fillWithZero() {
 		for(int i = 0; i < ENTRIES; i++) {
 			table[i] = 0;
 		}
 		return this;
 	}
 	
-	public LfoOsc fillWithSqr() {
+	public BasicOsc fillWithSqr() {
 		return fillWithSqrWithAmp(1.0f);
 	}
 	
-	public LfoOsc fillWithSqrWithAmp(float amp) {
+	public BasicOsc fillWithSqrWithAmp(float amp) {
 		for(int i = 0; i < ENTRIES; i++) {
 			table[i] = i<ENTRIES/2?amp:-1f*amp;
 		}
 		return this;
 	}
 	
-	public LfoOsc fillWithSqrDuty(float fraction) {
+	public BasicOsc fillWithSqrDuty(float fraction) {
 		for(int i = 0; i < ENTRIES; i++) {
 			table[i] = (float)i/ENTRIES<fraction?1f:-1f;
 		}
 		return this;
 	}
 	
-	public LfoOsc fillWithSaw() {
+	public BasicOsc fillWithSaw() {
 		float dt = (float)(2.0/ENTRIES);
 		for(int i = 0; i < ENTRIES; i++) {
 			table[i] = (float) (i * dt - Math.floor(i * dt));

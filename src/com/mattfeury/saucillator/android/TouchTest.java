@@ -49,10 +49,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     //synth elements
     Dac dac;
-    LfoOsc ugOscA1;
-    WtOsc ugOscA2;
-    private LinkedList<WtOsc> oscs = new LinkedList<WtOsc>();
-    private LfoOsc osc;
+    //BasicOsc ugOscA1;
+    //WtOsc ugOscA2;
+    private LinkedList<Oscillator> oscs = new LinkedList<Oscillator>();
+    private ComplexOsc osc;
+    private BasicOsc osc2;
 
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
@@ -81,17 +82,16 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	ugOscA1 = new LfoOsc();
-              osc = ugOscA1;
-      	    	//ugOscA2 = new WtOsc();
+              osc = new SingingSaw();
 
-      	    	oscs.add(ugOscA1);
-      	    	//oscs.add(ugOscA2);
+              //TODO pass in sqr, sine, etc as enum in basicOsc constructor
+              osc2 = new BasicOsc();
+      	    	osc2.fillWithSqrWithAmp(0.5f);
+
+      	    	oscs.add(osc);
+      	    	oscs.add(osc2);
 
       	    	ExpEnv ugEnvA = new ExpEnv();
-
-      	    	ugOscA1.fillWithSin();
-      	    	//ugOscA2.fillWithSqrWithAmp(0.5f);
 
       	    	dac = new Dac();
 
@@ -101,9 +101,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       	    	//ugEnvA.chuck(ugDelay);
       	    	//ugDelay.chuck(ugEnvA);
 
-      	    	//ugOscA1.chuck(ugEnvA);
-      	    	//ugOscA2.chuck(ugEnvA);
-      	    	ugOscA1.chuck(ugEnvA);
+      	    	osc2.chuck(ugEnvA);
+      	    	osc.chuck(ugEnvA);
 
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
@@ -208,9 +207,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
         //dac.toggle();
-        for(WtOsc osc : oscs)
-          osc.stop();
-    	
+        for(Oscillator osc : oscs)
+        	osc.stop();
+
         fingers.clear();
         p.invalidate();
         return true;
@@ -229,7 +228,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         //WtOsc sine = oscs.get(id);
 
         //make noise
-        if (id == 0) { //update sine
+        if (id == 0 || id == 1) { //update sine
+        	Oscillator osc = oscs.get(id);
           if(! osc.isPlaying())
             osc.togglePlayback(); //play if we were stopped
 
@@ -239,10 +239,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             fingers.remove((Integer)i);
             osc.togglePlayback();
           }
-        } else if (id == 1) { //lfo
+        } else if (id == 2) { //lfo
         	Log.i(TAG, "lfo");
+          //TODO make this iterate or something
           osc.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
           osc.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+          osc2.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          osc2.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
         }
 
       }
@@ -347,12 +350,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	item.setChecked(true);
       int instrumentId = item.getItemId();
 
-      WtOsc osc;
-      try {
-        osc = oscs.get(oscNum);
-      } catch(Exception e){
-        return false;
-      }
+      //FIXME hook me up with complex oscs
+      BasicOsc osc = osc2;
 
       switch (instrumentId) {
         case R.id.sine: //sine
@@ -372,7 +371,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
-    	WtOsc osc = oscs.get(sineKey);
+    	Oscillator osc = oscs.get(sineKey);
 
       //TODO should we set the two oscillators an octave apart? probs
       float freq = Instrument.getFrequencyForScaleNote(scale, (int)((sineKey+1.0) * BASE_FREQ), offset);
@@ -413,7 +412,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
  
         @Override
         public void onDraw(Canvas canvas) {
-            Log.i("touch", "started");
             canvas.drawColor(Color.BLACK);
             for(Finger f : fingers.values())
             	f.draw(canvas);

@@ -13,7 +13,7 @@ public class Instrument {
   public Instrument() {
   }
   
-  public static float getFrequencyForScaleNote(int[] scale, int baseFreq, int offset) {
+  public static float getFrequencyForScaleNote(int[] scale, float baseFreq, int offset) {
     double scaleOffset = getScaleIntervalFromOffset(scale, offset);
     float freq = (float)(Math.pow(2,((scaleOffset) / 12.0)) * baseFreq);
     return freq;
