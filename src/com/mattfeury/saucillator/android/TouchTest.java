@@ -7,8 +7,10 @@ import java.util.LinkedList;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -264,8 +266,16 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
     
     private boolean sendToSoundcloud() {
-		// TODO Auto-generated method stub
-		return false;
+    	
+    	if(WavWriter.getLastFile() == null)
+    		return false;
+    	
+    	//File audio = new File("/path/to/audio.mp3");
+    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+    	startActivity(Intent.createChooser(intent, "Share to"));
+    	
+		return true;
 	}
 
 	private boolean toggleSelection(MenuItem item) {
