@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.PendingIntent.OnFinished;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -123,40 +124,50 @@ public class Settings extends Activity{
 		sampleRate = extras.getInt("sample rate");
 		lag = extras.getInt("lag");
 		
-		delaySlider = (SeekBar) findViewById(R.id.delaySlider);
-		delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
-		delaySlider.setIndeterminate(false);
-		delaySlider.setMax(UGen.SAMPLE_RATE);
-		
+		try {
+			delaySlider = (SeekBar) findViewById(R.id.delaySlider);
+			delaySlider.setIndeterminate(false);
+			delaySlider.setMax(UGen.SAMPLE_RATE);
+			delaySlider.setProgress(sampleRate);
+			delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
+	
+			delayValue = (TextView) findViewById(R.id.delayValue);
+			delayValue.setText(" " + sampleRate);
+			
+			lagSlider = (SeekBar) findViewById(R.id.lagSlider);
+			lagSlider.setIndeterminate(false);
+			lagSlider.setMax(100);
+			lagSlider.setProgress(lag);
+			lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
+			
 
-		delayValue = (TextView) findViewById(R.id.delayValue);
-		delayValue.setText(" " + sampleRate);
-		
-		lagSlider = (SeekBar) findViewById(R.id.lagSlider);
-		lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
-		
-		lagValue = (TextView) findViewById(R.id.lagValue);
-		lagValue.setText(" " + lag + "%");
-		
-		saveButton = (Button) findViewById(R.id.save);
-		saveButton.setOnClickListener(new SaveButtonListener());
-		cancelButton = (Button) findViewById(R.id.cancel);
-		cancelButton.setOnClickListener(new CancelButtonListener());
-		
-		fileTextBox = (EditText) findViewById(R.id.fileName);
-		fileTextBox.setText(fileName);
-		
-		noteSpinner = (Spinner) findViewById(R.id.noteChooser);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	    noteSpinner.setAdapter(adapter);
-	    noteSpinner.setSelection(note);
-	    
-		adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
-		octaveSpinner.setAdapter(adapter);
-		octaveSpinner.setSelection(octave - 1);
+			
+			lagValue = (TextView) findViewById(R.id.lagValue);
+			lagValue.setText(" " + lag + "%");
+			
+			saveButton = (Button) findViewById(R.id.save);
+			saveButton.setOnClickListener(new SaveButtonListener());
+			cancelButton = (Button) findViewById(R.id.cancel);
+			cancelButton.setOnClickListener(new CancelButtonListener());
+			
+			fileTextBox = (EditText) findViewById(R.id.fileName);
+			fileTextBox.setText(fileName);
+			
+			noteSpinner = (Spinner) findViewById(R.id.noteChooser);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    noteSpinner.setAdapter(adapter);
+		    noteSpinner.setSelection(note);
+		    
+			adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
+			octaveSpinner.setAdapter(adapter);
+			octaveSpinner.setSelection(octave - 1);
+		}
+		catch (Exception e) {
+			Log.e("settingsCreation", e.toString());
+		}
 	}
 	
 }
