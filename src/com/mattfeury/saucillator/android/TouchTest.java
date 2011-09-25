@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 /*
  * This is my main class to test my engine. There is some pretty strange stuff here as it
@@ -41,6 +42,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private static final String TAG = "Sauce";
     private Panel p;
 
+    private boolean recording = false;
+    
     //music shtuffs
     public int[] scale = Instrument.pentatonic;
 
@@ -263,44 +266,41 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     			return instrumentSelection(item, 1);
     		case R.id.scales:
     			return scaleSelection(item);
-    		case R.id.toggles:
-    			return toggleSelection(item);
     		default:
     	}
     	switch (item.getItemId()) {
     		case R.id.quit:
     			onStop();
     			return true;
-    		case R.id.sendToSoundcloud:
-    			return sendToSoundcloud();
+    		case R.id.record:
+    			return record(item);
     		default:
     	}
         return false;
     }
     
-    private boolean sendToSoundcloud() {
-    	
-    	if(WavWriter.getLastFile() == null)
-    		return false;
-    	
-    	//File audio = new File("/path/to/audio.mp3");
-    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
-    	startActivity(Intent.createChooser(intent, "Share to"));
-    	
+    private boolean record(MenuItem item) {
+    	dac.toggleRecording();
+    	if (!recording) {
+        	item.setTitle("Stop Recording");
+        	/*Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT);
+              Doesn't work for some reason.*/
+    	}
+    	else {
+	    	item.setTitle("Record");
+	    	dac.toggleRecording();
+	    	if(WavWriter.getLastFile() == null)
+	    		return false;
+	    	//File audio = new File("/path/to/audio.mp3");
+	    	Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+	    	startActivity(Intent.createChooser(intent, "Share to"));
+        	//Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT);
+    	}
+    	recording = !recording;
 		return true;
 	}
 
-	private boolean toggleSelection(MenuItem item) {
-    	item.setChecked(!item.isChecked());
-    	switch (item.getItemId()) {
-    		case R.id.toggle_delay:
-          dac.toggleRecording();
-    		default:
-    	}
-    	return true;
-    }
-    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;

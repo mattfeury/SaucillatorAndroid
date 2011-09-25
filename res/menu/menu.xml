@@ -32,16 +32,7 @@
         </menu>
     </item>
             
-    <item android:title="Toggle .." android:id="@+id/toggle">
-        <menu>
-            <group android:checkableBehavior="all" android:id="@+id/toggles">
-                <item android:id="@+id/toggle_delay" android:title="Delay" android:checked="true"></item>
-            </group>
-        </menu>
-    </item>    
-    
-    <item android:id="@+id/sendToSoundcloud" android:title="Send to Soundcloud" />
-    
+    <item android:title="Record" android:id="@+id/record"/>
     <item android:id="@+id/quit" android:title="Quit" />
     
 </menu>
