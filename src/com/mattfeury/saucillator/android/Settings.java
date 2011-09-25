@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Settings extends Activity{
 	
@@ -97,6 +98,7 @@ public class Settings extends Activity{
 	    	intent.putExtra("sample rate", sampleRate);
 	    	intent.putExtra("lag", lag);
 			setResult(0, intent);
+			Toast.makeText(arg0.getContext(), "Changes Saved.", Toast.LENGTH_SHORT).show();
 			finish();
 		}
 		
@@ -107,6 +109,7 @@ public class Settings extends Activity{
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
+			Toast.makeText(arg0.getContext(), "Changes Discarded.", Toast.LENGTH_SHORT).show();
 			finish();
 		}
 
