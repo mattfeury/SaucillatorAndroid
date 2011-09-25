@@ -44,6 +44,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     private boolean recording = false;
     
+    private int sampleRate = UGen.SAMPLE_RATE;
+    private int lag = 0;
+    private String fileName = "Recording";
+    private String note = "A";
+    private int octave = 1;
+    
+    
     //music shtuffs
     public int[] scale = Instrument.pentatonic;
 
@@ -270,6 +277,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
    
     private boolean launchSettings() {
     	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	intent.putExtra("octave", octave);
+    	intent.putExtra("note", note);
+    	intent.putExtra("file name", fileName);
+    	intent.putExtra("sample rate", sampleRate);
+    	intent.putExtra("lag", lag);
     	startActivityForResult(intent, 0);
     	return true;
     }
