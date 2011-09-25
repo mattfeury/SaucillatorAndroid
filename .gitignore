@@ -9,6 +9,10 @@ syntax: glob
 *.swo
 *.swp
 
+
+local.properties
+build.xml
+
 # building
 target
 bin/
