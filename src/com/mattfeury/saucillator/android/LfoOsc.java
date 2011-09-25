@@ -1,7 +1,6 @@
 package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
-import android.util.Log;
 
 public class LfoOsc extends WtOsc {
 	public static final int BITS = 16;
@@ -14,11 +13,10 @@ public class LfoOsc extends WtOsc {
   private boolean lfoEnabled = true;
   public int modDepth = 0;
   public int modRate = 0; //in Hz
-  private float rate = 0.7f;
+  private float rate = 0.2f; //rate at which the LFO lags between frequency changes
   private float t = 0f;
   private float frequency = 440f;
   private float lagOut;
-  final float dt = (float)(2.0*Math.PI/ENTRIES);
 
   final float[] table;
 
@@ -41,7 +39,6 @@ public class LfoOsc extends WtOsc {
   }
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
-
 		if(! isPlaying) {
 			return true;
 		}
@@ -57,21 +54,20 @@ public class LfoOsc extends WtOsc {
       phase = (phase+cyclesPerSample) - (int)phase; 
     }
 
-
     return true;
 	}
 
   public synchronized void modulate() {
   	float lfo = updateLfo();
   	float lag = updateLag();
-  	Log.i("narm", lfo + " / " + lag);
   	setFrequency(lfo + lag);
   }
   public synchronized float updateLfo() {
     if (modRate == 0) return 0f;
 
-    float lfoFn = modDepth * FloatMath.sin(modRate * t);
-//    t = (t+.1f) % (CHUNK_SIZE);
+    // TODO why does .05 work so well here?
+    // also, can we do this smoother?
+    float lfoFn = modDepth/2 * FloatMath.sin(modRate * t);
     t = (float) ((t + .05f) % (2f*Math.PI*modRate));
     return lfoFn;
   }
