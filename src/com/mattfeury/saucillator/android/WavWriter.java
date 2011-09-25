@@ -39,28 +39,29 @@ public class WavWriter {
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
 
     // write the header
-    outFile.writeBytes("RIFF");
-    outFile.write(intToByteArray((int)(numSamples + 36)), 0, 4);
+    outFile.writeBytes("RIFX");
+    outFile.write(intToByteArray((int)(numSamples * numChannels * bitDepth / 8 + 36)), 0, 4);
     outFile.writeBytes("WAVE");
     outFile.writeBytes("fmt ");
     outFile.write(intToByteArray((int)16), 0, 4); //16 for PCM
     outFile.write(shortToByteArray((short)1), 0, 2); //1 for PCM
     outFile.write(shortToByteArray((short)numChannels), 0, 2); //Mono
     outFile.write(intToByteArray((int)sampleRate), 0, 4);
-    outFile.write(intToByteArray((int)11025 * numChannels * bitDepth / 8), 0, 4);
+    outFile.write(intToByteArray((int)sampleRate * numChannels * bitDepth / 8), 0, 4);
     outFile.write(shortToByteArray((short)(numChannels * bitDepth / 8)), 0, 2);
     outFile.write(shortToByteArray((short)bitDepth), 0, 2);
 
     // write the data
     outFile.writeBytes("data");
-    outFile.write(intToByteArray((int)numSamples), 0, 4);
+    outFile.write(intToByteArray((int)numSamples * numChannels * bitDepth / 8), 0, 4);
     outFile.write(buffer);
 
     // save
     outFile.flush();
-	outFile.close();
-	
-	lastFile = file;
+
+    outFile.close();
+    lastFile = file;
+    numWavFiles++;
 	}
 
   //===========================
