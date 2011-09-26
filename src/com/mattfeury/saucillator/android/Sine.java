@@ -2,6 +2,9 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
+/**
+ * Sine wave oscillator
+ */
 public class Sine extends BasicOsc {
   
   public Sine() {

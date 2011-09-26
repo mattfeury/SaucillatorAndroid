@@ -2,6 +2,10 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
+/**
+ * I am a basic oscillator.
+ * I am represented by a simple mathematical wave form (Sine, Square, etc)
+ */
 public abstract class BasicOsc extends Oscillator {
 	public static final int BITS = 16;
 	public static final int ENTRIES = 1<<(BITS-1); //bit depth: 2^(bits-1)
@@ -27,7 +31,6 @@ public abstract class BasicOsc extends Oscillator {
     amplitude = amp;
     table = new float[ENTRIES];
     fill();
-    //isPlaying = true;
   }
 
   public abstract void fill();

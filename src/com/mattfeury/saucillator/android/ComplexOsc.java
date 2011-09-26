@@ -4,6 +4,10 @@ import java.util.LinkedList;
 
 import android.util.FloatMath;
 
+/**
+ * A complex oscillator.
+ * An oscillator that is made up of BasicOscs and sums them together.
+ */
 public abstract class ComplexOsc extends Oscillator {
 
   protected LinkedList<BasicOsc> components;

@@ -2,6 +2,9 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
+/**
+ * Square wave oscillator
+ */
 public class Square extends BasicOsc {
   
   public Square() {

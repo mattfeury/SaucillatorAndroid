@@ -34,21 +34,16 @@ import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 /*
- * This is my main class to test my engine. There is some pretty strange stuff here as it
- * is mostly a playground for new ideas, many of which were implementented hastily as a proof of concept.
- * 
- * The basic end idea is to use your Android device as a Kaosscilator type instrument.
- * 
+ * Main activity for the App. This will spin up the visuals and the audio engine. The audio engine gets
+ * its own thread.
  */
 public class TouchTest extends Activity implements OnTouchListener, SensorEventListener {
-
     private static final String TAG = "Sauce";
     private Panel p;
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
     Paint backColor;
-    
-    
+
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
     private int lag = (int)(DEFAULT_LAG * 100);
@@ -134,7 +129,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     }
     
- // This method will update the UI on new sensor events
+    /**
+     * Update parameters based on the accelerometer.
+     * This is currently not hooked up because it breaks Gingerbread and
+     * using the accelerometer may not be a great method for controlling things (it is volatile).
+     */
     public void onSensorChanged(SensorEvent sensorEvent) {
      synchronized (this) {
       if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -161,9 +160,12 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     // I've chosen to not implement this method
     public void onAccuracyChanged(Sensor arg0, int arg1) {
 	  // TODO Auto-generated method stub
-	  
 	 }
     
+    /**
+     * On resume of the app.
+     * Most of the accelerometer stuff has been disabled for the time being.
+     */
     @Override
     protected void onResume() {
      super.onResume();
@@ -175,6 +177,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
    
+    /**
+     * Update parameters based on the settings menu.
+     */
     private void updateSettings() {
       float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
       osc.setBaseFreq(newFreq);
@@ -225,6 +230,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
     }
     
+    /**
+     * That main goodness. Handles touch events and gets properties of them to change the oscillators
+     */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
       if (! init) return false;
@@ -244,9 +252,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         return true;
       }
 
-      //each finger
-      if (event.getPointerCount() == 5) secretSauce.start();
-      
+      if (event.getPointerCount() == 5) secretSauce.start(); //the secret sauce
+
+      //loop through each finger      
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
         float y = event.getY(i);
@@ -256,7 +264,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         
         //make noise
         if (id == 0 || id == 1) { //update sine
-        	Oscillator osc = (id == 0) ? this.osc : this.osc2;
+        	Oscillator osc = (id == 0) ? this.osc : this.osc2; //which osc does this finger correspond to?
           if(! osc.isPlaying())
             osc.togglePlayback(); //play if we were stopped
 
@@ -287,6 +295,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         return true;
     }
 
+    /**
+     * Methods for our settings menu and stuff
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
       // Handle item selection
     	switch (item.getGroupId()) {
@@ -438,33 +449,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         osc.setFreqByOffset(scale, offset);
     }
 
-    /** Show an event in the LogCat view, for debugging */
-    private void dumpEvent(MotionEvent event) {
-       String names[] = { "DOWN" , "UP" , "MOVE" , "CANCEL" , "OUTSIDE" ,
-          "POINTER_DOWN" , "POINTER_UP" , "7?" , "8?" , "9?" };
-       StringBuilder sb = new StringBuilder();
-       int action = event.getAction();
-       int actionCode = action & MotionEvent.ACTION_MASK;
-       sb.append("event ACTION_" ).append(names[actionCode]);
-       if (actionCode == MotionEvent.ACTION_POINTER_DOWN
-             || actionCode == MotionEvent.ACTION_POINTER_UP) {
-          sb.append("(pid " ).append(
-          action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-          sb.append(")" );
-       }
-       sb.append("[" );
-       for (int i = 0; i < event.getPointerCount(); i++) {
-          sb.append("#" ).append(i);
-          sb.append("(pid " ).append(event.getPointerId(i));
-          sb.append(")=" ).append((int) event.getX(i));
-          sb.append("," ).append((int) event.getY(i));
-          if (i + 1 < event.getPointerCount())
-             sb.append(";" );
-       }
-       sb.append("]" );
-       Log.i(TAG, sb.toString());
-    }
-    
     class Panel extends View {
         public Panel(Context context) {
             super(context);
@@ -474,12 +458,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         public void onDraw(Canvas canvas) {
         	if (fractGen == null)
         		fractGen = new FractalGen(canvas);
-            Log.i("touch", "started");
-            
-            
+ 
             fX = (fingers.values().size() > 0 ? 0 : fX);
             fY = (fingers.values().size() > 0 ? 0 : fY);
-            
+
             for(Finger f : fingers.values()){
             	if(f.id == 0){
             		fX += f.x;

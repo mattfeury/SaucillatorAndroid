@@ -1,6 +1,8 @@
 package com.mattfeury.saucillator.android;
 
-
+/**
+ * Helper stuff for music theory.
+ */
 public class Instrument {
 
   //music info

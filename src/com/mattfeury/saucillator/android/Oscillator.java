@@ -1,5 +1,8 @@
 package com.mattfeury.saucillator.android;
 
+/**
+ * Represents an actual oscillator.
+ */
 public abstract class Oscillator extends UGen {
 
   public float frequency = 440f;

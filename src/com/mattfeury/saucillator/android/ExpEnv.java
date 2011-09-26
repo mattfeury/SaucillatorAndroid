@@ -1,5 +1,8 @@
 package com.mattfeury.saucillator.android;
 
+/**
+ * Exponential envelope
+ */
 public class ExpEnv extends UGen {
 	
 	public static float hardFactor = 0.005f;

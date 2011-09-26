@@ -1,5 +1,8 @@
 package com.mattfeury.saucillator.android;
 
+/**
+ * Creates a delay effect by repeating samples
+ */
 public class Delay extends UGen {
 	final float[] line;
 	int pointer;

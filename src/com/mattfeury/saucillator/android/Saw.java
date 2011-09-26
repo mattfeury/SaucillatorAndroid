@@ -2,6 +2,9 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
+/**
+ * Sawtooth wave oscillator
+ */
 public class Saw extends BasicOsc {
   
   public Saw() {

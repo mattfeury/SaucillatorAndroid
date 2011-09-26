@@ -5,13 +5,9 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 
 /*
- * A lot of this code was provided by Adam Smith from EtherealDialpad: https://gist.github.com/376028
- * 
- * I really like his project and recommend you check it out. It seems that we both share a similar vision
- * for transforming android devices into instruments.
- * 
- * It has been touched up and modified slightly 
- * 
+ * A Digital to Analog converter
+ * This spins up a main AudioTrack for playing back digital samples.
+ * You can "chuck" any UGen to this to route its sound to the DAC.
  */
 public class Dac extends UGen {
   private final float[] localBuffer;
@@ -65,7 +61,6 @@ public class Dac extends UGen {
 
 			isClean = true;
 		}
-		// localBuffer is always clean right here, does it stay that way?
 		isClean = !renderKids(localBuffer);
 		return !isClean; // we did some work if the buffer isn't clean
 	}

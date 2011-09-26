@@ -3,6 +3,10 @@ package com.mattfeury.saucillator.android;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * A Unit Generator. 
+ * I am the basic class for anything that makes noise
+ */
 public abstract class UGen {
 	public static final int CHUNK_SIZE = 256; //formerly 1024
 	public static final int SAMPLE_RATE = 11025;

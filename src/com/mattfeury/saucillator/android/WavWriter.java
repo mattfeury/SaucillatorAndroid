@@ -4,6 +4,9 @@ import java.io.*;
 
 import android.util.Log;
 
+/**
+ * Writes a wave file
+ */
 public class WavWriter {
   static int numWavFiles  = 0;
   static ByteArrayOutputStream data = new ByteArrayOutputStream();
