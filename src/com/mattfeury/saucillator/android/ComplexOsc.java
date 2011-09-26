@@ -6,13 +6,16 @@ import android.util.FloatMath;
 
 public abstract class ComplexOsc extends Oscillator {
 
-  protected float frequency = 440f;
-
   protected LinkedList<BasicOsc> components;
 
   public ComplexOsc() {
+    this(1.0f);
+  }
+  public ComplexOsc(float amp) {
+    amplitude = amp;
     components = new LinkedList<BasicOsc>();
   }
+
   protected void fill(BasicOsc... oscs) {
     for(BasicOsc osc : oscs) {
       osc.isPlaying = true; //we manage playback here, so all the children should be available for rendering

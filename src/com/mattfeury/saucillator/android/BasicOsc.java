@@ -2,7 +2,7 @@ package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
 
-public class BasicOsc extends Oscillator {
+public abstract class BasicOsc extends Oscillator {
 	public static final int BITS = 16;
 	public static final int ENTRIES = 1<<(BITS-1); //bit depth: 2^(bits-1)
 	public static final int MASK = ENTRIES-1;
@@ -14,16 +14,23 @@ public class BasicOsc extends Oscillator {
   public int modDepth = 0;
   public int modRate = 0; //in Hz
 
-  private float rate = 1.0f; //rate at which the LFO lags between frequency changes
+  private float rate = 0.4f; //rate at which the LFO lags between frequency changes
   private float t = 0f;
-  private float frequency = 440f;
   private float lagOut;
 
   final float[] table;
 
   public BasicOsc() {
-    table = new float[ENTRIES];
+    this(1.0f);
   }
+  public BasicOsc(float amp) {
+    amplitude = amp;
+    table = new float[ENTRIES];
+    fill();
+    //isPlaying = true;
+  }
+
+  public abstract void fill();
 
   public synchronized void updateFrequency() {
     cyclesPerSample = frequency/SAMPLE_RATE;
@@ -39,8 +46,6 @@ public class BasicOsc extends Oscillator {
   public void setModDepth(int depth) {
     modDepth = depth;
   }
-
-	//abstract public void fill();  
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {

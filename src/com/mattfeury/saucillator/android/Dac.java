@@ -88,9 +88,9 @@ public class Dac extends UGen {
 	}
 	
 	public void tick() {
-		
+
 		render(localBuffer);
-		
+
 		if(isClean || !playing) {
       // sleeping is messy, so lets just queue this silent buffer
       track.write(silentTarget, 0, silentTarget.length);

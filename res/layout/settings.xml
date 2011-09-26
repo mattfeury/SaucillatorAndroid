@@ -11,7 +11,7 @@
     android:scrollbars="vertical"
     >
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_width="wrap_content" android:text="Sample Rate: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+        <TextView android:layout_width="wrap_content" android:text="Delay: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/delayValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
     </LinearLayout>
         <SeekBar android:layout_height="wrap_content" android:max="11025" android:id="@+id/delaySlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>

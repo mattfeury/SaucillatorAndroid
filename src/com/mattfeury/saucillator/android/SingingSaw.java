@@ -7,12 +7,9 @@ public class SingingSaw extends ComplexOsc {
   public SingingSaw() {
     super();
 
-    fundamental = new BasicOsc();
-    fundamental.fillWithSin();
-    third = new BasicOsc();
-    third.fillWithSin(0.5f);
-    fifth = new BasicOsc();
-    fifth.fillWithSin(0.5f);
+    fundamental = new Sine(0.5f);
+    third = new Sine(0.5f);
+    fifth = new Sine(0.5f);
 
     fill(fundamental, third, fifth);
   }
