@@ -11,7 +11,7 @@ import android.util.Log;
  * 
  * This is as simple as it gets. Great way to learn how the Android AudioTrack works (along with Sine.java) 
  */
-public class AndroidAudioDevice
+public class AndroidAudioDeviceOLD
 {
    AudioTrack track;
    short[] buffer = new short[1024];
@@ -20,7 +20,7 @@ public class AndroidAudioDevice
    int added = 0;
    static int fs = 11025;
  
-   public AndroidAudioDevice( )
+   public AndroidAudioDeviceOLD( )
    {
       minSize = AudioTrack.getMinBufferSize( fs, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT );
       System.out.println("min " + minSize);
