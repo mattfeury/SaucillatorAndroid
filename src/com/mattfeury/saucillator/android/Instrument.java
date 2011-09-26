@@ -10,15 +10,24 @@ public class Instrument {
   public static int[] minorBluesScale = {0,3,5,6,7,10,12};
   public static int[] pentatonic = {0,3,5,7,10,12};
 
+  public static float A1 = 55f;
+
   public Instrument() {
   }
-  
+
+  // A = 1, A#/Bb = 2, B = 3, etc...
+  // A1 = (1,1)
+  public static float getFrequencyForNote(int note, int octave) {
+    float noteFreq = (float)(A1 * Math.pow(2, (note - 1) / 12f));
+    return noteFreq * (float)Math.pow(2, octave - 1);
+  }
+
   public static float getFrequencyForScaleNote(int[] scale, float baseFreq, int offset) {
     double scaleOffset = getScaleIntervalFromOffset(scale, offset);
     float freq = (float)(Math.pow(2,((scaleOffset) / 12.0)) * baseFreq);
     return freq;
   }
-  
+
   /*
    * fairly important method here. Given an integer offset calculate the actual offset
    * from a scale. 

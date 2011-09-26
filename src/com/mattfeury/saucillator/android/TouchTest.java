@@ -47,7 +47,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private int lag = (int)(DEFAULT_LAG * 100);
     private String fileName = "Recording";
     private int note = 0;
-    private int octave = 5;
+    private int octave = 4;
     private boolean visuals = false;
 
     //music shtuffs
@@ -56,7 +56,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
     public final static float DEFAULT_LAG = 0.5f;
-    private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
 
     private boolean init = false;
@@ -166,8 +165,19 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
    
     private void updateSettings() {
-      // TODO feury
-      //use the variables I declared at the top to update your shit.
+      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
+      osc.setBaseFreq(newFreq);
+      osc2.setBaseFreq(newFreq);
+
+      if (delayRate == 0) {
+        ugDelay.disable();
+      } else {
+        ugDelay.enable();
+        ugDelay.updateRate(delayRate);
+      }
+      
+      osc.setLag(lag / 100f);
+      osc2.setLag(lag / 100f);
     }
 
     @Override
@@ -294,18 +304,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             WavWriter.filePrefix = extras.getString("file name");
             note = extras.getInt("note");
             octave = extras.getInt("octave");
-            delayRate = extras.getInt("delay rate");
-            if (delayRate == 0) {
-              ugDelay.disable();
-            } else {
-              ugDelay.enable();
-              ugDelay.updateRate(delayRate);
-            }
             lag = extras.getInt("lag");
-
-            osc.setLag(lag / 100f);
-            osc2.setLag(lag / 100f);
-
             visuals = extras.getBoolean("visuals");
             updateSettings();
           }
