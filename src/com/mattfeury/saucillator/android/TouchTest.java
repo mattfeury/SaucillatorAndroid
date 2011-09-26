@@ -322,19 +322,21 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private boolean record(MenuItem item) {
       boolean isRecording = dac.toggleRecording();
     	if (isRecording) {
-        item.setTitle("Stop Recording");
-        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
+    	    item.setTitle("Stop Recording");
+    	    item.setIcon(R.drawable.ic_grey_rec);
+            Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
     	}
     	else {
-	    	item.setTitle("Record");
-        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
-	    	
-        if(WavWriter.getLastFile() == null)
-          return false;
-	    	
-        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
-	    	startActivity(Intent.createChooser(intent, "Share to"));
+		    item.setTitle("Record");
+		    item.setIcon(R.drawable.ic_rec);
+	        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+		    	
+	        if(WavWriter.getLastFile() == null)
+	          return false;
+		    	
+	        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+		    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+		    	startActivity(Intent.createChooser(intent, "Share to"));
     	}
       return true;
     }
