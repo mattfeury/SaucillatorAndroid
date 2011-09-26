@@ -8,6 +8,7 @@ public class WavWriter {
   static int numWavFiles  = 0;
   static ByteArrayOutputStream data = new ByteArrayOutputStream();
   private static File lastFile = null;
+  public static String filePrefix = "Recording";
 
   static File getLastFile(){
     return lastFile;
@@ -49,7 +50,7 @@ public class WavWriter {
     
     do{
     	i++;
-    	file = new File("/sdcard/sauce/Recording" + i + ".wav");
+    	file = new File("/sdcard/sauce/" + filePrefix + i + ".wav");
     }while(file.exists());
     
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));

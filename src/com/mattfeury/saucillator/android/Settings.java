@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Settings extends Activity{
+public class Settings extends Activity {
 	
 	SeekBar delaySlider;
 	SeekBar lagSlider;
@@ -29,21 +29,22 @@ public class Settings extends Activity{
 	EditText fileTextBox;
 	Spinner noteSpinner;
 	Spinner octaveSpinner;
-	
-	private int sampleRate = UGen.SAMPLE_RATE;
-    private int lag = 0;
-    private String fileName = "Recording";
-    private int note = 1;
-    private int octave = 4;
-	
+
+  //this is nasty. these are repeated defaults
+  private int delayRate = UGen.SAMPLE_RATE;
+  private int lag = 0;
+  private String fileName = "Recording";
+  private int note = 1;
+  private int octave = 4;
+
 	private class DelaySliderListener implements SeekBar.OnSeekBarChangeListener {
 
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 			// TODO Auto-generated method stub
-			sampleRate = progress;
-			delayValue.setText(" " + sampleRate + " ");
+			delayRate = progress;
+			delayValue.setText(" " + delayRate + " ");
 		}
 
 		@Override
@@ -92,18 +93,18 @@ public class Settings extends Activity{
 		fileName = extras.getString("file name");
 		note = extras.getInt("note");
 		octave = extras.getInt("octave");
-		sampleRate = extras.getInt("sample rate");
+		delayRate = extras.getInt("delay rate");
 		lag = extras.getInt("lag");
 		
 		try {
 			delaySlider = (SeekBar) findViewById(R.id.delaySlider);
 			delaySlider.setIndeterminate(false);
 			delaySlider.setMax(UGen.SAMPLE_RATE);
-			delaySlider.setProgress(sampleRate);
+			delaySlider.setProgress(delayRate);
 			delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
 	
 			delayValue = (TextView) findViewById(R.id.delayValue);
-			delayValue.setText(" " + sampleRate);
+			delayValue.setText(" " + delayRate);
 			
 			lagSlider = (SeekBar) findViewById(R.id.lagSlider);
 			lagSlider.setIndeterminate(false);
@@ -145,7 +146,7 @@ public class Settings extends Activity{
     	intent.putExtra("octave", octave);
     	intent.putExtra("note", note);
     	intent.putExtra("file name", fileName);
-    	intent.putExtra("sample rate", sampleRate);
+    	intent.putExtra("delay rate", delayRate);
     	intent.putExtra("lag", lag);
 		setResult(0, intent);
 		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();

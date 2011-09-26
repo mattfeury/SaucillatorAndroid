@@ -43,7 +43,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private Panel p;
     
     //defaults
-    private int sampleRate = UGen.SAMPLE_RATE;
+    private int delayRate = UGen.SAMPLE_RATE / 4;
     private int lag = 75;
     private String fileName = "Recording";
     private int note = 0;
@@ -92,7 +92,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
       	    	dac = new Dac();
 
-      	    	ugDelay = new Delay(UGen.SAMPLE_RATE / 4);
+      	    	ugDelay = new Delay(delayRate);
 
       	    	ugDelay.chuck(dac);
       	    	ugEnvA.chuck(ugDelay);
@@ -284,18 +284,22 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0) {
-	    	if (data != null) {
-		       	Bundle extras = data.getExtras();
-		       	if (extras != null) {
-		   	 		fileName = extras.getString("file name");
-		   			note = extras.getInt("note");
-		   			octave = extras.getInt("octave");
-		   			sampleRate = extras.getInt("sample rate");
-		   			lag = extras.getInt("lag");
-		   			updateSettings();
-		       	}
-	    	}
+        if (requestCode == 0 && data != null) {
+          Bundle extras = data.getExtras();
+          if (extras != null) {
+            WavWriter.filePrefix = extras.getString("file name");
+            note = extras.getInt("note");
+            octave = extras.getInt("octave");
+            delayRate = extras.getInt("delay rate");
+            if (delayRate == 0) {
+              ugDelay.disable();
+            } else {
+              ugDelay.enable();
+              ugDelay.updateRate(delayRate);
+            }
+            lag = extras.getInt("lag");
+            updateSettings();
+          }
         }
     }
    
@@ -304,7 +308,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	intent.putExtra("octave", octave);
     	intent.putExtra("note", note);
     	intent.putExtra("file name", fileName);
-    	intent.putExtra("sample rate", sampleRate);
+    	intent.putExtra("delay rate", delayRate);
     	intent.putExtra("lag", lag);
     	startActivityForResult(intent, 0);
     	return true;
