@@ -8,7 +8,6 @@ public class Finger {
   int id;
   float x,y,size,pressure;
   Paint color = new Paint();
-
   public final static int BASE_SIZE = 250;
 
   public Finger(int id, float x, float y, float size, float pressure)
@@ -18,9 +17,14 @@ public class Finger {
     this.y = y;
     this.size = size;
     this.pressure = pressure;
+    
+    //Visualizer stuff
+    
 
-    if (id == 0)
+    if (id == 0){
       color.setColor(Color.GREEN);
+    }
+    
     else
       color.setColor(Color.CYAN);
   }
@@ -33,6 +37,15 @@ public class Finger {
   public void setY(float y)
   {
     this.y = y;
+  }
+  
+  public float getX(){
+	  return x;
+  
+  }
+  
+  public float getY(){
+	  return y;
   }
 
   public void update(float x, float y, float size, float pressure) {
