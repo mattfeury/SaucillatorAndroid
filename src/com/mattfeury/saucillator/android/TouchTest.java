@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.Context;
@@ -68,6 +69,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private Delay ugDelay;
 
     private SensorManager sensorManager = null;
+    MediaPlayer secretSauce;
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
@@ -76,9 +78,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "Brewing sauce...");
+
         super.onCreate(savedInstanceState);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         p = new Panel(this);
@@ -234,6 +238,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
 
       //each finger
+      if (event.getPointerCount() == 5) secretSauce.start();
+      
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
         float y = event.getY(i);
