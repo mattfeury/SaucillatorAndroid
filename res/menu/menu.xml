@@ -11,7 +11,7 @@
         </menu>
     </item>
     
-    <item android:title="Instrument 2 .." android:id="@+id/instrument2">
+    <item android:title="Instrument 2" android:id="@+id/instrument2">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/instrumentsB">
                 <item android:id="@+id/singingsaw" android:title="Singing Saw"></item>
@@ -22,7 +22,7 @@
         </menu>
     </item>
 
-    <item android:title="Scale .." android:id="@+id/scale">
+    <item android:title="Scale" android:id="@+id/scale">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/scales">
                 <item android:id="@+id/pentatonic" android:title="Pentatonic" android:checked="true"></item>
