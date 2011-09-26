@@ -34,7 +34,7 @@
         </menu>
     </item>
             
-    <item android:title="Record" android:id="@+id/record"/>
+    <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
     
     <item android:title="Settings" android:id="@+id/settings" android:icon="@drawable/ic_menu_preferences"/>
     
