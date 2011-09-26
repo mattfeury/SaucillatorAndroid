@@ -44,7 +44,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
-    private int lag = 75;
+    private int lag = (int)(DEFAULT_LAG * 100);
     private String fileName = "Recording";
     private int note = 0;
     private int octave = 5;
@@ -55,6 +55,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
+    public final static float DEFAULT_LAG = 0.5f;
     private int BASE_FREQ = 440;
     public static int TRACKPAD_GRID_SIZE = 12;
 
@@ -301,6 +302,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
               ugDelay.updateRate(delayRate);
             }
             lag = extras.getInt("lag");
+
+            osc.setLag(lag / 100f);
+            osc2.setLag(lag / 100f);
+
             visuals = extras.getBoolean("visuals");
             updateSettings();
           }

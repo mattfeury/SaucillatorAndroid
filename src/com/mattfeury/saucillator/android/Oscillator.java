@@ -10,6 +10,7 @@ public abstract class Oscillator extends UGen {
   public abstract void setFreq(float freq);
   public abstract void setModRate(int rate);
   public abstract void setModDepth(int depth);
+  public abstract void setLag(float rate);
 
   public synchronized void setFreqByOffset(int[] scale, int offset) {
     float freq = Instrument.getFrequencyForScaleNote(scale, BASE_FREQ, offset);
