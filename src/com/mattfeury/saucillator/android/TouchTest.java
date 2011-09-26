@@ -1,8 +1,10 @@
 package com.mattfeury.saucillator.android;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.LinkedList;
+import java.util.Random;
 
 import com.sauce.touch.R;
 
@@ -42,6 +44,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     private static final String TAG = "Sauce";
     private Panel p;
+    FractalGen fractGen;
+    float fX = 0, fY = 0; //fractal x and y coords
+    Paint backColor;
+    
     
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
@@ -88,7 +94,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         p = new Panel(this);
         setContentView(p);
         p.setOnTouchListener(this);
-
+        backColor = new Paint();
+        
         Thread t = new Thread() {
       	  public void run() {
       	    try {
@@ -465,9 +472,34 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
  
         @Override
         public void onDraw(Canvas canvas) {
-            canvas.drawColor(Color.BLACK);
-            for(Finger f : fingers.values())
+        	if (fractGen == null)
+        		fractGen = new FractalGen(canvas);
+            Log.i("touch", "started");
+            
+            
+            fX = (fingers.values().size() > 0 ? 0 : fX);
+            fY = (fingers.values().size() > 0 ? 0 : fY);
+            
+            for(Finger f : fingers.values()){
             	f.draw(canvas);
+            	if(f.id == 0){
+            		fX += f.x;
+            		fY += f.y;
+            	}
+            	else{
+            		backColor.setColor(Color.HSVToColor(new float[]{(f.x / canvas.getWidth())* 360, f.y / canvas.getHeight(), f.y / canvas.getHeight()}));
+            		fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
+            	}
+            }
+            
+            fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
+            fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
+            
+            
+            canvas.drawColor(backColor.getColor());
+            		
+            fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
+            
         }
     }
 
