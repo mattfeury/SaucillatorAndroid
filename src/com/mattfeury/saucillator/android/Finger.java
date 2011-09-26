@@ -58,7 +58,7 @@ public class Finger {
   public void draw(Canvas canvas) {
     int width = canvas.getWidth();
     int height = canvas.getHeight();
-    int pitchColor = Color.rgb((int)Math.floor((x/(float)width)*255), 255 - (int)Math.floor((y/(float)height)*255), 0);
+    int pitchColor = Color.argb((int)(255 * pressure),(int)Math.floor((x/(float)width)*255), 255 - (int)Math.floor((y/(float)height)*255), 0);
     color.setColor(pitchColor);
 
     canvas.drawCircle(x, y, size * BASE_SIZE, color);

@@ -481,7 +481,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             fY = (fingers.values().size() > 0 ? 0 : fY);
             
             for(Finger f : fingers.values()){
-            	f.draw(canvas);
             	if(f.id == 0){
             		fX += f.x;
             		fY += f.y;
@@ -499,7 +498,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             canvas.drawColor(backColor.getColor());
             		
             fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
-            
+            for(Finger f : fingers.values())
+            	f.draw(canvas);
         }
     }
 
