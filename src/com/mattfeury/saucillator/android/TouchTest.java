@@ -9,6 +9,7 @@ import java.util.Random;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.Context;
@@ -47,31 +48,47 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     float fX = 0, fY = 0; //fractal x and y coords
     Paint backColor;
     
-    private boolean recording = false;
     
+    //defaults
+    private int delayRate = UGen.SAMPLE_RATE / 4;
+    private int lag = (int)(DEFAULT_LAG * 100);
+    private String fileName = "Recording";
+    private int note = 0;
+    private int octave = 4;
+    private boolean visuals = false;
+
     //music shtuffs
     public int[] scale = Instrument.pentatonic;
 
+    public final static int MOD_RATE_MAX = 20;
+    public final static int MOD_DEPTH_MAX = 1000;
+    public final static float DEFAULT_LAG = 0.5f;
+    public static int TRACKPAD_GRID_SIZE = 12;
+
+    private boolean init = false;
+    
     //synth elements
-    Dac dac;
-    WtOsc ugOscA1, ugOscA2;
-    private LinkedList<WtOsc> oscs = new LinkedList<WtOsc>();
+    private Dac dac;
+    private Oscillator osc;
+    private Oscillator osc2;
+    private ExpEnv ugEnvA;
+    private Delay ugDelay;
 
     private SensorManager sensorManager = null;
+    MediaPlayer secretSauce;
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-	
-    private int BASE_FREQ = 440;
-    public static int TRACKPAD_GRID_SIZE = 12;
   
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-      Log.i(TAG, "TouchTest");
+        Log.i(TAG, "Brewing sauce...");
+
         super.onCreate(savedInstanceState);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         p = new Panel(this);
@@ -82,32 +99,25 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	ugOscA1 = new WtOsc();
-      	    	ugOscA2 = new WtOsc();
+              osc = new SingingSaw();
+              osc2 = new Sine();
 
-      	    	oscs.add(ugOscA1);
-      	    	oscs.add(ugOscA2);
-
-      	    	ExpEnv ugEnvA = new ExpEnv();
-
-      	    	ugOscA1.fillWithSin();
-      	    	ugOscA2.fillWithSqrWithAmp(0.5f);
+      	    	ugEnvA = new ExpEnv();
 
       	    	dac = new Dac();
 
-      	    	Delay ugDelay = new Delay(UGen.SAMPLE_RATE/2);
+      	    	ugDelay = new Delay(delayRate);
 
-      	    	ugEnvA.chuck(dac);
-      	    	//ugEnvA.chuck(ugDelay);
-      	    	ugDelay.chuck(ugEnvA);
+      	    	ugDelay.chuck(dac);
+      	    	ugEnvA.chuck(ugDelay);
 
-      	    	//ugOscA1.chuck(ugEnvA);
-      	    	ugOscA2.chuck(ugDelay);
-      	    	ugOscA1.chuck(ugDelay);
+      	    	osc2.chuck(ugEnvA);
+      	    	osc.chuck(ugEnvA);
 
       	    	ugEnvA.setFactor(ExpEnv.hardFactor);
       	    	ugEnvA.setActive(true);
       	    	dac.open();
+              init = true;
 
       	      while (true) {
         	    	dac.tick();
@@ -165,6 +175,22 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
    
+    private void updateSettings() {
+      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
+      osc.setBaseFreq(newFreq);
+      osc2.setBaseFreq(newFreq);
+
+      if (delayRate == 0) {
+        ugDelay.disable();
+      } else {
+        ugDelay.enable();
+        ugDelay.updateRate(delayRate);
+      }
+      
+      osc.setLag(lag / 100f);
+      osc2.setLag(lag / 100f);
+    }
+
     @Override
     protected void onStop() {
      // Unregister the listener
@@ -172,6 +198,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      //FIXME this breaks the app in Gingerbread (see above)
      //sensorManager.unregisterListener(this);
      //android.os.Process.killProcess(android.os.Process.myPid());
+
+     //TODO stop the DAC here or something
+     // remember: this is also called when we goto settings
      super.onStop();
     } 
     
@@ -182,8 +211,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+      super.onConfigurationChanged(newConfig);
+      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
@@ -198,44 +227,51 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-      // Handle touch events here...
-      //dumpEvent(event);
+      if (! init) return false;
+
       int maxHeight = v.getHeight();
       int maxWidth = v.getWidth();
 
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
       
-      if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) {      //last finger lifted. stop playback
-        //dac.toggle();
-        for(WtOsc osc : oscs)
-          osc.stop();
-    	
+      if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
+        osc.stop();
+        osc2.stop();
+
         fingers.clear();
         p.invalidate();
         return true;
       }
 
       //each finger
+      if (event.getPointerCount() == 5) secretSauce.start();
+      
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
-
-        if ((id + 1) > oscs.size()) break;
+        float y = event.getY(i);
+        float x = event.getX(i);
 
         updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-
+        
         //make noise
-        WtOsc sine = oscs.get(id);
-        if(! sine.isPlaying())
-          sine.togglePlayback(); //play if we were stopped
+        if (id == 0 || id == 1) { //update sine
+        	Oscillator osc = (id == 0) ? this.osc : this.osc2;
+          if(! osc.isPlaying())
+            osc.togglePlayback(); //play if we were stopped
 
-        float thisY = event.getY(i);
-
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-          updateFrequency(id, (int)((maxHeight - thisY) / maxHeight * TRACKPAD_GRID_SIZE));
-        } else { //kill
-          fingers.remove((Integer)i);
-          sine.togglePlayback();
+          if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+            updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
+          } else { //kill
+            fingers.remove((Integer)i);
+            osc.togglePlayback();
+          }
+        } else if (id == 2) { //lfo
+          //TODO make this iterate or something
+          osc.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          osc.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+          osc2.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          osc2.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
         }
 
       }
@@ -273,9 +309,29 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	}
         return false;
     }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0 && data != null) {
+          Bundle extras = data.getExtras();
+          if (extras != null) {
+            WavWriter.filePrefix = extras.getString("file name");
+            note = extras.getInt("note");
+            octave = extras.getInt("octave");
+            lag = extras.getInt("lag");
+            visuals = extras.getBoolean("visuals");
+            updateSettings();
+          }
+        }
+    }
    
     private boolean launchSettings() {
     	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	intent.putExtra("octave", octave);
+    	intent.putExtra("note", note);
+    	intent.putExtra("file name", fileName);
+    	intent.putExtra("delay rate", delayRate);
+    	intent.putExtra("lag", lag);
+    	intent.putExtra("visuals", visuals);
     	startActivityForResult(intent, 0);
     	return true;
     }
@@ -283,27 +339,25 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private boolean record(MenuItem item) {
       boolean isRecording = dac.toggleRecording();
     	if (isRecording) {
-        item.setTitle("Stop Recording");
-        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
+    	    item.setTitle("Stop Recording");
+    	    item.setIcon(R.drawable.ic_grey_rec);
+            Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
     	}
     	else {
-	    	item.setTitle("Record");
-        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
-	    	
-        if(WavWriter.getLastFile() == null)
-          return false;
-	    	
-        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
-	    	startActivity(Intent.createChooser(intent, "Share to"));
+		    item.setTitle("Record");
+		    item.setIcon(R.drawable.ic_rec);
+	        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+		    	
+	        if(WavWriter.getLastFile() == null)
+	          return false;
+		    	
+	        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+		    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+		    	startActivity(Intent.createChooser(intent, "Share to"));
     	}
       return true;
     }
 
-    public void onActivityResult (int requestCode, int resultCode, Intent data) {
-    	
-    }
-    
     private boolean scaleSelection(MenuItem item) {
     	if (item.isChecked()) {
     		return true;
@@ -340,24 +394,32 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	item.setChecked(true);
       int instrumentId = item.getItemId();
 
-      WtOsc osc;
-      try {
-        osc = oscs.get(oscNum);
-      } catch(Exception e){
-        return false;
-      }
+      Oscillator oldOsc = oscNum == 0 ? this.osc : this.osc2;
+      oldOsc.unchuck(ugEnvA);
+      //TODO kill old maybe? make sure it gets garbage collected
 
       switch (instrumentId) {
+        case R.id.singingsaw: //singing saw
+          oldOsc = new SingingSaw();
+          break;
         case R.id.sine: //sine
-          osc.fillWithSin();
+          oldOsc = new Sine();
           break;
         case R.id.square: //square
-          osc.fillWithSqr();
+        	oldOsc = new Square(1.0f);
           break;
         case R.id.saw: //saw
-          osc.fillWithSaw();
+          oldOsc = new Saw(1.0f);
           break;
         default:
+      }
+
+      if (oscNum == 0) {
+        this.osc = oldOsc;
+        this.osc.chuck(ugEnvA);
+      } else {
+        this.osc2 = oldOsc;
+        this.osc2.chuck(ugEnvA);
       }
     	
     	return false;
@@ -365,11 +427,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
-    	WtOsc osc = oscs.get(sineKey);
-
-      //TODO should we set the two oscillators an octave apart? probs
-      float freq = Instrument.getFrequencyForScaleNote(scale, (int)((sineKey+1.0) * BASE_FREQ), offset);
-      osc.setFreq(freq);
+      Oscillator osc = (sineKey == 0) ? this.osc : this.osc2;
+      if (osc != null)
+        osc.setFreqByOffset(scale, offset);
     }
 
     /** Show an event in the LogCat view, for debugging */

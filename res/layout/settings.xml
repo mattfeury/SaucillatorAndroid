@@ -11,10 +11,10 @@
     android:scrollbars="vertical"
     >
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_width="wrap_content" android:text="Sample Rate: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+        <TextView android:layout_width="wrap_content" android:text="Delay: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/delayValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
     </LinearLayout>
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/delaySlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
+        <SeekBar android:layout_height="wrap_content" android:max="11025" android:id="@+id/delaySlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
         
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
         <TextView android:layout_width="wrap_content" android:text="Lag: " android:id="@+id/lagLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
@@ -30,8 +30,7 @@
         
         <TextView android:layout_width="wrap_content" android:text="Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
-        <Button android:text="Save" android:id="@+id/save" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
-        <Button android:text="Cancel" android:id="@+id/cancel" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+        <CheckBox android:text="Visual Effects" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/visualCheckBox" android:layout_width="fill_parent" android:layout_height="wrap_content"></CheckBox>
 
 </LinearLayout>
 </ScrollView>

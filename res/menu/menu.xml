@@ -1,9 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Instrument 1 .." android:id="@+id/instrument1">
+    <item android:title="Instrument 1" android:id="@+id/instrument1">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/instrumentsA">
-                <item android:id="@+id/sine" android:title="Sin Wave" android:checked="true"></item>
+                <item android:id="@+id/singingsaw" android:title="Singing Saw" android:checked="true"></item>
+                <item android:id="@+id/sine" android:title="Sin Wave"></item>
                 <item android:id="@+id/square" android:title="Square Wave"></item>
                 <item android:id="@+id/saw" android:title="Saw Wave"></item>
             </group>
@@ -13,8 +14,9 @@
     <item android:title="Instrument 2 .." android:id="@+id/instrument2">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/instrumentsB">
-                <item android:id="@+id/sine" android:title="Sin Wave"></item>
-                <item android:id="@+id/square" android:title="Square Wave" android:checked="true"></item>
+                <item android:id="@+id/singingsaw" android:title="Singing Saw"></item>
+                <item android:id="@+id/sine" android:title="Sin Wave" android:checked="true"></item>
+                <item android:id="@+id/square" android:title="Square Wave"></item>
                 <item android:id="@+id/saw" android:title="Saw Wave" ></item>
             </group>
         </menu>
@@ -32,10 +34,10 @@
         </menu>
     </item>
             
-    <item android:title="Record" android:id="@+id/record"/>
+    <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
     
-    <item android:title="Settings" android:id="@+id/settings"/>
+    <item android:title="Settings" android:id="@+id/settings" android:icon="@drawable/ic_menu_preferences"/>
     
-    <item android:id="@+id/quit" android:title="Quit" />
+    <item android:id="@+id/quit" android:title="Quit" android:icon="@drawable/ic_lock_power_off"/>
     
 </menu>

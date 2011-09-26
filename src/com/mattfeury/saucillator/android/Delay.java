@@ -3,25 +3,38 @@ package com.mattfeury.saucillator.android;
 public class Delay extends UGen {
 	final float[] line;
 	int pointer;
+	int length;
+	boolean enabled = true;
 	
 	public Delay(int length) {
 		super();
-		line = new float[length];
+		this.length = length;
+		line = new float[UGen.SAMPLE_RATE];
 	}
+
+  public void updateRate(int length) {
+		this.length = length;
+  }
+  public void enable() {
+  	enabled = true;
+  }
+  public void disable() {
+  	enabled = false;
+  }
+  public boolean isEnabled() {
+  	return enabled;
+  }
 	
 	public boolean render(final float[] buffer) {
 		renderKids(buffer);
 		
-		final float[] localLine = line;
-		final int lineLength = line.length;
+		final float[] localLine = line;;
 		for(int i = 0; i < CHUNK_SIZE; i++) {
-			buffer[i] = buffer[i] - 0.5f*localLine[pointer];
-			localLine[pointer] = buffer[i];
-			pointer = (pointer+1)%lineLength;
+      buffer[i] = buffer[i] - 0.5f*localLine[pointer];
+      localLine[pointer] = buffer[i];
+      pointer = (pointer+1)%length;
 		}
 		
-		// ugh, looks like we can never be sure it's silent
-		// without checking every sample because of the feedback
-		return true; 
+		return true; //this doesn't actually mean anything here
 	}
 }
