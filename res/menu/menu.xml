@@ -14,9 +14,9 @@
     <item android:title="Instrument 2 .." android:id="@+id/instrument2">
         <menu>
             <group android:checkableBehavior="single" android:id="@+id/instrumentsB">
-                <item android:id="@+id/singingsaw" android:title="Singing Saw" android:checked="true"></item>
-                <item android:id="@+id/sine" android:title="Sin Wave"></item>
-                <item android:id="@+id/square" android:title="Square Wave" android:checked="true"></item>
+                <item android:id="@+id/singingsaw" android:title="Singing Saw"></item>
+                <item android:id="@+id/sine" android:title="Sin Wave" android:checked="true"></item>
+                <item android:id="@+id/square" android:title="Square Wave"></item>
                 <item android:id="@+id/saw" android:title="Saw Wave" ></item>
             </group>
         </menu>
