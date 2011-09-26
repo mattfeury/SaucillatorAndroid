@@ -496,8 +496,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             
             
             canvas.drawColor(backColor.getColor());
-            		
-            fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
+            
+            if(visuals)		
+            	fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
+            
             for(Finger f : fingers.values())
             	f.draw(canvas);
         }
