@@ -30,8 +30,6 @@
         
         <TextView android:layout_width="wrap_content" android:text="Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
-        <Button android:text="Save" android:id="@+id/save" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
-        <Button android:text="Cancel" android:id="@+id/cancel" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
 
 </LinearLayout>
 </ScrollView>

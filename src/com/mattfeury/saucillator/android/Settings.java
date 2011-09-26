@@ -3,12 +3,13 @@ package com.mattfeury.saucillator.android;
 import com.sauce.touch.R;
 
 import android.app.Activity;
-import android.app.PendingIntent.OnFinished;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,39 +84,6 @@ public class Settings extends Activity{
 		
 	}
 	
-	private class SaveButtonListener implements OnClickListener {
-
-		@Override
-		public void onClick(View arg0) {
-	    	Intent intent = new Intent(Settings.this, TouchTest.class);
-	    	octave = octaveSpinner.getSelectedItemPosition() + 1;
-	    	note = noteSpinner.getSelectedItemPosition();
-	    	fileName = fileTextBox.getText().toString();
-	    	
-	    	intent.putExtra("octave", octave);
-	    	intent.putExtra("note", note);
-	    	intent.putExtra("file name", fileName);
-	    	intent.putExtra("sample rate", sampleRate);
-	    	intent.putExtra("lag", lag);
-			setResult(0, intent);
-			Toast.makeText(arg0.getContext(), "Changes Saved.", Toast.LENGTH_SHORT).show();
-			finish();
-		}
-		
-	}
-	
-	private class CancelButtonListener implements OnClickListener {
-
-		@Override
-		public void onClick(View arg0) {
-			// TODO Auto-generated method stub
-			Toast.makeText(arg0.getContext(), "Changes Discarded.", Toast.LENGTH_SHORT).show();
-			finish();
-		}
-
-	}
-	
-	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
@@ -148,11 +116,6 @@ public class Settings extends Activity{
 			lagValue = (TextView) findViewById(R.id.lagValue);
 			lagValue.setText(" " + lag + "%");
 			
-			saveButton = (Button) findViewById(R.id.save);
-			saveButton.setOnClickListener(new SaveButtonListener());
-			cancelButton = (Button) findViewById(R.id.cancel);
-			cancelButton.setOnClickListener(new CancelButtonListener());
-			
 			fileTextBox = (EditText) findViewById(R.id.fileName);
 			fileTextBox.setText(fileName);
 			
@@ -173,4 +136,54 @@ public class Settings extends Activity{
 		}
 	}
 	
+	private void saveChanges() {
+    	Intent intent = new Intent(Settings.this, TouchTest.class);
+    	octave = octaveSpinner.getSelectedItemPosition() + 1;
+    	note = noteSpinner.getSelectedItemPosition();
+    	fileName = fileTextBox.getText().toString();
+    	
+    	intent.putExtra("octave", octave);
+    	intent.putExtra("note", note);
+    	intent.putExtra("file name", fileName);
+    	intent.putExtra("sample rate", sampleRate);
+    	intent.putExtra("lag", lag);
+		setResult(0, intent);
+		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
+		finish();
+	}
+	
+	private void cancelChanges() {
+		Toast.makeText(this, "Changes Discarded.", Toast.LENGTH_SHORT).show();
+		finish();
+	}
+	
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		if (id == 0) {
+	        dialog = new AlertDialog.Builder(this).setMessage("Save Changes?").setCancelable(true)
+		    	.setPositiveButton("Yes",			
+				new DialogInterface.OnClickListener() {
+		        	public void onClick(DialogInterface dialog, int id) {
+		        		saveChanges();
+		        		}
+		        	}
+		        	).setNegativeButton("No", 
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							cancelChanges();
+						}
+					}
+		    ).create();
+		}
+        return dialog;
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		//Just... don't look here.
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	showDialog(0);
+        }
+        return true;
+	}
 }
