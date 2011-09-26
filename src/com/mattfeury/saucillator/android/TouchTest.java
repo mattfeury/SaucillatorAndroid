@@ -59,7 +59,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     //synth elements
     private Dac dac;
-    //private LinkedList<Oscillator> oscs = new LinkedList<Oscillator>();
     private Oscillator osc;
     private Oscillator osc2;
     private ExpEnv ugEnvA;
@@ -212,7 +211,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        //for(Oscillator osc : oscs)
         osc.stop();
         osc2.stop();
 
@@ -373,16 +371,16 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       //TODO kill old maybe? make sure it gets garbage collected
 
       switch (instrumentId) {
+        case R.id.singingsaw: //singing saw
+          oldOsc = new SingingSaw();
+          break;
         case R.id.sine: //sine
-        	Log.i(TAG,"sine");
           oldOsc = new Sine();
           break;
         case R.id.square: //square
-        	Log.i(TAG,"sq");
         	oldOsc = new Square(1.0f);
           break;
         case R.id.saw: //saw
-        	Log.i(TAG,"saw");
           oldOsc = new Saw(1.0f);
           break;
         default:
@@ -401,8 +399,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     public void updateFrequency(int sineKey, int offset) //0-trackpadsize
     {
-      Oscillator osc = (sineKey == 0) ? this.osc : this.osc2;//oscs.get(sineKey);
-      Log.i(TAG, ""+osc.isPlaying);
+      Oscillator osc = (sineKey == 0) ? this.osc : this.osc2;
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
     }
