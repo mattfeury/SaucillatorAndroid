@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import com.sauce.touch.R;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.Context;
@@ -44,10 +45,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
-    private int lag = 75;
+    private int lag = (int)(DEFAULT_LAG * 100);
     private String fileName = "Recording";
     private int note = 0;
-    private int octave = 5;
+    private int octave = 4;
     private boolean visuals = false;
 
     //music shtuffs
@@ -55,7 +56,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
-    private int BASE_FREQ = 440;
+    public final static float DEFAULT_LAG = 0.5f;
     public static int TRACKPAD_GRID_SIZE = 12;
 
     private boolean init = false;
@@ -68,6 +69,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private Delay ugDelay;
 
     private SensorManager sensorManager = null;
+    MediaPlayer secretSauce;
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
@@ -76,9 +78,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "Brewing sauce...");
+
         super.onCreate(savedInstanceState);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         p = new Panel(this);
@@ -165,8 +169,19 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
    
     private void updateSettings() {
-      // TODO feury
-      //use the variables I declared at the top to update your shit.
+      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
+      osc.setBaseFreq(newFreq);
+      osc2.setBaseFreq(newFreq);
+
+      if (delayRate == 0) {
+        ugDelay.disable();
+      } else {
+        ugDelay.enable();
+        ugDelay.updateRate(delayRate);
+      }
+      
+      osc.setLag(lag / 100f);
+      osc2.setLag(lag / 100f);
     }
 
     @Override
@@ -223,6 +238,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
 
       //each finger
+      if (event.getPointerCount() == 5) secretSauce.start();
+      
       for (int i = 0; i < event.getPointerCount(); i++) {
         int id = event.getPointerId(i);
         float y = event.getY(i);
@@ -293,13 +310,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             WavWriter.filePrefix = extras.getString("file name");
             note = extras.getInt("note");
             octave = extras.getInt("octave");
-            delayRate = extras.getInt("delay rate");
-            if (delayRate == 0) {
-              ugDelay.disable();
-            } else {
-              ugDelay.enable();
-              ugDelay.updateRate(delayRate);
-            }
             lag = extras.getInt("lag");
             visuals = extras.getBoolean("visuals");
             updateSettings();
