@@ -4,7 +4,6 @@ import android.util.FloatMath;
 
 public class Square extends BasicOsc {
   
-  protected float amp = 1.0f;
   public Square() {
     this(1.0f);
   }

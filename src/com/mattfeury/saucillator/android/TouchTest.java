@@ -255,6 +255,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 
           if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
             updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
+            updateAmplitude(id, x / maxWidth);
           } else { //kill
             fingers.remove((Integer)i);
             osc.togglePlayback();
@@ -416,8 +417,13 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	return false;
     }
     
-    public void updateFrequency(int sineKey, int offset) //0-trackpadsize
-    {
+    public void updateAmplitude(int key, float amp) {
+      Log.i(TAG, "" + amp);
+      Oscillator osc = (key == 0) ? this.osc : this.osc2;
+      if (osc != null)
+        osc.setAmplitude(amp);
+    }      
+    public void updateFrequency(int sineKey, int offset) {
       Oscillator osc = (sineKey == 0) ? this.osc : this.osc2;
       if (osc != null)
         osc.setFreqByOffset(scale, offset);

@@ -12,6 +12,8 @@ public abstract class Oscillator extends UGen {
   public abstract void setModDepth(int depth);
   public abstract void setLag(float rate);
 
+  public abstract void setAmplitude(float amp);
+  
   public void setBaseFreq(float freq) {
     BASE_FREQ = freq;
   }

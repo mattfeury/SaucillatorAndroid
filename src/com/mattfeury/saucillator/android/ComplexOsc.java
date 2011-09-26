@@ -42,6 +42,10 @@ public abstract class ComplexOsc extends Oscillator {
     for(BasicOsc osc : components)
       osc.setLag(rate);
   }
+  public void setAmplitude(float amp) {
+    for(BasicOsc osc : components)
+      osc.setAmplitude(amp);
+  }
 
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
