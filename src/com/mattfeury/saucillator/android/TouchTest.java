@@ -186,9 +186,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       osc2.setBaseFreq(newFreq);
 
       if (delayRate == 0) {
-        ugDelay.disable();
+        ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
       } else {
-        ugDelay.enable();
         ugDelay.updateRate(delayRate);
       }
       
