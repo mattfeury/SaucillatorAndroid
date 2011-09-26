@@ -330,6 +330,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             note = extras.getInt("note");
             octave = extras.getInt("octave");
             lag = extras.getInt("lag");
+            delayRate = extras.getInt("delay rate");
             visuals = extras.getBoolean("visuals");
             updateSettings();
           }
