@@ -30,6 +30,7 @@
         
         <TextView android:layout_width="wrap_content" android:text="Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
         <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
+        <CheckBox android:text="Visual Effects" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/visualCheckBox" android:layout_width="fill_parent" android:layout_height="wrap_content"></CheckBox>
 
 </LinearLayout>
 </ScrollView>

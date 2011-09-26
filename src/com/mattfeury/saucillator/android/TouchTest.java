@@ -48,6 +48,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private String fileName = "Recording";
     private int note = 0;
     private int octave = 5;
+    private boolean visuals = false;
+
+    //music shtuffs
     public int[] scale = Instrument.pentatonic;
 
     public final static int MOD_RATE_MAX = 20;
@@ -298,6 +301,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
               ugDelay.updateRate(delayRate);
             }
             lag = extras.getInt("lag");
+            visuals = extras.getBoolean("visuals");
             updateSettings();
           }
         }
@@ -310,6 +314,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	intent.putExtra("file name", fileName);
     	intent.putExtra("delay rate", delayRate);
     	intent.putExtra("lag", lag);
+    	intent.putExtra("visuals", visuals);
     	startActivityForResult(intent, 0);
     	return true;
     }

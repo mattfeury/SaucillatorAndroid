@@ -10,8 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -29,6 +32,7 @@ public class Settings extends Activity {
 	EditText fileTextBox;
 	Spinner noteSpinner;
 	Spinner octaveSpinner;
+	CheckBox visualCheckBox;
 
   //this is nasty. these are repeated defaults
   private int delayRate = UGen.SAMPLE_RATE;
@@ -36,7 +40,8 @@ public class Settings extends Activity {
   private String fileName = "Recording";
   private int note = 1;
   private int octave = 4;
-
+  private boolean visuals = false;
+	
 	private class DelaySliderListener implements SeekBar.OnSeekBarChangeListener {
 
 		@Override
@@ -85,6 +90,15 @@ public class Settings extends Activity {
 		
 	}
 	
+	private class VisualCheckBoxListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			visuals = visualCheckBox.isChecked();
+		}
+		
+	}
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
@@ -95,6 +109,7 @@ public class Settings extends Activity {
 		octave = extras.getInt("octave");
 		delayRate = extras.getInt("delay rate");
 		lag = extras.getInt("lag");
+		visuals = extras.getBoolean("visuals");
 		
 		try {
 			delaySlider = (SeekBar) findViewById(R.id.delaySlider);
@@ -112,7 +127,9 @@ public class Settings extends Activity {
 			lagSlider.setProgress(lag);
 			lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
 			
-
+			visualCheckBox = (CheckBox) findViewById(R.id.visualCheckBox);
+			visualCheckBox.setChecked(visuals);
+			visualCheckBox.setOnClickListener(new VisualCheckBoxListener());
 			
 			lagValue = (TextView) findViewById(R.id.lagValue);
 			lagValue.setText(" " + lag + "%");
@@ -148,6 +165,7 @@ public class Settings extends Activity {
     	intent.putExtra("file name", fileName);
     	intent.putExtra("delay rate", delayRate);
     	intent.putExtra("lag", lag);
+    	intent.putExtra("visuals", visuals);
 		setResult(0, intent);
 		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
 		finish();
