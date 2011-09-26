@@ -49,6 +49,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private String fileName = "Recording";
     private int note = 2;
     private int octave = 1;
+    private boolean visuals = false;
     
     
     //music shtuffs
@@ -291,6 +292,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
 		   			octave = extras.getInt("octave");
 		   			sampleRate = extras.getInt("sample rate");
 		   			lag = extras.getInt("lag");
+		   			visuals = extras.getBoolean("visuals");
 		   			updateSettings();
 		       	}
 	    	}
@@ -304,6 +306,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	intent.putExtra("file name", fileName);
     	intent.putExtra("sample rate", sampleRate);
     	intent.putExtra("lag", lag);
+    	intent.putExtra("visuals", visuals);
     	startActivityForResult(intent, 0);
     	return true;
     }
