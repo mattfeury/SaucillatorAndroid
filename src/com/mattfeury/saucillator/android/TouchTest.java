@@ -67,6 +67,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private Oscillator oscA, oscB;
     private ExpEnv envA, envB;
     private Delay ugDelay;
+    private Looper looper;
 
     private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
@@ -100,6 +101,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
               envB = new ExpEnv();
       	    	dac = new Dac();
       	    	ugDelay = new Delay(delayRate);
+      	    	looper = new Looper();
+
+      	    	looper.chuck(dac);
+      	    	ugDelay.chuck(looper);
 
       	    	envA.chuck(ugDelay);
               envB.chuck(ugDelay);
@@ -252,6 +257,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
 
       int pointerCount = event.getPointerCount();
+      if (pointerCount == 4) { //looper
+      	looper.stopRecording();
+      	return true;
+      }
       if (pointerCount == 5) {
         secretSauce.start(); //the secret sauce
         return true;
