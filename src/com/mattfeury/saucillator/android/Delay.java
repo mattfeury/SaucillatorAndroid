@@ -31,7 +31,7 @@ public class Delay extends UGen {
 	public boolean render(final float[] buffer) {
 		renderKids(buffer);
 		
-		final float[] localLine = line;;
+		final float[] localLine = line;
 		for(int i = 0; i < CHUNK_SIZE; i++) {
       buffer[i] = buffer[i] - 0.5f*localLine[pointer];
       localLine[pointer] = buffer[i];

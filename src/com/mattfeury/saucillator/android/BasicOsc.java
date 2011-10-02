@@ -60,7 +60,7 @@ public abstract class BasicOsc extends Oscillator {
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
 			return true;
-		}
+		} //TODO don't just return. let it die off slowly. will this work?
 
     if (lfoEnabled)
       modulate();
@@ -95,23 +95,13 @@ public abstract class BasicOsc extends Oscillator {
     return lagOut;
   }
 
-  public BasicOsc fillWithSin() {
-    final float dt = (float)(2.0*Math.PI/ENTRIES);
-    for(int i = 0; i < ENTRIES; i++) {
-      table[i] = FloatMath.sin(i*dt);
-    }
-    return this;
-  }
-
-  public BasicOsc fillWithSin(float amp) {
-    final float dt = (float)(2.0*Math.PI/ENTRIES);
-    for(int i = 0; i < ENTRIES; i++) {
-      table[i] = amp * FloatMath.sin(i*dt);
-    }
-    return this;
-  }
-
-
+	public BasicOsc fillWithZero() {
+		for(int i = 0; i < ENTRIES; i++) {
+			table[i] = 0;
+		}
+		return this;
+	}  
+  //TODO make these instruments or get rid of them
   public BasicOsc fillWithHardSin(final float exp) {
     final float dt = (float)(2.0*Math.PI/ENTRIES);
     for(int i = 0; i < ENTRIES; i++) {
@@ -120,23 +110,6 @@ public abstract class BasicOsc extends Oscillator {
 		return this;
 	}
 	
-	public BasicOsc fillWithZero() {
-		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = 0;
-		}
-		return this;
-	}
-	
-	public BasicOsc fillWithSqr() {
-		return fillWithSqrWithAmp(1.0f);
-	}
-	
-	public BasicOsc fillWithSqrWithAmp(float amp) {
-		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = i<ENTRIES/2?amp:-1f*amp;
-		}
-		return this;
-	}
 	
 	public BasicOsc fillWithSqrDuty(float fraction) {
 		for(int i = 0; i < ENTRIES; i++) {
@@ -144,12 +117,5 @@ public abstract class BasicOsc extends Oscillator {
 		}
 		return this;
 	}
-	
-	public BasicOsc fillWithSaw() {
-		float dt = (float)(2.0/ENTRIES);
-		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = (float) (i * dt - Math.floor(i * dt));
-		}
-		return this;
-	}
+
 }

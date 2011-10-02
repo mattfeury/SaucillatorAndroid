@@ -6,6 +6,7 @@ package com.mattfeury.saucillator.android;
 public class ExpEnv extends UGen {
 	
 	public static float hardFactor = 0.005f;
+	public static float medFactor = 0.00005f;
 	public static float softFactor = 0.00005f;
 	
 	boolean state;

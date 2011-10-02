@@ -64,9 +64,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     //synth elements
     private Dac dac;
-    private Oscillator osc;
-    private Oscillator osc2;
-    private ExpEnv ugEnvA;
+    private Oscillator oscA, oscB;
+    private ExpEnv envA, envB;
     private Delay ugDelay;
 
     private SensorManager sensorManager = null;
@@ -94,23 +93,24 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-              osc = new SingingSaw();
-              osc2 = new Sine();
-
-      	    	ugEnvA = new ExpEnv();
-
+              //default instruments chosen here
+              oscA = new SingingSaw();
+              oscB = new Sine();
+      	    	envA = new ExpEnv();
+              envB = new ExpEnv();
       	    	dac = new Dac();
-
       	    	ugDelay = new Delay(delayRate);
 
-      	    	ugDelay.chuck(dac);
-      	    	ugEnvA.chuck(ugDelay);
+      	    	envA.chuck(ugDelay);
+              envB.chuck(ugDelay);
 
-      	    	osc2.chuck(ugEnvA);
-      	    	osc.chuck(ugEnvA);
+      	    	oscA.chuck(envA);
+      	    	oscB.chuck(envB);
 
-      	    	ugEnvA.setFactor(ExpEnv.hardFactor);
-      	    	ugEnvA.setActive(true);
+      	    	envA.setFactor(ExpEnv.medFactor);
+      	    	envA.setActive(true);
+      	    	envB.setFactor(ExpEnv.medFactor);
+      	    	envB.setActive(true);
       	    	dac.open();
               init = true;
 
@@ -182,8 +182,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
      */
     private void updateSettings() {
       float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
-      osc.setBaseFreq(newFreq);
-      osc2.setBaseFreq(newFreq);
+      oscA.setBaseFreq(newFreq);
+      oscB.setBaseFreq(newFreq);
 
       if (delayRate == 0) {
         ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
@@ -191,8 +191,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         ugDelay.updateRate(delayRate);
       }
       
-      osc.setLag(lag / 100f);
-      osc2.setLag(lag / 100f);
+      oscA.setLag(lag / 100f);
+      oscB.setLag(lag / 100f);
     }
 
     @Override
@@ -243,43 +243,52 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        osc.stop();
-        osc2.stop();
+        oscA.stop();
+        oscB.stop();
 
         fingers.clear();
         p.invalidate();
         return true;
       }
 
-      if (event.getPointerCount() == 5) secretSauce.start(); //the secret sauce
+      int pointerCount = event.getPointerCount();
+      if (pointerCount == 5) {
+        secretSauce.start(); //the secret sauce
+        return true;
+      }
 
       //loop through each finger      
-      for (int i = 0; i < event.getPointerCount(); i++) {
+      for (int i = 0; i < pointerCount; i++) {
         int id = event.getPointerId(i);
         float y = event.getY(i);
         float x = event.getX(i);
 
-        updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-        
         //make noise
         if (id == 0 || id == 1) { //update sine
-        	Oscillator osc = (id == 0) ? this.osc : this.osc2; //which osc does this finger correspond to?
-          if(! osc.isPlaying())
-            osc.togglePlayback(); //play if we were stopped
+        	Oscillator osc = (id == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
 
           if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+            updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+
+            if(! osc.isPlaying())
+              osc.togglePlayback(); //play if we were stopped
+
             updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
             updateAmplitude(id, x / maxWidth);
           } else { //kill
-            fingers.remove((Integer)i);
-            osc.togglePlayback();
+            final int upId = event.getActionIndex();
+          	Log.d(TAG, upId + " lifted");
+            fingers.remove((Integer)upId);
+          	Oscillator upOsc = (upId == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
+            if(upOsc.isPlaying())
+            	upOsc.togglePlayback();
           }
         } else if (id == 2) { //lfo
           //TODO make this iterate or something
-          osc.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          osc.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
-          osc2.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          osc2.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+          oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+          oscB.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
         }
 
       }
@@ -406,9 +415,15 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     	item.setChecked(true);
       int instrumentId = item.getItemId();
 
-      Oscillator oldOsc = oscNum == 0 ? this.osc : this.osc2;
-      oldOsc.unchuck(ugEnvA);
-      //TODO kill old maybe? make sure it gets garbage collected
+      Oscillator oldOsc;
+      if (oscNum == 0) {
+        oldOsc = this.oscA;
+        this.oscA.unchuck(envA);        
+      } else {
+        oldOsc = this.oscB;
+        this.oscB.unchuck(envB);
+      }
+      //TODO destroy old maybe? make sure it gets garbage collected
 
       switch (instrumentId) {
         case R.id.singingsaw: //singing saw
@@ -427,11 +442,11 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
 
       if (oscNum == 0) {
-        this.osc = oldOsc;
-        this.osc.chuck(ugEnvA);
+        this.oscA = oldOsc;
+        this.oscA.chuck(envA);
       } else {
-        this.osc2 = oldOsc;
-        this.osc2.chuck(ugEnvA);
+        this.oscB = oldOsc;
+        this.oscB.chuck(envB);
       }
     	
     	return false;
@@ -439,12 +454,12 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     
     public void updateAmplitude(int key, float amp) {
       Log.i(TAG, "" + amp);
-      Oscillator osc = (key == 0) ? this.osc : this.osc2;
+      Oscillator osc = (key == 0) ? this.oscA : this.oscB;
       if (osc != null)
         osc.setAmplitude(amp);
     }      
     public void updateFrequency(int sineKey, int offset) {
-      Oscillator osc = (sineKey == 0) ? this.osc : this.osc2;
+      Oscillator osc = (sineKey == 0) ? this.oscA : this.oscB;
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
     }
