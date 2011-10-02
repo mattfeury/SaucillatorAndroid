@@ -10,7 +10,8 @@ public class Looper extends UGen {
 	int pointer = 0;
 	//boolean enabled = true;
   boolean defined = false;
-  boolean recording = true;
+  boolean recording = false;
+  boolean mutex = false;
 	
 	public Looper() {
 		super();
@@ -22,13 +23,23 @@ public class Looper extends UGen {
   }
   public void stopRecording() {
     recording = false;
+    mutex = true;
 
     if (! defined) {      
       //setup loopTable
       loopTable = new Float[baseLoop.size()];
       baseLoop.toArray(loopTable);
       defined = true;
+      mutex = false;
     }
+  }
+  public boolean toggleRecording() {
+    if (recording)
+      stopRecording();
+    else
+      startRecording();
+
+    return recording;
   }
 	
 	public boolean render(final float[] buffer) {
@@ -38,19 +49,16 @@ public class Looper extends UGen {
     for(int i = 0; i < CHUNK_SIZE; i++) {
       if (recording) {
         if (! defined) {
-          baseLoop.add((Float)buffer[i]);
+          if (! mutex)
+            baseLoop.add((Float)buffer[i]);
         } else { //add rendered buffer of children to loop
           loopTable[origPointer] += buffer[i];
           origPointer = (origPointer + 1) % loopTable.length;
         }
       }
       if (defined) {
-        try {
-          buffer[i] += loopTable[pointer];
-        } catch(Exception e) {} //for concurrency issues
-        finally {
-          pointer = (pointer + 1) % loopTable.length;
-        }
+        buffer[i] += loopTable[pointer];
+        pointer = (pointer + 1) % loopTable.length;
       }
     }
 

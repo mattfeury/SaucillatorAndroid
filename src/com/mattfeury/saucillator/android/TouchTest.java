@@ -257,8 +257,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       }
 
       int pointerCount = event.getPointerCount();
-      if (pointerCount == 4) { //looper
-      	looper.stopRecording();
+      if (pointerCount == 4 && (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN)) { //looper
+      	Log.i(TAG, "re: " + looper.toggleRecording());
       	return true;
       }
       if (pointerCount == 5) {
@@ -462,7 +462,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     }
     
     public void updateAmplitude(int key, float amp) {
-      Log.i(TAG, "" + amp);
       Oscillator osc = (key == 0) ? this.oscA : this.oscB;
       if (osc != null)
         osc.setAmplitude(amp);
