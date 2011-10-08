@@ -16,9 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -39,10 +36,7 @@ import android.widget.Toast;
  */
 public class TouchTest extends Activity implements OnTouchListener, SensorEventListener {
     private static final String TAG = "Sauce";
-    private Panel p;
-    FractalGen fractGen;
-    float fX = 0, fY = 0; //fractal x and y coords
-    Paint backColor;
+    private SauceView view;
 
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
@@ -72,9 +66,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
 
-    //graphics elements
-    private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-  
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,10 +77,9 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        p = new Panel(this);
-        setContentView(p);
-        p.setOnTouchListener(this);
-        backColor = new Paint();
+        setContentView(R.layout.main);
+        view = (SauceView)findViewById(R.id.sauceview);
+        view.setOnTouchListener(this);
         
         Thread t = new Thread() {
       	  public void run() {
@@ -224,16 +214,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
-      Finger maybe = fingers.get((Integer)id);
-      if (maybe != null) {
-        maybe.update(x, y, size, pressure);
-      } else {
-        Finger f = new Finger(id, x, y, size, pressure);
-        fingers.put((Integer)id, f);
-      }
-    }
-    
     /**
      * That main goodness. Handles touch events and gets properties of them to change the oscillators
      */
@@ -241,8 +221,8 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     public boolean onTouch(View v, MotionEvent event) {
       if (! init) return false;
 
-      int maxHeight = v.getHeight();
-      int maxWidth = v.getWidth();
+      int maxHeight = v.getMeasuredHeight();
+      int maxWidth = v.getMeasuredWidth();
 
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
@@ -251,8 +231,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         oscA.stop();
         oscB.stop();
 
-        fingers.clear();
-        p.invalidate();
+        view.clearFingers();
         return true;
       }
 
@@ -277,7 +256,7 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         	Oscillator osc = (id == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
 
           if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-            updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+            view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
 
             if(! osc.isPlaying())
               osc.togglePlayback(); //play if we were stopped
@@ -287,21 +266,19 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
           } else { //kill
             final int upId = event.getActionIndex();
           	Log.d(TAG, upId + " lifted");
-            fingers.remove((Integer)upId);
           	Oscillator upOsc = (upId == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
             if(upOsc.isPlaying())
             	upOsc.togglePlayback();
           }
         } else if (id == 2) { //lfo
           //TODO make this iterate or something
-          oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          /*oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
           oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
           oscB.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));*/
         }
 
       }
-      p.invalidate();
 
       return true; // indicate event was handled
     }
@@ -471,44 +448,4 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
     }
-
-    class Panel extends View {
-        public Panel(Context context) {
-            super(context);
-        }
- 
-        @Override
-        public void onDraw(Canvas canvas) {
-        	if (fractGen == null)
-        		fractGen = new FractalGen(canvas);
- 
-            fX = (fingers.values().size() > 0 ? 0 : fX);
-            fY = (fingers.values().size() > 0 ? 0 : fY);
-
-            for(Finger f : fingers.values()){
-            	if(f.id == 0){
-            		fX += f.x;
-            		fY += f.y;
-            	}
-            	else{
-            		backColor.setColor(Color.HSVToColor(new float[]{(f.x / canvas.getWidth())* 360, f.y / canvas.getHeight(), f.y / canvas.getHeight()}));
-            		fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
-            	}
-            }
-            
-            fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-            fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-            
-            
-            canvas.drawColor(backColor.getColor());
-            
-            if(visuals)		
-            	fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
-            
-            for(Finger f : fingers.values())
-            	f.draw(canvas);
-        }
-    }
-
-    
 }

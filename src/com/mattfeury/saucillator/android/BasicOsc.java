@@ -59,7 +59,7 @@ public abstract class BasicOsc extends Oscillator {
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
-			return true;
+			return false;
 		} //TODO don't just return. let it die off slowly. will this work?
 
     if (lfoEnabled)
