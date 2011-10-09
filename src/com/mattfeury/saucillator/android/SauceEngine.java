@@ -238,9 +238,13 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         secretSauce.start(); //the secret sauce
         return true;
       }
-
-      //loop through each finger      
-      for (int i = 0; i < pointerCount; i++) {
+    
+      /*
+       * Loop through each finger.
+       * We go backwards because of the buttons. If a button is pressed and held, the next finger call
+       * will be a POINTER_DOWN call, but the first button will interpret it first since it has a smaller index. That's bad.
+       */
+      for (int i = pointerCount - 1; i > -1; i--) {
         int id = event.getPointerId(i);
         float y = event.getY(i);
         float x = event.getX(i);
@@ -258,8 +262,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
           	return false;
           }
 
+          //finger down
           if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
             view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+            Log.i(TAG,"pad pointer finger :" + ((int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE)));
 
             //play if we were stopped
             if(! osc.isPlaying())
@@ -270,7 +276,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
             updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
           } else {
-            //kill
+            //finger up. kill the osc
             final int upId = event.getActionIndex();
             Log.d(TAG, upId + " lifted");
             Oscillator upOsc;
@@ -299,6 +305,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
                 upId != fingerA &&
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
               boolean isRecording = looper.toggleRecording();
+            	Log.i(TAG,"action down :" + (isRecording));
               
               if (isRecording)
               	view.focusLooper();
