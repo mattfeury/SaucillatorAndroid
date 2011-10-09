@@ -39,8 +39,8 @@ public class Looper extends UGen {
     recording = true;
   }
   public void stopRecording() {
-    recording = false;
     mutex = true;
+    recording = false;
 
     if (! defined) {      
       //setup loopTable
@@ -50,12 +50,14 @@ public class Looper extends UGen {
       mutex = false;
     }
   }
-  public boolean toggleRecording() {
+  public synchronized boolean toggleRecording() {
+  	mutex = true;
     if (recording)
       stopRecording();
     else
       startRecording();
 
+    mutex = false;
     return recording;
   }
 	
@@ -70,12 +72,12 @@ public class Looper extends UGen {
         if (! defined) {
           if (! mutex)
             baseLoop.add((Float)buffer[i]);
-        } else { //add rendered buffer of children to loop
+        } else if (! mutex) { //add rendered buffer of children to loop
           loopTable[origPointer] += buffer[i];
           origPointer = (origPointer + 1) % loopTable.length;
         }
       }
-      if (defined) {
+      if (defined && ! mutex) {
         buffer[i] += loopTable[pointer];
         pointer = (pointer + 1) % loopTable.length;
       }
