@@ -1,13 +1,5 @@
 package com.mattfeury.saucillator.android;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.LinkedList;
-import java.util.Random;
-
-import com.sauce.touch.R;
-
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -34,7 +26,7 @@ import android.widget.Toast;
  * Main activity for the App. This will spin up the visuals and the audio engine. The audio engine gets
  * its own thread.
  */
-public class TouchTest extends Activity implements OnTouchListener, SensorEventListener {
+public class SauceEngine extends Activity implements OnTouchListener, SensorEventListener {
     private static final String TAG = "Sauce";
     private SauceView view;
 
@@ -44,7 +36,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private String fileName = "Recording";
     private int note = 0;
     private int octave = 4;
-    private boolean visuals = false;
 
     //music shtuffs
     public int[] scale = Instrument.pentatonic;
@@ -62,6 +53,10 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
     private ExpEnv envA, envB;
     private Delay ugDelay;
     private Looper looper;
+
+    // which finger ID corresponds to which instrument
+    private int fingerA = -1;
+    private int fingerB = -1;
 
     private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
@@ -99,13 +94,14 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       	    	envA.chuck(ugDelay);
               envB.chuck(ugDelay);
 
+              //TODO these should get chucked to different envelopes but it seems to cause issues
       	    	oscA.chuck(envA);
-      	    	oscB.chuck(envB);
+      	    	oscB.chuck(envA);
 
       	    	envA.setFactor(ExpEnv.medFactor);
       	    	envA.setActive(true);
-      	    	envB.setFactor(ExpEnv.medFactor);
-      	    	envB.setActive(true);
+      	    	//envB.setFactor(ExpEnv.medFactor);
+      	    	//envB.setActive(true);
       	    	dac.open();
               init = true;
 
@@ -121,7 +117,6 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
       	};
       	
       t.start();
-
     }
     
     /**
@@ -251,32 +246,62 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
         float y = event.getY(i);
         float x = event.getX(i);
 
-        //make noise
-        if (id == 0 || id == 1) { //update sine
-        	Oscillator osc = (id == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
+        //which osc does this finger correspond to?
+        if (view.isInPad(x,y)) {
+          Oscillator osc;
+          if (id == fingerA || fingerA == -1) {
+            osc = this.oscA;
+            fingerA = id;
+          } else if (id == fingerB || fingerB == -1) {
+            osc = this.oscB;
+            fingerB = id;
+          } else {
+          	return false;
+          }
 
           if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
             view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
 
+            //play if we were stopped
             if(! osc.isPlaying())
-              osc.togglePlayback(); //play if we were stopped
+              osc.togglePlayback();
 
             updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
             updateAmplitude(id, x / maxWidth);
-          } else { //kill
+          } else {
+            //kill
             final int upId = event.getActionIndex();
-          	Log.d(TAG, upId + " lifted");
-          	Oscillator upOsc = (upId == 0) ? this.oscA : this.oscB; //which osc does this finger correspond to?
+            Log.d(TAG, upId + " lifted");
+            Oscillator upOsc;
+            if (upId == fingerA) {
+            	upOsc = this.oscA;
+            } else if (upId == fingerB) {
+            	upOsc = this.oscB;
+            } else {
+            	return false;
+            }
+            
+            view.removeFinger(upId);
+
             if(upOsc.isPlaying())
-            	upOsc.togglePlayback();
+              upOsc.togglePlayback();
           }
+        } else {
+        	Log.i(TAG, "contorller");
+        }
+
+
+        //make noise
+        /*
+        if (id == 0 || id == 1) { //update sine
         } else if (id == 2) { //lfo
           //TODO make this iterate or something
-          /*oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
+          oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
           oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
           oscB.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));*/
+          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
         }
+      	*/
 
       }
 
@@ -325,20 +350,20 @@ public class TouchTest extends Activity implements OnTouchListener, SensorEventL
             octave = extras.getInt("octave");
             lag = extras.getInt("lag");
             delayRate = extras.getInt("delay rate");
-            visuals = extras.getBoolean("visuals");
+            view.setVisuals(extras.getBoolean("visuals"));
             updateSettings();
           }
         }
     }
    
     private boolean launchSettings() {
-    	Intent intent = new Intent(TouchTest.this, Settings.class);
+    	Intent intent = new Intent(SauceEngine.this, Settings.class);
     	intent.putExtra("octave", octave);
     	intent.putExtra("note", note);
     	intent.putExtra("file name", fileName);
     	intent.putExtra("delay rate", delayRate);
     	intent.putExtra("lag", lag);
-    	intent.putExtra("visuals", visuals);
+    	intent.putExtra("visuals", view.getVisuals());
     	startActivityForResult(intent, 0);
     	return true;
     }

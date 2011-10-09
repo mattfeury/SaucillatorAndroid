@@ -1,8 +1,7 @@
 package com.mattfeury.saucillator.android;
 
 import java.util.HashMap;
-
-import com.sauce.touch.R;
+import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -22,17 +21,17 @@ public class SauceView extends View {
     private boolean visuals = false;
 
     public SauceView(Context context) {
-    	   super(context);
-         init(context);
+      super(context);
+      init(context);
     }
     public SauceView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
+      super(context, attrs);
+      init(context);
     }
     public SauceView(Context context, AttributeSet attrs, int defStyle) {
     	 super(context, attrs, defStyle);
     	 init(context);
-    	}
+    }
 
     public void init(Context context) {
       backColor = new Paint(Color.GREEN);

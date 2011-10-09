@@ -18,7 +18,7 @@ public abstract class BasicOsc extends Oscillator {
   public int modDepth = 0;
   public int modRate = 0; //in Hz
 
-  private float rate = TouchTest.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
+  private float rate = SauceEngine.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
   private float t = 0f;
   private float lagOut;
 

@@ -1,7 +1,5 @@
 package com.mattfeury.saucillator.android;
 
-import com.sauce.touch.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -155,7 +153,7 @@ public class Settings extends Activity {
 	}
 	
 	private void saveChanges() {
-    	Intent intent = new Intent(Settings.this, TouchTest.class);
+    	Intent intent = new Intent(Settings.this, SauceEngine.class);
     	octave = octaveSpinner.getSelectedItemPosition() + 1;
     	note = noteSpinner.getSelectedItemPosition();
     	fileName = fileTextBox.getText().toString();
