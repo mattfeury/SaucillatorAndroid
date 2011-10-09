@@ -122,10 +122,10 @@ public class SauceView extends View {
         loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         init = true;
-    	} /*else {
+    	} else {
         loop.set(0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-        reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);    		
-    	}*/
+        reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+    	}
 
       loop.draw(canvas);
       reset.draw(canvas);
@@ -147,13 +147,16 @@ public class SauceView extends View {
         focusedBg.setARGB(255, rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
         text.setARGB(255, 0,0,0);
       }
+      public void set(int x, int y, int width, int height) {
+        super.set(x, y, x + width, y + height);      	
+      }
       public void draw(Canvas canvas) {
-      	if (focused)
-      		canvas.drawRect(this, focusedBg);
-      	else
-      		canvas.drawRect(this, bg);
+        if (focused)
+          canvas.drawRect(this, focusedBg);
+        else
+          canvas.drawRect(this, bg);
       	
-        canvas.drawText(name, left + right * .3f, top + bottom * .4f, text);
+        canvas.drawText(name, left + right * .3f, top + (bottom - top)* .5f, text);
       }
       public void focus() {
       	focused = true;
