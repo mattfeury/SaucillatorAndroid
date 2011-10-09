@@ -143,8 +143,8 @@ public class SauceView extends View {
         text = new Paint();
         Random rnd = new Random();
 
-        bg.setARGB(255, rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
-        focusedBg.setARGB(255, rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
+        bg.setARGB(255, 0, 0, 155 + rnd.nextInt(100));
+        focusedBg.setARGB(255, 155 + rnd.nextInt(100), 0, 0);
         text.setARGB(255, 0,0,0);
       }
       public void set(int x, int y, int width, int height) {
@@ -160,9 +160,11 @@ public class SauceView extends View {
       }
       public void focus() {
       	focused = true;
+      	invalidate();
       }
       public void unfocus() {
-      	focused = false;      	
+      	focused = false;
+      	invalidate();
       }
       
     }

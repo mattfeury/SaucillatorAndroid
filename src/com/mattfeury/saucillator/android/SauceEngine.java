@@ -295,8 +295,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         	if (y <= maxHeight / SauceView.numButtons) {
             //toggle loop. only because it's the first button. bleg
             final int upId = event.getActionIndex();
-            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN || 
-                actionCode == MotionEvent.ACTION_POINTER_UP) &&
+            if ((actionCode == MotionEvent.ACTION_POINTER_DOWN &&
                 upId != fingerA &&
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
               boolean isRecording = looper.toggleRecording();
@@ -457,12 +456,14 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       int instrumentId = item.getItemId();
 
       Oscillator oldOsc;
-      if (oscNum == 0) {
+      if (oscNum == fingerA) {
         oldOsc = this.oscA;
         this.oscA.unchuck(envA);        
-      } else {
+      } else if (oscNum == fingerB) {
         oldOsc = this.oscB;
         this.oscB.unchuck(envB);
+      } else {
+      	return false;
       }
       //TODO destroy old maybe? make sure it gets garbage collected
 
@@ -482,10 +483,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         default:
       }
 
-      if (oscNum == 0) {
+      if (oscNum == fingerA) {
         this.oscA = oldOsc;
         this.oscA.chuck(envA);
-      } else {
+      } else if (oscNum == fingerB) {
         this.oscB = oldOsc;
         this.oscB.chuck(envB);
       }
@@ -494,12 +495,22 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
     }
     
     public void updateAmplitude(int key, float amp) {
-      Oscillator osc = (key == 0) ? this.oscA : this.oscB;
+      Oscillator osc = null;
+      if (key == fingerA) 
+        osc = this.oscA;
+      else if (key == fingerB)
+        osc = this.oscB;
+
       if (osc != null)
         osc.setAmplitude(amp);
     }      
-    public void updateFrequency(int sineKey, int offset) {
-      Oscillator osc = (sineKey == 0) ? this.oscA : this.oscB;
+    public void updateFrequency(int key, int offset) {
+      Oscillator osc = null;
+      if (key == fingerA) 
+        osc = this.oscA;
+      else if (key == fingerB)
+        osc = this.oscB;
+
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
     }
