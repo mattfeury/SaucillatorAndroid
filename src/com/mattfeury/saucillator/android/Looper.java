@@ -12,12 +12,29 @@ public class Looper extends UGen {
   boolean defined = false;
   boolean recording = false;
   boolean mutex = false;
+  boolean playing = true;
 	
 	public Looper() {
 		super();
     baseLoop = new LinkedList<Float>();
 	}
 
+	public void reset() {
+		mutex = true;
+		recording = false;
+		defined = false;
+		
+		pointer = 0;
+		baseLoop.clear();
+		
+		mutex = false;
+	}
+	public void startPlaying() {
+		playing = true;
+	}
+	public void stopPlaying() {
+		playing = false;
+	}
   public void startRecording() {
     recording = true;
   }
@@ -44,6 +61,8 @@ public class Looper extends UGen {
 	
 	public boolean render(final float[] buffer) {
 		boolean didWork = renderKids(buffer);
+		
+		if (! playing) return didWork;
 		
     int origPointer = pointer;
     for(int i = 0; i < CHUNK_SIZE; i++) {

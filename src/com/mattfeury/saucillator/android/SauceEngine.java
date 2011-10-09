@@ -225,16 +225,15 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
         oscA.stop();
         oscB.stop();
+        
+        fingerA = -1;
+        fingerB = -1;
 
         view.clearFingers();
         return true;
       }
 
       int pointerCount = event.getPointerCount();
-      if (pointerCount == 4 && (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN)) { //looper
-      	Log.i(TAG, "re: " + looper.toggleRecording());
-      	return true;
-      }
       if (pointerCount == 5) {
         secretSauce.start(); //the secret sauce
         return true;
@@ -265,9 +264,11 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             //play if we were stopped
             if(! osc.isPlaying())
               osc.togglePlayback();
+            
+            int controllerWidth = (int) (maxWidth * SauceView.controllerWidth); 
 
             updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
-            updateAmplitude(id, x / maxWidth);
+            updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
           } else {
             //kill
             final int upId = event.getActionIndex();
@@ -275,8 +276,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             Oscillator upOsc;
             if (upId == fingerA) {
             	upOsc = this.oscA;
+            	fingerA = -1;
             } else if (upId == fingerB) {
             	upOsc = this.oscB;
+            	fingerB = -1;
             } else {
             	return false;
             }
@@ -287,7 +290,34 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
               upOsc.togglePlayback();
           }
         } else {
-        	Log.i(TAG, "contorller");
+          //controller buttons
+          //TODO FIXME there needs to be a more abstracted way to do these
+        	if (y <= maxHeight / SauceView.numButtons) {
+            //toggle loop. only because it's the first button. bleg
+            final int upId = event.getActionIndex();
+            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN || 
+                actionCode == MotionEvent.ACTION_POINTER_UP) &&
+                upId != fingerA &&
+                upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
+              boolean isRecording = looper.toggleRecording();
+              
+              if (isRecording)
+              	view.focusLooper();
+              else
+              	view.unfocusLooper();
+                  
+            }
+          } else {
+          	//reset looper
+            final int upId = event.getActionIndex();
+            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN || 
+                actionCode == MotionEvent.ACTION_POINTER_UP) &&
+                upId != fingerA &&
+                upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
+            	looper.reset();
+            	view.unfocusLooper();
+            }          	
+          }
         }
 
 

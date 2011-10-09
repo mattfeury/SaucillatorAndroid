@@ -59,6 +59,12 @@ public class SauceView extends View {
     public boolean isInPad(float x, float y) {
       return x > (getMeasuredWidth() * controllerWidth);
     }
+    public void focusLooper() {
+    	loop.focus();
+    }
+    public void unfocusLooper() {
+    	loop.unfocus();
+    }
 
     public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
       Finger maybe = fingers.get((Integer)id);
@@ -116,32 +122,46 @@ public class SauceView extends View {
         loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         init = true;
-    	} //else {
-        //loop.set(0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-        //reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);    		
-    	//}
+    	} /*else {
+        loop.set(0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+        reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);    		
+    	}*/
 
       loop.draw(canvas);
       reset.draw(canvas);
     }
 
     class RectButton extends RectF {
-      private Paint bg,text;
+      private Paint bg,text,focusedBg;
       private String name;
+      private boolean focused = false;
       public RectButton(String name, int x, int y, int width, int height) {
         super(x, y, x + width, y + height);
         this.name = name;
         bg = new Paint();
+        focusedBg = new Paint();
         text = new Paint();
         Random rnd = new Random();
 
         bg.setARGB(255, rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
+        focusedBg.setARGB(255, rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
         text.setARGB(255, 0,0,0);
       }
       public void draw(Canvas canvas) {
-        canvas.drawRect(this, bg);
+      	if (focused)
+      		canvas.drawRect(this, focusedBg);
+      	else
+      		canvas.drawRect(this, bg);
+      	
         canvas.drawText(name, left + right * .3f, top + bottom * .4f, text);
       }
+      public void focus() {
+      	focused = true;
+      }
+      public void unfocus() {
+      	focused = false;      	
+      }
+      
     }
 
 }
