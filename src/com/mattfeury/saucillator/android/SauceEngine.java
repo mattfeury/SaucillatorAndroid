@@ -57,6 +57,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
     // which finger ID corresponds to which instrument
     private int fingerA = -1;
     private int fingerB = -1;
+    private int fingerC = -1;
 
     private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
@@ -228,6 +229,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         
         fingerA = -1;
         fingerB = -1;
+        fingerC = -1;
 
         view.clearFingers();
         return true;
@@ -251,49 +253,62 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
 
         //which osc does this finger correspond to?
         if (view.isInPad(x,y)) {
-          Oscillator osc;
+          Oscillator osc = null;
           if (id == fingerA || fingerA == -1) {
             osc = this.oscA;
             fingerA = id;
           } else if (id == fingerB || fingerB == -1) {
             osc = this.oscB;
             fingerB = id;
-          } else {
-          	return false;
+          } else if (fingerC == -1) {
+          	fingerC = id;
           }
 
-          //finger down
-          if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-            view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-            Log.i(TAG,"pad pointer finger :" + ((int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE)));
+          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth); 
 
-            //play if we were stopped
-            if(! osc.isPlaying())
-              osc.togglePlayback();
-            
-            int controllerWidth = (int) (maxWidth * SauceView.controllerWidth); 
-
-            updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
-            updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
-          } else {
-            //finger up. kill the osc
-            final int upId = event.getActionIndex();
-            Log.d(TAG, upId + " lifted");
-            Oscillator upOsc;
-            if (upId == fingerA) {
-            	upOsc = this.oscA;
-            	fingerA = -1;
-            } else if (upId == fingerB) {
-            	upOsc = this.oscB;
-            	fingerB = -1;
+          if (osc != null) { 
+          	//finger down
+            if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+              view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+              Log.i(TAG,"pad pointer finger :" + ((int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE)));
+  
+              //play if we were stopped
+              if(! osc.isPlaying())
+                osc.togglePlayback();
+              
+              updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
+              updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
             } else {
-            	return false;
+              //finger up. kill the osc
+              final int upId = event.getActionIndex();
+              Log.d(TAG, upId + " lifted");
+              Oscillator upOsc;
+              if (upId == fingerA) {
+              	upOsc = this.oscA;
+              	fingerA = -1;
+              } else if (upId == fingerB) {
+              	upOsc = this.oscB;
+              	fingerB = -1;
+              } else {
+              	return false;
+              }
+              
+              view.removeFinger(upId);
+  
+              if(upOsc.isPlaying())
+                upOsc.togglePlayback();
             }
-            
-            view.removeFinger(upId);
+          } else if (id == fingerC) {
+//            final int upId = event.getActionIndex();
+            if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE)
+              view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+//            else
+//              view.removeFinger(upId);
 
-            if(upOsc.isPlaying())
-              upOsc.togglePlayback();
+            oscA.setModRate((int)((x - controllerWidth) / (maxWidth - controllerWidth) * MOD_RATE_MAX));
+            oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
+            oscB.setModRate((int)((x - controllerWidth) / (maxWidth - controllerWidth) * MOD_RATE_MAX));
+            oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));          	
           }
         } else {
           //controller buttons
@@ -325,20 +340,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             }          	
           }
         }
-
-
-        //make noise
-        /*
-        if (id == 0 || id == 1) { //update sine
-        } else if (id == 2) { //lfo
-          //TODO make this iterate or something
-          oscA.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
-          oscB.setModRate((int)(x / maxWidth * MOD_RATE_MAX));
-          oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
-        }
-      	*/
-
       }
 
       return true; // indicate event was handled
@@ -463,10 +464,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       int instrumentId = item.getItemId();
 
       Oscillator oldOsc;
-      if (oscNum == fingerA) {
+      if (oscNum == 0) {
         oldOsc = this.oscA;
         this.oscA.unchuck(envA);        
-      } else if (oscNum == fingerB) {
+      } else if (oscNum == 1) {
         oldOsc = this.oscB;
         this.oscB.unchuck(envB);
       } else {
@@ -490,10 +491,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         default:
       }
 
-      if (oscNum == fingerA) {
+      if (oscNum == 0) {
         this.oscA = oldOsc;
         this.oscA.chuck(envA);
-      } else if (oscNum == fingerB) {
+      } else if (oscNum == 1) {
         this.oscB = oldOsc;
         this.oscB.chuck(envB);
       }
