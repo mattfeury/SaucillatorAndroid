@@ -331,8 +331,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
           } else {
           	//reset looper
             final int upId = event.getActionIndex();
-            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN || 
-                actionCode == MotionEvent.ACTION_POINTER_UP) &&
+            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN) &&
                 upId != fingerA &&
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
             	looper.reset();
