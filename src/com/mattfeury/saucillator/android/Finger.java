@@ -7,52 +7,44 @@ import android.graphics.Color;
 public class Finger {
   int id;
   float x,y,size,pressure;
+  float PRESSURE = 0.2f; //defaults because some screens don't report these and hence they won't be visible
+  float SIZE = 0.1f;
   Paint color = new Paint();
   public final static int BASE_SIZE = 250;
 
   public Finger(int id, float x, float y, float size, float pressure)
   {
     this.id = id;
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.pressure = pressure;
+    this.update(x, y, size, pressure);
     
     //Visualizer stuff
-    
-
-    if (id == 0){
+    if (id == 0) {
       color.setColor(Color.GREEN);
-    }
-    
-    else
+    } else
       color.setColor(Color.CYAN);
   }
 
-  public void setX(float x)
-  {
+  public void setX(float x) {
     this.x = x;
   }
 	
-  public void setY(float y)
-  {
+  public void setY(float y) {
     this.y = y;
   }
   
-  public float getX(){
+  public float getX() {
 	  return x;
-  
   }
   
-  public float getY(){
+  public float getY() {
 	  return y;
   }
 
   public void update(float x, float y, float size, float pressure) {
     this.x = x;
     this.y = y;
-    this.size = size;
-    this.pressure = pressure;
+    this.size = Math.max(SIZE, size);
+    this.pressure = Math.max(PRESSURE, pressure);
   }
 
   public void draw(Canvas canvas) {
