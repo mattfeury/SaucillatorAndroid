@@ -9,6 +9,7 @@ public class Looper extends UGen {
   LinkedList<Float> baseLoop;
   int pointer = 0;
 	//boolean enabled = true;
+  float amplitude = 0.75f; //don't playback loop at full volume. 
   boolean defined = false;
   boolean recording = false;
   boolean playing = true;
@@ -74,7 +75,7 @@ public class Looper extends UGen {
           }
         }
         if (defined) {
-          buffer[i] += loopTable[pointer];
+          buffer[i] += amplitude*loopTable[pointer];
           pointer = (pointer + 1) % loopTable.length;
         }
       }

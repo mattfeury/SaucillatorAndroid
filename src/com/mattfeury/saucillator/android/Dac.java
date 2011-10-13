@@ -8,6 +8,8 @@ import android.media.AudioTrack;
  * A Digital to Analog converter
  * This spins up a main AudioTrack for playing back digital samples.
  * You can "chuck" any UGen to this to route its sound to the DAC.
+ * 
+ * Many thanks to code by Adam Smith (EtherealDialpad) for helping me get started here.
  */
 public class Dac extends UGen {
   private final float[] localBuffer;
@@ -95,13 +97,11 @@ public class Dac extends UGen {
         }
       }
     } else {
-      //short halfMax = Short.MAX_VALUE / 2;
       for(int i = 0; i < CHUNK_SIZE; i++) {
         target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
         //Write dat shit into dat wav buffa.
         if (recording) {
         	 WavWriter.pushFloat(localBuffer[i]);
-          //WavWriter.pushShort((short)(target[i] - halfMax));
         }
 			}
 
