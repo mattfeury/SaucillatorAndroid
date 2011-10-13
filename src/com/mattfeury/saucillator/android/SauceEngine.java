@@ -256,10 +256,11 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         //which osc does this finger correspond to?
         if (view.isInPad(x,y)) {
           Oscillator osc = null;
-          if (id == fingerA || fingerA == -1) {
+          //if this is this finger OR this finger is not set and this finger is also not the other fingers
+          if (id == fingerA || (fingerA == -1 && fingerB != id && fingerC != id)) {
             osc = this.oscA;
             fingerA = id;
-          } else if (id == fingerB || fingerB == -1) {
+          } else if (id == fingerB || (fingerB == -1 && fingerC != id)) {
             osc = this.oscB;
             fingerB = id;
           } else if (fingerC == -1) {
