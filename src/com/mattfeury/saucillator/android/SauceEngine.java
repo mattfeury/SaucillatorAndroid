@@ -497,6 +497,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         this.oscB = oldOsc;
         this.oscB.chuck(envB);
       }
+      
+      //FIXME this is a hack for now so that the instrument specific settings (lag & base freq)
+      //FIXME get reset on every instrument. We should abstract as InstrumentSettings and pass them around that way.
+      updateSettings();
     	
     	return false;
     }
