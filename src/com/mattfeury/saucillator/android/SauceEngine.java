@@ -81,8 +81,8 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       	  public void run() {
       	    try {
               //default instruments chosen here
-              oscA = new SingingSaw();
-              oscB = new Sine();
+              oscA = new Sine();
+              oscB = new Square();
       	    	envA = new ExpEnv();
               envB = new ExpEnv();
       	    	dac = new Dac();
