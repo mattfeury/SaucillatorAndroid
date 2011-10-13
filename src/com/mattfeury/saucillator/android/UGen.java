@@ -1,7 +1,6 @@
 package com.mattfeury.saucillator.android;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * A Unit Generator. 

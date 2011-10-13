@@ -1,7 +1,5 @@
 package com.mattfeury.saucillator.android;
 
-import android.util.Log;
-
 /**
  * A complex instrument that is supposed to sound like a Singing Saw
  * Right now it is just playing chords rather than a single note.

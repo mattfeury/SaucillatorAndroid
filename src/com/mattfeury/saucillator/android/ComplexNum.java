@@ -1,7 +1,5 @@
 package com.mattfeury.saucillator.android;
 
-import android.graphics.*;
-
 public class ComplexNum {
 	
 	private float real, imag;
