@@ -84,7 +84,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
               oscA = new Sine();
               oscB = new Square();
       	    	envA = new ExpEnv();
-              envB = new ExpEnv();
+              //envB = new ExpEnv();
       	    	dac = new Dac();
       	    	ugDelay = new Delay(delayRate);
       	    	looper = new Looper();
@@ -93,7 +93,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       	    	ugDelay.chuck(looper);
 
       	    	envA.chuck(ugDelay);
-              envB.chuck(ugDelay);
+              //envB.chuck(ugDelay);
 
               //TODO these should get chucked to different envelopes but it seems to cause issues
       	    	oscA.chuck(envA);
@@ -468,7 +468,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         this.oscA.unchuck(envA);        
       } else if (oscNum == 1) {
         oldOsc = this.oscB;
-        this.oscB.unchuck(envB);
+        this.oscB.unchuck(envA);
       } else {
       	return false;
       }
@@ -488,6 +488,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
           oldOsc = new Saw(1.0f);
           break;
         default:
+          oldOsc = new Sine();
       }
 
       if (oscNum == 0) {
@@ -495,7 +496,7 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         this.oscA.chuck(envA);
       } else if (oscNum == 1) {
         this.oscB = oldOsc;
-        this.oscB.chuck(envB);
+        this.oscB.chuck(envA);
       }
       
       //FIXME this is a hack for now so that the instrument specific settings (lag & base freq)
