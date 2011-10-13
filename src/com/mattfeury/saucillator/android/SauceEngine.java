@@ -105,13 +105,15 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       	    	//envB.setActive(true);
       	    	dac.open();
               init = true;
+              Log.i(TAG, "Sauce ready.");
 
       	      while (true) {
         	    	dac.tick();
       	      }
       	    }
       	    catch(Exception ex) {
-      	    	Log.i(TAG, "bad time " + ex);
+      	    	ex.printStackTrace();
+      	    	Log.e(TAG, "bad time " + ex.toString());
       	    	dac.close();
       	    }
       	  }
@@ -270,7 +272,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
           	//finger down
             if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
               view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-              Log.i(TAG,"pad pointer finger :" + ((int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE)));
   
               //play if we were stopped
               if(! osc.isPlaying())
@@ -281,7 +282,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             } else {
               //finger up. kill the osc
               final int upId = event.getActionIndex();
-              Log.d(TAG, upId + " lifted");
               Oscillator upOsc;
               if (upId == fingerA) {
               	upOsc = this.oscA;
@@ -320,7 +320,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
                 upId != fingerA &&
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
               boolean isRecording = looper.toggleRecording();
-            	Log.i(TAG,"action down :" + (isRecording));
               
               if (isRecording)
               	view.focusLooper();
