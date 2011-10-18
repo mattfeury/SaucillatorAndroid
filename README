@@ -1,9 +1,36 @@
-This is a very unstable project as I'm constantly messing with it.
+Inspired by the Kaossilator (by Korg) and the general ideas of circuit-bending, the Saucillator is an attempt at transforming mobile devices into a digital synthesizer. It uses the touchscreen to manipulate two oscillators and an LFO.
 
-This is a basic audio synth engine for Android. Based on pieces of Adam Smith's Ethereal Dialpad and other various projects, this is my first attempt at creating a DAC as well as an Android application. The 'Saucillator' concept is the idea of using various input devices (touchpad/screen, accelerometer, etc) to transform your device into an instrument (inspired in part by the Kaosscilator). The original prototype was done for the Macbook Pro trackpad using Java and JSyn library. It can be found in my other repos. This is my attempt at transforming that type of application to Android.
+A small variety of timbres are currently available: Sine, Square, Saw, and "Singing Saw". In addition, there are a few effects / parameters that the user can control: delay, note lag, scale, etc. There is also a built-in looper and recorder. Recorded files are saved as wavve files to the SD card.
+
+This project is in beta, and is my first Android project. There may be some slight hiccups. I am using a newer, rooted phone so I recommend something powerful. Older phones may not be able to handle all this sauce. Big ups to the people that have contributed to this project (listed at the bottom). There is a similar project made for the Macbook Pro (check my other repos).
+
+---
+
+How to Play:
+The property each finger manipulates depend on the order the fingers are pressed. The first finger pressed manipulates the first oscillator, and the second finger pressed manipulates the second oscillator. The third finger pressed manipulates an LFO (remember this in case you wonder why it suddenly sounds like PacMan).
+
+For oscillators:
+  X-AXIS: controls amplitude. (0.0 to 1.0, left to right)
+  Y-AXIS: controls pitch corresponding to scale. (0-12, bottom to top)
+
+For the LFO:
+  X-AXIS: controls mod rate, i.e. the frequency at which it wobbles. (left to right)
+  Y-AXIS: controls mod depth, i.e. the amplitude at which it wobbles. (bottom to top)
+  (protip: drag the third finger to the bottom left to reset both to 0 and make the LFO disabled)
+
+Bugs?:
+-Too many loop layers (3+) cause clipping.
+
+Future Plans
+-More instruments
+-More inputs mapped to parameters (accelerometer, etc)
+-Better envelopes (ASDR)
 
 Contributors:
 Matt Feury
 Gaurav Mathur
 Henry Dooley
 Mudit Manu Paliwal
+
+Thanks to:
+Adam Smith, and his Ethereal Dialpad project for helping me get my feet wet in audio synthesis for Android.
