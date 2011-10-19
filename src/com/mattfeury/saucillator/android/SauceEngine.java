@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -60,7 +62,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
 
     private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
-
+    private Vibrator vibrator;
+    private boolean canVibrate = false;
+    private int VIBRATE_SPEED = 100; //in ms
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
         setContentView(R.layout.main);
         view = (SauceView)findViewById(R.id.sauceview);
         view.setOnTouchListener(this);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        
+        if (vibrator != null)
+          canVibrate = true;
         
         Thread t = new Thread() {
       	  public void run() {
@@ -321,6 +330,9 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
               boolean isRecording = looper.toggleRecording();
               
+              if (canVibrate)
+                vibrator.vibrate(VIBRATE_SPEED);
+                
               if (isRecording)
               	view.focusLooper();
               else
@@ -333,6 +345,10 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
             if (((actionCode == MotionEvent.ACTION_POINTER_DOWN) &&
                 upId != fingerA &&
                 upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
+              
+              if (canVibrate)
+                vibrator.vibrate(VIBRATE_SPEED);
+
             	looper.reset();
             	view.unfocusLooper();
             }          	
