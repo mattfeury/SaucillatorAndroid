@@ -36,9 +36,8 @@ public class Instrument {
    *
    * ie, given an offset of 1, we will find the offset for the first note in the scale
    */
-  public static double getScaleIntervalFromOffset(int[] scale, int offset)
-  {
-    return (scale[offset % scale.length] + 12*((int)((offset)/scale.length)));
+  public static double getScaleIntervalFromOffset(int[] scale, int offset) {
+    return (scale[Math.abs(offset) % scale.length] + 12*((int)((offset)/scale.length)));
   }
 
 }
