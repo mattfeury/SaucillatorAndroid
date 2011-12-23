@@ -43,6 +43,8 @@ public class SauceView extends View {
 
     public void init(Context context) {
       backColor = new Paint(Color.GREEN);
+      loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+      reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
     }
 
     public void setVisuals(boolean show) {
@@ -114,15 +116,13 @@ public class SauceView extends View {
       for(Finger f : fingers.values())
         f.draw(canvas);
 
-      //draw controller
-    	if (! init) {
-        loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-        reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-        init = true;
-    	} else {
+      // Draw controller
+      // We must reset the button dimensions in this event because they are not accurate on load time.
+      if (! init) {
         loop.set(0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-    	}
+        init = true;
+      }
 
       loop.draw(canvas);
       reset.draw(canvas);
