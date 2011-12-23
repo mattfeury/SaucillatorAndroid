@@ -9,10 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,14 +23,13 @@ import android.widget.Toast;
  * Main activity for the App. This will spin up the visuals and the audio engine. The audio engine gets
  * its own thread.
  */
-public class SauceEngine extends Activity implements OnTouchListener, SensorEventListener {
+public class SauceEngine extends Activity implements OnTouchListener {
     private static final String TAG = "Sauce";
     private SauceView view;
 
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
     private int lag = (int)(DEFAULT_LAG * 100);
-    private String fileName = "Recording";
     private int note = 0;
     private int octave = 4;
 
@@ -60,7 +55,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
     private int fingerB = -1;
     private int fingerC = -1;
 
-    private SensorManager sensorManager = null;
     MediaPlayer secretSauce;
     private Vibrator vibrator;
     private boolean canVibrate = false;
@@ -73,7 +67,6 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
 
         super.onCreate(savedInstanceState);
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -129,91 +122,12 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       	
       t.start();
     }
-    
-    /**
-     * Update parameters based on the accelerometer.
-     * This is currently not hooked up because it breaks Gingerbread and
-     * using the accelerometer may not be a great method for controlling things (it is volatile).
-     */
-    public void onSensorChanged(SensorEvent sensorEvent) {
-     synchronized (this) {
-      if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-    	  Log.i(TAG, "accel1 " + sensorEvent.values[0]);
-    	  Log.i(TAG, "accel2 " + sensorEvent.values[1]);
-    	  Log.i(TAG, "accel3 " + sensorEvent.values[2]);
-      }
-      
-      if (sensorEvent.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-    	  //Log.i(TAG, "o1 " + sensorEvent.values[0]);
-    	  //Log.i(TAG, "o2 " + sensorEvent.values[1]);
-    	  float pan = sensorEvent.values[2] / 80;
-    	  //Log.i(TAG, "o3 " + sensorEvent.values[2]);
-    	  if(pan <= .1 && pan >= -.1)
-    		dac.setPan(1.0f, 1.0f);
-    	  else if(pan < 0)
-    	    dac.setPan(Math.abs(pan), 0f);
-    	  else
-    		dac.setPan(0f, pan);
-      }
-     }
-    }
-   
-    // I've chosen to not implement this method
-    public void onAccuracyChanged(Sensor arg0, int arg1) {
-	  // TODO Auto-generated method stub
-	 }
-    
-    /**
-     * On resume of the app.
-     * Most of the accelerometer stuff has been disabled for the time being.
-     */
-    @Override
-    protected void onResume() {
-     super.onResume();
-     // Register this class as a listener for the accelerometer sensor
-     //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-     
-     // ...and the orientation sensor
-     // FIXME this breaks in Gingerbread it seems
-     //sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_NORMAL);
-    }
-   
-    /**
-     * Update parameters based on the settings menu.
-     */
-    private void updateSettings() {
-      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
-      oscA.setBaseFreq(newFreq);
-      oscB.setBaseFreq(newFreq);
 
-      if (delayRate == 0) {
-        ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
-      } else {
-        ugDelay.updateRate(delayRate);
-      }
-      
-      oscA.setLag(lag / 100f);
-      oscB.setLag(lag / 100f);
-    }
-
-    @Override
-    protected void onStop() {
-     // Unregister the listener
-     
-     //FIXME this breaks the app in Gingerbread (see above)
-     //sensorManager.unregisterListener(this);
-     //android.os.Process.killProcess(android.os.Process.myPid());
-
-     //TODO stop the DAC here or something
-     // remember: this is also called when we goto settings
-     super.onStop();
-    } 
-    
-    
     protected void onDestroy() {
     	android.os.Process.killProcess(android.os.Process.myPid());
     }
     
+    // Maintains landscape mode
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
@@ -359,17 +273,86 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       return true; // indicate event was handled
     }
 
+    /**
+     * Oscillator handlers
+     */
+    public void updateAmplitude(int key, float amp) {
+      Oscillator osc = null;
+      if (key == fingerA) 
+        osc = this.oscA;
+      else if (key == fingerB)
+        osc = this.oscB;
+
+      if (osc != null)
+        osc.setAmplitude(amp);
+    }      
+    public void updateFrequency(int key, int offset) {
+      Oscillator osc = null;
+      if (key == fingerA) 
+        osc = this.oscA;
+      else if (key == fingerB)
+        osc = this.oscB;
+
+      if (osc != null)
+        osc.setFreqByOffset(scale, offset);
+    }    
+
+    // Update oscillators based on the settings parameters.
+    private void updateOscSettings() {
+      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
+      oscA.setBaseFreq(newFreq);
+      oscB.setBaseFreq(newFreq);
+
+      if (delayRate == 0) {
+        ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
+      } else {
+        ugDelay.updateRate(delayRate);
+      }
+      
+      oscA.setLag(lag / 100f);
+      oscB.setLag(lag / 100f);
+    }
+    
+    /**
+     * Settings handlers
+     */
+    private boolean launchSettings() {
+    	Intent intent = new Intent(SauceEngine.this, Settings.class);
+    	intent.putExtra("octave", octave);
+    	intent.putExtra("note", note);
+    	intent.putExtra("file name", WavWriter.filePrefix);
+    	intent.putExtra("delay rate", delayRate);
+    	intent.putExtra("lag", lag);
+    	intent.putExtra("visuals", view.getVisuals());
+    	startActivityForResult(intent, 0);
+    	return true;
+    }
+    // Called when settings activity ends. Updates proper params
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      if (requestCode == 0 && data != null) {
+        Bundle extras = data.getExtras();
+
+        if (extras != null) {
+          WavWriter.filePrefix = extras.getString("file name");
+          note = extras.getInt("note");
+          octave = extras.getInt("octave");
+          lag = extras.getInt("lag");
+          delayRate = extras.getInt("delay rate");
+          view.setVisuals(extras.getBoolean("visuals"));
+          updateOscSettings();
+        }
+      }
+    }
+
+    /**
+     * Menu handlers
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
-
-    /**
-     * Methods for our settings menu and stuff
-     */
     public boolean onOptionsItemSelected(MenuItem item) {
-      // Handle item selection
     	switch (item.getGroupId()) {
     		case R.id.instrumentsA:
     			return instrumentSelection(item, 0);
@@ -389,36 +372,9 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
     			return record(item);
     		default:
     	}
-        return false;
+      return false;
     }
-    
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 0 && data != null) {
-          Bundle extras = data.getExtras();
-          if (extras != null) {
-            WavWriter.filePrefix = extras.getString("file name");
-            note = extras.getInt("note");
-            octave = extras.getInt("octave");
-            lag = extras.getInt("lag");
-            delayRate = extras.getInt("delay rate");
-            view.setVisuals(extras.getBoolean("visuals"));
-            updateSettings();
-          }
-        }
-    }
-   
-    private boolean launchSettings() {
-    	Intent intent = new Intent(SauceEngine.this, Settings.class);
-    	intent.putExtra("octave", octave);
-    	intent.putExtra("note", note);
-    	intent.putExtra("file name", fileName);
-    	intent.putExtra("delay rate", delayRate);
-    	intent.putExtra("lag", lag);
-    	intent.putExtra("visuals", view.getVisuals());
-    	startActivityForResult(intent, 0);
-    	return true;
-    }
-    
+
     private boolean record(MenuItem item) {
       boolean isRecording = dac.toggleRecording();
     	if (isRecording) {
@@ -466,10 +422,9 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
           break;
         default:
       }
-    	
     	return false;
     }
-    
+
     private boolean instrumentSelection(MenuItem item, int oscNum) {
     	if (item.isChecked()) {
     		return true;
@@ -516,29 +471,8 @@ public class SauceEngine extends Activity implements OnTouchListener, SensorEven
       
       //FIXME this is a hack for now so that the instrument specific settings (lag & base freq)
       //FIXME get reset on every instrument. We should abstract as InstrumentSettings and pass them around that way.
-      updateSettings();
+      updateOscSettings();
     	
     	return false;
-    }
-    
-    public void updateAmplitude(int key, float amp) {
-      Oscillator osc = null;
-      if (key == fingerA) 
-        osc = this.oscA;
-      else if (key == fingerB)
-        osc = this.oscB;
-
-      if (osc != null)
-        osc.setAmplitude(amp);
-    }      
-    public void updateFrequency(int key, int offset) {
-      Oscillator osc = null;
-      if (key == fingerA) 
-        osc = this.oscA;
-      else if (key == fingerB)
-        osc = this.oscB;
-
-      if (osc != null)
-        osc.setFreqByOffset(scale, offset);
-    }
+    }    
 }

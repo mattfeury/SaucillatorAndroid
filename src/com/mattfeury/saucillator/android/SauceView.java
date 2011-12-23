@@ -59,10 +59,10 @@ public class SauceView extends View {
       return x > (getMeasuredWidth() * controllerWidth);
     }
     public void focusLooper() {
-    	loop.focus();
+      loop.focus();
     }
     public void unfocusLooper() {
-    	loop.unfocus();
+      loop.unfocus();
     }
 
     public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
