@@ -24,20 +24,4 @@ public class SingingSaw extends ComplexOsc {
     third.setFreq(Instrument.getFrequencyForScaleNote(Instrument.majorScale, freq, 2));
     fifth.setFreq(Instrument.getFrequencyForScaleNote(Instrument.majorScale, freq, 4));
   }
-
-  public void setModRate(int rate) {
-    for(BasicOsc osc : components)
-      osc.setModRate(rate);
-  }
-  public void setModDepth(int depth) {
-    for(BasicOsc osc : components)
-      osc.setModDepth(depth);
-  }
-
-  public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
-		if(! isPlaying) {
-			return true;
-		}
-    return renderKids(buffer);
-	}
 }

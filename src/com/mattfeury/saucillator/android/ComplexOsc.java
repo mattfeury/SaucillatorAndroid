@@ -8,18 +8,18 @@ import java.util.LinkedList;
  */
 public abstract class ComplexOsc extends Oscillator {
 
-  protected LinkedList<BasicOsc> components;
+  protected LinkedList<Oscillator> components;
 
   public ComplexOsc() {
     this(1.0f);
   }
   public ComplexOsc(float amp) {
     amplitude = amp;
-    components = new LinkedList<BasicOsc>();
+    components = new LinkedList<Oscillator>();
   }
 
-  protected void fill(BasicOsc... oscs) {
-    for(BasicOsc osc : oscs) {
+  protected void fill(Oscillator... oscs) {
+    for(Oscillator osc : oscs) {
       osc.isPlaying = true; //we manage playback here, so all the children should be available for rendering
       components.add(osc);
       osc.chuck(this);
@@ -33,19 +33,19 @@ public abstract class ComplexOsc extends Oscillator {
   public abstract void setFreq(float freq);
 
   public void setModRate(int rate) {
-    for(BasicOsc osc : components)
+    for(Oscillator osc : components)
       osc.setModRate(rate);
   }
   public void setModDepth(int depth) {
-    for(BasicOsc osc : components)
+    for(Oscillator osc : components)
       osc.setModDepth(depth);
   }
   public void setLag(float rate) {
-    for(BasicOsc osc : components)
+    for(Oscillator osc : components)
       osc.setLag(rate);
   }
   public void setAmplitude(float amp) {
-    for(BasicOsc osc : components)
+    for(Oscillator osc : components)
       osc.setAmplitude(amp);
   }
 
