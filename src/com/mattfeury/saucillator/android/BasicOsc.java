@@ -39,7 +39,7 @@ public abstract class BasicOsc extends Oscillator {
     cyclesPerSample = frequency/SAMPLE_RATE;
   }
   public synchronized void setFreq(float freq) {
-    frequency = freq;
+    frequency = freq * this.harmonic;
     updateFrequency();
   }
 
@@ -91,7 +91,7 @@ public abstract class BasicOsc extends Oscillator {
     return lfoFn;
   }
   public synchronized float updateLag() {
-    lagOut = lagOut + rate * (frequency - lagOut);
+    lagOut = lagOut + rate * (frequency / harmonic - lagOut);
     return lagOut;
   }
 

@@ -9,6 +9,11 @@ public abstract class Oscillator extends UGen {
   public float amplitude = 1.0f;
   
   public float BASE_FREQ = 440f;
+  protected int harmonic = 1;
+
+  public void setHarmonic(int h) {
+    this.harmonic = h;
+  }
 
   public abstract void setFreq(float freq);
   public abstract void setModRate(int rate);

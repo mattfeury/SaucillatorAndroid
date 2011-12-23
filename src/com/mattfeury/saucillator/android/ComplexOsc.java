@@ -6,7 +6,7 @@ import java.util.LinkedList;
  * A complex oscillator.
  * An oscillator that is made up of BasicOscs and sums them together.
  */
-public abstract class ComplexOsc extends Oscillator {
+public class ComplexOsc extends Oscillator {
 
   protected LinkedList<Oscillator> components;
 
@@ -30,7 +30,10 @@ public abstract class ComplexOsc extends Oscillator {
     isPlaying = !isPlaying;
   }
 
-  public abstract void setFreq(float freq);
+  public void setFreq(float freq) {
+    for(Oscillator osc : components)
+      osc.setFreq(freq * this.harmonic);
+  }
 
   public void setModRate(int rate) {
     for(Oscillator osc : components)
