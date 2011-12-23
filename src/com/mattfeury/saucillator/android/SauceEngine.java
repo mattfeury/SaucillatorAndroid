@@ -34,7 +34,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private int octave = 4;
 
     //music shtuffs
-    public int[] scale = Instrument.pentatonic;
+    public int[] scale = Theory.pentatonicScale;
 
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
@@ -299,7 +299,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
-      float newFreq = Instrument.getFrequencyForNote(note + 1, octave);
+      float newFreq = Theory.getFrequencyForNote(note + 1, octave);
       oscA.setBaseFreq(newFreq);
       oscB.setBaseFreq(newFreq);
 
@@ -406,19 +406,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       switch (scaleId) {
         case R.id.pentatonic: //pentatonic
-          scale = Instrument.pentatonic;
+          scale = Theory.pentatonicScale;
           break;
         case R.id.major: //major
-          scale = Instrument.majorScale;
+          scale = Theory.majorScale;
           break;
         case R.id.minor: //minor
-          scale = Instrument.minorScale;
+          scale = Theory.minorScale;
           break;
         case R.id.blues: //blues
-          scale = Instrument.minorBluesScale;
+          scale = Theory.minorBluesScale;
           break;
         case R.id.chromatic: //chromatic
-          scale = Instrument.chromaticScale;
+          scale = Theory.chromaticScale;
           break;
         default:
       }

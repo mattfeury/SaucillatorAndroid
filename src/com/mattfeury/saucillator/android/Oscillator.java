@@ -22,7 +22,7 @@ public abstract class Oscillator extends UGen {
   }
 
   public synchronized void setFreqByOffset(int[] scale, int offset) {
-    float freq = Instrument.getFrequencyForScaleNote(scale, BASE_FREQ, offset);
+    float freq = Theory.getFrequencyForScaleNote(scale, BASE_FREQ, offset);
     setFreq(freq);
   }
 }
