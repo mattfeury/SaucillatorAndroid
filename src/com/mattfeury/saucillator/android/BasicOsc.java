@@ -1,6 +1,7 @@
 package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
+import android.util.Log;
 
 /**
  * I am a basic oscillator.
@@ -39,6 +40,9 @@ public abstract class BasicOsc extends Oscillator {
     cyclesPerSample = frequency/SAMPLE_RATE;
   }
   public synchronized void setFreq(float freq) {
+    if (harmonic == 2)
+      Log.i("BOSS", "freq: " + freq + " / new: "+freq*this.harmonic + " / " + this.toString());
+
     frequency = freq * this.harmonic;
     updateFrequency();
   }

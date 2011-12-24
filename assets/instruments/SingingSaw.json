@@ -1,0 +1,51 @@
+{
+  id: 5,//perhaps a unique id based on date + millis
+  name: "Singing Saw",
+  author: "Matt Feury", //not necessary
+  timbre: [
+    {
+      id: 'sine',
+      harmonic: 1, //fundamental
+      amplitude: 1.0, //maybe auto calculate
+      //TODO make envelopes work?
+      envelope: {
+        data: [
+          [0.0, 0.0],
+          [0.6, 0.8],
+          [0.4, 1.0],
+          [1.0, 0.0],
+        ], /*OR*/
+        attack: [0.6, 0.8],
+        release: [1.0, 0.0],
+        loop: true
+      }
+    },
+    {
+      id: 'sine',
+      harmonic: 2,
+      amplitude: 1.0, //maybe auto calculate
+      //TODO make envelopes work?
+      envelope: {
+        data: [
+          [0.0, 0.0],
+          [0.6, 0.8],
+          [0.4, 1.0],
+          [1.0, 0.0],
+        ], /*OR*/
+        attack: [0.6, 0.8],
+        release: [1.0, 0.0],
+        loop: true
+      }
+    }  
+  ],
+  fx: {
+    delay: {
+      time: 100
+    },
+    lfo: {
+      rate: 5,
+      depth: 30
+    },
+    lag: 0.9
+  }
+}

@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +21,8 @@ import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 /*
- * Main activity for the App. This will spin up the visuals and the audio engine. The audio engine gets
- * its own thread.
+ * Main activity for the App. This will spin up the visuals and the audio engine. 
+ * The audio engine gets its own thread.
  */
 public class SauceEngine extends Activity implements OnTouchListener {
     private static final String TAG = "Sauce";
@@ -82,8 +83,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	  public void run() {
       	    try {
               //default instruments chosen here
-              oscA = new Sine();
-              oscB = new Square();
+              oscA = InstrumentManager.getInstrument(getAssets(), "SingingSaw");//new Sine();
+              oscB = InstrumentManager.getInstrument(getAssets(), "Sine");//new Square();
       	    	envA = new ExpEnv();
               //envB = new ExpEnv();
       	    	dac = new Dac();
@@ -474,5 +475,5 @@ public class SauceEngine extends Activity implements OnTouchListener {
       updateOscSettings();
     	
     	return false;
-    }    
+    }
 }
