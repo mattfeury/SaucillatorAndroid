@@ -1,7 +1,6 @@
 package com.mattfeury.saucillator.android;
 
 import android.util.FloatMath;
-import android.util.Log;
 
 /**
  * I am a basic oscillator.

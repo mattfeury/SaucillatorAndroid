@@ -79,10 +79,18 @@ public class Looper extends UGen {
     }
   }
   public synchronized void undo() {
+    if (! defined)
+      return;
+
     stopRecording();
     
     if (loops.size() != 0)
       loops.pop();
+
+    if (loops.size() == 0) {
+      reset();
+      return;
+    }
 
     recalculateLoopTable();
   }

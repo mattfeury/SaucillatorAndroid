@@ -8,7 +8,6 @@ import android.os.Vibrator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.Menu;
@@ -237,36 +236,33 @@ public class SauceEngine extends Activity implements OnTouchListener {
         } else {
           //controller buttons
           //TODO FIXME there needs to be a more abstracted way to do these
-        	if (y <= maxHeight / SauceView.numButtons) {
-            //toggle loop. only because it's the first button. bleg
-            final int upId = event.getActionIndex();
-            if ((actionCode == MotionEvent.ACTION_POINTER_DOWN &&
-                upId != fingerA &&
-                upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
+
+          int buttonHeight = maxHeight / SauceView.numButtons;
+
+          final int upId = event.getActionIndex();
+          if ((actionCode == MotionEvent.ACTION_POINTER_DOWN &&
+              upId != fingerA && upId != fingerB)
+              || actionCode == MotionEvent.ACTION_DOWN) {
+            
+            if (canVibrate)
+              vibrator.vibrate(VIBRATE_SPEED);
+            
+          	if (y <= buttonHeight) {
+              //Toggle Looper Button
               boolean isRecording = looper.toggleRecording();
-              
-              if (canVibrate)
-                vibrator.vibrate(VIBRATE_SPEED);
-                
               if (isRecording)
               	view.focusLooper();
               else
               	view.unfocusLooper();
                   
-            }
-          } else {
-          	//reset looper
-            final int upId = event.getActionIndex();
-            if (((actionCode == MotionEvent.ACTION_POINTER_DOWN) &&
-                upId != fingerA &&
-                upId != fingerB) || actionCode == MotionEvent.ACTION_DOWN) {
-              
-              if (canVibrate)
-                vibrator.vibrate(VIBRATE_SPEED);
-
+            } else if (y <= buttonHeight * 2) {
+              //Undo Looper Button
+              looper.undo();
+            } else {
+              //Reset Looper Button
             	looper.reset();
             	view.unfocusLooper();
-            }          	
+            }   	
           }
         }
       }

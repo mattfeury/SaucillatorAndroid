@@ -16,13 +16,13 @@ public class SauceView extends View {
     //for the controller
     public static final float controllerWidth = .15f; //percentage
     public static final float padWidth = 1.0f - controllerWidth;
-    public static final int numButtons = 2;
+    public static final int numButtons = 3;
     
     private boolean init = false;
 
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-    private RectButton loop, reset;
+    private RectButton loop, undo, reset;
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
     Paint backColor;
@@ -44,6 +44,7 @@ public class SauceView extends View {
     public void init(Context context) {
       backColor = new Paint(Color.GREEN);
       loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+      undo = new RectButton("Undo", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
     }
 
@@ -120,11 +121,13 @@ public class SauceView extends View {
       // We must reset the button dimensions in this event because they are not accurate on load time.
       if (! init) {
         loop.set(0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-        reset.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+        undo.set(0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+        reset.set(0, getHeight() / numButtons * 2, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
         init = true;
       }
 
       loop.draw(canvas);
+      undo.draw(canvas);
       reset.draw(canvas);
     }
 
