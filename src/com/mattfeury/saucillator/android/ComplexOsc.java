@@ -57,6 +57,8 @@ public class ComplexOsc extends Oscillator {
 		if(! isPlaying) {
 			return true;
 		}
+
+    Limiter.limit(buffer);
     return renderKids(buffer);
 	}
 }
