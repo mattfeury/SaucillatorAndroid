@@ -1,12 +1,15 @@
 package com.mattfeury.saucillator.android;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Stack;
 /**
  * Creates a loop
  */
 public class Looper extends UGen {
   Float[] loopTable;
   LinkedList<Float> baseLoop;
+  Stack<Float[]> loops;
   int pointer = 0;
 	//boolean enabled = true;
   float amplitude = 0.75f; //don't playback loop at full volume. 
@@ -17,6 +20,7 @@ public class Looper extends UGen {
   public Looper() {
     super();
     baseLoop = new LinkedList<Float>();
+    loops = new Stack<Float[]>();
   }
 
   public synchronized void reset() {
@@ -25,6 +29,7 @@ public class Looper extends UGen {
       defined = false;
 
       pointer = 0;
+      loops.clear();
       baseLoop.clear();
     }
   }
@@ -36,6 +41,12 @@ public class Looper extends UGen {
   }
   public synchronized void startRecording() {
     recording = true;
+    if (defined) {
+      // Create a new layer for this loop
+      Float[] loop = new Float[loopTable.length];
+      Arrays.fill(loop, 0f);
+      loops.push(loop);
+    }
   }
   public synchronized void stopRecording() {
     recording = false;
@@ -45,6 +56,7 @@ public class Looper extends UGen {
         //setup loopTable
         loopTable = new Float[baseLoop.size()];
         baseLoop.toArray(loopTable);
+        loops.push(loopTable.clone());
         defined = true;
       }
     }
@@ -57,6 +69,23 @@ public class Looper extends UGen {
 
     return recording;
   }
+
+  public synchronized void recalculateLoopTable() {
+    synchronized(this) {
+      Arrays.fill(loopTable, 0f);
+      for (Float[] loop : loops)
+        for (int i=0; i < loop.length; i++)
+          loopTable[i] += loop[i];
+    }
+  }
+  public synchronized void undo() {
+    stopRecording();
+    
+    if (loops.size() != 0)
+      loops.pop();
+
+    recalculateLoopTable();
+  }
 	
 	public boolean render(final float[] buffer) {
 		boolean didWork = renderKids(buffer);
@@ -68,9 +97,15 @@ public class Looper extends UGen {
       for(int i = 0; i < CHUNK_SIZE; i++) {
         if (recording) {
           if (! defined) {
-              baseLoop.add((Float)buffer[i]);
-          } else { //add rendered buffer of children to loop
+            baseLoop.add((Float)buffer[i]);
+          } else {
+            // Add to full loop
             loopTable[origPointer] += buffer[i];
+
+            // Add to newest layer (created when recording starts)
+            Float[] loop = loops.peek();
+            loop[origPointer] += buffer[i];
+
             origPointer = (origPointer + 1) % loopTable.length;
           }
         }
