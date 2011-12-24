@@ -7,7 +7,7 @@ public abstract class Oscillator extends UGen {
 
   public float frequency = 440f;
   public float amplitude = 1.0f;
-  
+
   public float BASE_FREQ = 440f;
   protected int harmonic = 1;
 
@@ -21,7 +21,7 @@ public abstract class Oscillator extends UGen {
   public abstract void setLag(float rate);
 
   public abstract void setAmplitude(float amp);
-  
+
   public void setBaseFreq(float freq) {
     BASE_FREQ = freq;
   }

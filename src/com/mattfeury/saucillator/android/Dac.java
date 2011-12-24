@@ -103,7 +103,7 @@ public class Dac extends UGen {
 
         //Write dat shit into dat wav buffa.
         if (recording) {
-        	 WavWriter.pushFloat(localBuffer[i]);
+          WavWriter.pushFloat(localBuffer[i]);
         }
 			}
 

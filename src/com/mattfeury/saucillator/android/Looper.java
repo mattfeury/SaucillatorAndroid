@@ -78,21 +78,29 @@ public class Looper extends UGen {
           loopTable[i] += loop[i];
     }
   }
+  public synchronized void removeLoopFromTable(final Float[] loop) {
+    synchronized(this) {
+      if (loop.length != loopTable.length)
+        return;
+
+      for (int i=0; i < loopTable.length; i++)
+        loopTable[i] -= loop[i];
+    }
+  }
   public synchronized void undo() {
     if (! defined)
       return;
 
     stopRecording();
     
-    if (loops.size() != 0)
-      loops.pop();
-
-    if (loops.size() == 0) {
-      reset();
-      return;
+    if (loops.size() != 0) {
+      Float[] loop = loops.pop();
+      removeLoopFromTable(loop);
     }
 
-    recalculateLoopTable();
+    if (loops.size() == 0)
+      reset();
+
   }
 	
 	public boolean render(final float[] buffer) {
