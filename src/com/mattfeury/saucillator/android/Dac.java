@@ -97,8 +97,10 @@ public class Dac extends UGen {
         }
       }
     } else {
+      Limiter.limit(localBuffer);
       for(int i = 0; i < CHUNK_SIZE; i++) {
-        target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2);
+        target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2.0);
+
         //Write dat shit into dat wav buffa.
         if (recording) {
         	 WavWriter.pushFloat(localBuffer[i]);
