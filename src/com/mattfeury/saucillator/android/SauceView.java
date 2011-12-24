@@ -103,16 +103,16 @@ public class SauceView extends View {
           fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
         }
       }
-      
+
       fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
       fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-      
-      
+
+
       canvas.drawColor(backColor.getColor());
-      
+
       if(visuals)		
         fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
-      
+
       for(Finger f : fingers.values())
         f.draw(canvas);
 
