@@ -111,6 +111,12 @@ public class Looper extends UGen {
 		synchronized(this) {
       int origPointer = pointer;
       for(int i = 0; i < CHUNK_SIZE; i++) {
+
+        if (defined) {
+          buffer[i] += amplitude*loopTable[pointer];
+          pointer = (pointer + 1) % loopTable.length;
+        }
+
         if (recording) {
           if (! defined) {
             baseLoop.add((Float)buffer[i]);
@@ -124,10 +130,6 @@ public class Looper extends UGen {
 
             origPointer = (origPointer + 1) % loopTable.length;
           }
-        }
-        if (defined) {
-          buffer[i] += amplitude*loopTable[pointer];
-          pointer = (pointer + 1) % loopTable.length;
         }
       }
 		}
