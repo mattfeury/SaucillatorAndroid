@@ -243,10 +243,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
           if ((actionCode == MotionEvent.ACTION_POINTER_DOWN &&
               upId != fingerA && upId != fingerB)
               || actionCode == MotionEvent.ACTION_DOWN) {
-            
+
             if (canVibrate)
               vibrator.vibrate(VIBRATE_SPEED);
-            
+
           	if (y <= buttonHeight) {
               //Toggle Looper Button
               boolean isRecording = looper.toggleRecording();
@@ -254,7 +254,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
               	view.focusLooper();
               else
               	view.unfocusLooper();
-                  
+
             } else if (y <= buttonHeight * 2) {
               //Undo Looper Button
               looper.undo();
@@ -263,7 +263,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
               //Reset Looper Button
               looper.reset();
               view.unfocusLooper();
-            }   	
+            }
           }
         }
       }

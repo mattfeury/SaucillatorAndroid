@@ -15,5 +15,5 @@ public class Limiter {
         buffer[i] *= 1.0f / max;
     }
   }
-  
+
 }
