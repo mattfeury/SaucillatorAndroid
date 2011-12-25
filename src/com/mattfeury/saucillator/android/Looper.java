@@ -128,7 +128,10 @@ public class Looper extends UGen {
         }
 
         if (defined) {
-          buffer[i] += amplitude*loopTable[pointer];
+          if (recording) //buffer has already been added to looptable
+            buffer[i] = amplitude*loopTable[pointer];
+          else
+            buffer[i] += amplitude*loopTable[pointer];
           pointer = (pointer + 1) % loopTable.length;
         }        
       }
