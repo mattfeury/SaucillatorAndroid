@@ -258,10 +258,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
             } else if (y <= buttonHeight * 2) {
               //Undo Looper Button
               looper.undo();
+              view.unfocusLooper();
             } else {
               //Reset Looper Button
-            	looper.reset();
-            	view.unfocusLooper();
+              looper.reset();
+              view.unfocusLooper();
             }   	
           }
         }
