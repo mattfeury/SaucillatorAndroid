@@ -53,6 +53,10 @@ public class InstrumentManager {
     JSONArray timbres = json.getJSONArray("timbre");
     int numHarmonics = timbres.length();
 
+    // TODO FIXME consider, rather than creating multiple sines, squares, etc,
+    // just summing their tables together and creating one instrument.
+    //
+    // this may remove baggage and calculations.
     for (int i = 0; i < numHarmonics; i++) {
       JSONObject timbre = timbres.getJSONObject(i);
       String timbreId = timbre.optString("id", "sine");
