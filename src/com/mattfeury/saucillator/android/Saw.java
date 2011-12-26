@@ -8,6 +8,9 @@ public class Saw extends BasicOsc {
   public Saw() {
     this(1.0f);
   }
+  public Saw(int phase) {
+    super(phase);
+  }
   public Saw(float amp) {
     super(amp);
   }

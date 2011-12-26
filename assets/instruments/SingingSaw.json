@@ -23,6 +23,7 @@
     {
       id: 'sine',
       harmonic: 2,
+      phase: 180,
       amplitude: 1.0, //maybe auto calculate
       //TODO make envelopes work?
       envelope: {

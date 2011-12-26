@@ -8,6 +8,9 @@ public class Square extends BasicOsc {
   public Square() {
     this(1.0f);
   }
+  public Square(int phase) {
+    super(phase);
+  }
   public Square(float amp) {
     super(amp);
   }

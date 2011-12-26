@@ -61,9 +61,10 @@ public class InstrumentManager {
       JSONObject timbre = timbres.getJSONObject(i);
       String timbreId = timbre.optString("id", "sine");
       int harmonic = timbre.optInt("harmonic", 1);
+      int phase = timbre.optInt("phase", 0);
       float amplitude = (float)timbre.optDouble("amplitude", 1.0);
 
-      Oscillator osc = getOscillatorForTimbre(timbreId);
+      Oscillator osc = getOscillatorForTimbre(timbreId, phase);
       osc.setHarmonic(harmonic);
       osc.setAmplitude(amplitude);
 
@@ -95,15 +96,15 @@ public class InstrumentManager {
     return instrument;
   }
 
-  private static Oscillator getOscillatorForTimbre(String id) {
+  private static Oscillator getOscillatorForTimbre(String id, int phase) {
     if ("sine".equals(id))
-      return new Sine();
+      return new Sine(phase);
     else if ("saw".equals(id))
-      return new Saw();
+      return new Saw(phase);
     else if ("square".equals(id))
-      return new Square();
+      return new Square(phase);
     else //TODO lookup osc from files
-      return new Sine();
+      return new Sine(phase);
   }
 
 }

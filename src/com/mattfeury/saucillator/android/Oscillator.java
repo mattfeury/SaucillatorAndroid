@@ -5,10 +5,11 @@ package com.mattfeury.saucillator.android;
  */
 public abstract class Oscillator extends UGen {
 
-  public float frequency = 440f;
-  public float amplitude = 1.0f;
+  protected float frequency = 440f;
+  protected float amplitude = 1.0f;
+  protected int oscPhase = 1;
 
-  public float BASE_FREQ = 440f;
+  protected float BASE_FREQ = 440f;
   protected int harmonic = 1;
 
   public void setHarmonic(int h) {

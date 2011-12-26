@@ -27,10 +27,17 @@ public abstract class BasicOsc extends Oscillator {
   public BasicOsc() {
     this(1.0f);
   }
+  public BasicOsc(int phase) {
+    this(1.0f, phase);
+  }
   public BasicOsc(float amp) {
+    this(amp, 0);
+  }
+  public BasicOsc(float amp, int phase) {
+    this.oscPhase = phase;
     amplitude = amp;
     table = new float[ENTRIES];
-    fill();
+    fill();   
   }
 
   public abstract void fill();
