@@ -57,6 +57,7 @@ public class InstrumentManager {
     // just summing their tables together and creating one instrument.
     //
     // this may remove baggage and calculations.
+    float totalAmp = 0;
     for (int i = 0; i < numHarmonics; i++) {
       JSONObject timbre = timbres.getJSONObject(i);
       String timbreId = timbre.optString("id", "sine");
@@ -64,11 +65,20 @@ public class InstrumentManager {
       int phase = timbre.optInt("phase", 0);
       float amplitude = (float)timbre.optDouble("amplitude", 1.0);
 
+      totalAmp += amplitude;
+
       Oscillator osc = getOscillatorForTimbre(timbreId, phase);
       osc.setHarmonic(harmonic);
       osc.setAmplitude(amplitude);
 
       instrument.fill(osc);
+    }
+
+    // scale amplitude values so that they sum to MAX_AMPLITUDE.
+    float factor = ComplexOsc.MAX_AMPLITUDE / totalAmp;
+    for (int i = 0; i < numHarmonics; i++) {
+      Oscillator osc = instrument.getComponent(i);
+      osc.factorAmplitude(factor);
     }
 
     // Lookup and modify FX

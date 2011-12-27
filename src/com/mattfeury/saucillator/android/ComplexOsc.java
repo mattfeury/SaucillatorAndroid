@@ -9,6 +9,7 @@ import java.util.LinkedList;
 public class ComplexOsc extends Oscillator {
 
   protected LinkedList<Oscillator> components;
+  public static final float MAX_AMPLITUDE = 1.0f;
 
   public ComplexOsc() {
     this(1.0f);
@@ -24,6 +25,9 @@ public class ComplexOsc extends Oscillator {
       components.add(osc);
       osc.chuck(this);
     }
+  }
+  public Oscillator getComponent(int index) {
+    return components.get(index);
   }
 
   public void togglePlayback() {
@@ -51,7 +55,10 @@ public class ComplexOsc extends Oscillator {
     for(Oscillator osc : components)
       osc.setAmplitude(amp);
   }
-
+  public void factorAmplitude(float factor) {
+    for(Oscillator osc : components)
+      osc.factorAmplitude(factor);
+  }
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {

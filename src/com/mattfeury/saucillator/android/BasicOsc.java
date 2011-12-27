@@ -61,8 +61,10 @@ public abstract class BasicOsc extends Oscillator {
   }
   public void setAmplitude(float amp) {
     this.amplitude = amp;
-    //fill();
-  }  
+  }
+  public void factorAmplitude(float factor) {
+    this.amplitude *= factor;
+  }
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
