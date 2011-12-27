@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public abstract class UGen {
 	public static final int CHUNK_SIZE = 256; //formerly 1024
-	public static final int SAMPLE_RATE = 11025;
+	public static final int SAMPLE_RATE = 11025 * 2;
 	
 	protected boolean isPlaying = false;
 	
