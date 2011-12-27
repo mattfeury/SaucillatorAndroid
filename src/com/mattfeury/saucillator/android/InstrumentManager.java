@@ -103,6 +103,8 @@ public class InstrumentManager {
       return new Saw(phase);
     else if ("square".equals(id))
       return new Square(phase);
+    else if ("noise".equals(id))
+      return new Noise(phase);
     else //TODO lookup osc from files
       return new Sine(phase);
   }
