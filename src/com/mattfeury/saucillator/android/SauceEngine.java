@@ -49,6 +49,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private ExpEnv envA, envB;
     private Delay ugDelay;
     private Looper looper;
+    private ParametricEQ eq;
 
     // which finger ID corresponds to which instrument
     private int fingerA = -1;
@@ -90,7 +91,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	    	ugDelay = new Delay(delayRate);
       	    	looper = new Looper();
 
-      	    	looper.chuck(dac);
+      	    	eq = new ParametricEQ();
+      	    	eq.chuck(dac);
+      	    	looper.chuck(eq);
       	    	ugDelay.chuck(looper);
 
       	    	envA.chuck(ugDelay);
@@ -189,9 +192,17 @@ public class SauceEngine extends Activity implements OnTouchListener {
           	fingerC = id;
           }
 
-          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth); 
+          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
 
-          if (osc != null) { 
+          float xScaled = (x - controllerWidth) / (maxWidth - controllerWidth);
+
+          if (id == fingerB) {
+            //FIXME hack to mess with EQ
+            //have frequency scale like a parabola, ie squared
+            eq.setFrequency(xScaled * xScaled);
+            eq.setQ((maxHeight - y) / maxHeight);
+            Log.i(TAG, "new freq: " + (x - controllerWidth) / (maxWidth - controllerWidth) + " / new q: " + (maxHeight - y) / maxHeight);
+          } else if (osc != null) { 
           	//finger down
             if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
               view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
@@ -199,7 +210,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
               //play if we were stopped
               if(! osc.isPlaying())
                 osc.togglePlayback();
-              
+            
               updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
               updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
             } else {
