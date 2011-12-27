@@ -132,6 +132,7 @@ public class Looper extends UGen {
             buffer[i] = amplitude*loopTable[pointer];
           else
             buffer[i] += amplitude*loopTable[pointer];
+
           pointer = (pointer + 1) % loopTable.length;
         }        
       }

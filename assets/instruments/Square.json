@@ -1,0 +1,23 @@
+{
+  id: 2,//perhaps a unique id based on date + millis
+  name: "Square",
+  author: "Matt Feury", //not necessary
+  timbre: [
+    {
+      id: "square"
+    }
+  ],
+  fx: {
+    delay: {
+      time: 100
+    },
+    lfo: {
+      rate: 0,
+      depth: 0
+    },
+    lag: 0.0 //percentage
+
+    //maybe these. see if they are programmatically possible:
+    //chorus, 
+  }
+}

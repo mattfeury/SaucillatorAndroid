@@ -444,19 +444,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       switch (instrumentId) {
         case R.id.singingsaw: //singing saw
-          oldOsc = new SingingSaw();
+          oldOsc = InstrumentManager.getInstrument(getAssets(), "SingingSaw");
           break;
         case R.id.sine: //sine
-          oldOsc = new Sine();
+          oldOsc = InstrumentManager.getInstrument(getAssets(), "Sine");
           break;
         case R.id.square: //square
-        	oldOsc = new Square(1.0f);
+          oldOsc = InstrumentManager.getInstrument(getAssets(), "Square");
           break;
         case R.id.saw: //saw
-          oldOsc = new Saw(1.0f);
+          oldOsc = InstrumentManager.getInstrument(getAssets(), "Saw");
           break;
         default:
-          oldOsc = new Sine();
+          oldOsc = InstrumentManager.getInstrument(getAssets(), "Sine");
       }
 
       if (oscNum == 0) {
