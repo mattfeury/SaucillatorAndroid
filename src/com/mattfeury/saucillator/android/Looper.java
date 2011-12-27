@@ -110,6 +110,10 @@ public class Looper extends UGen {
 		
 		synchronized(this) {
       int origPointer = pointer;
+      Float[] loop = null;
+      if (recording && defined && loops.size() != 0)
+        loop = loops.peek();
+
       for(int i = 0; i < CHUNK_SIZE; i++) {
 
         if (recording) {
@@ -120,7 +124,6 @@ public class Looper extends UGen {
             loopTable[origPointer] += buffer[i];
 
             // Add to newest layer (created when recording starts)
-            Float[] loop = loops.peek();
             loop[origPointer] += buffer[i];
 
             origPointer = (origPointer + 1) % loopTable.length;
