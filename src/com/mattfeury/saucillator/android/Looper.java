@@ -7,12 +7,12 @@ import java.util.Stack;
  * Creates a loop
  */
 public class Looper extends UGen {
-  Float[] loopTable;
+  float[] loopTable;
   LinkedList<Float> baseLoop;
-  Stack<Float[]> loops;
+  Stack<float[]> loops;
   int pointer = 0;
 	//boolean enabled = true;
-  float amplitude = 0.75f; //don't playback loop at full volume. 
+  float amplitude = 0.9f; //don't playback loop at full volume. 
   boolean defined = false;
   boolean recording = false;
   boolean playing = true;
@@ -20,7 +20,7 @@ public class Looper extends UGen {
   public Looper() {
     super();
     baseLoop = new LinkedList<Float>();
-    loops = new Stack<Float[]>();
+    loops = new Stack<float[]>();
   }
 
   public synchronized void reset() {
@@ -43,7 +43,7 @@ public class Looper extends UGen {
     recording = true;
     if (defined) {
       // Create a new layer for this loop
-      Float[] loop = new Float[loopTable.length];
+      float[] loop = new float[loopTable.length];
       Arrays.fill(loop, 0f);
       loops.push(loop);
     }
@@ -54,9 +54,21 @@ public class Looper extends UGen {
     synchronized(this) {
       if (! defined) {      
         //setup loopTable
-        loopTable = new Float[baseLoop.size()];
-        baseLoop.toArray(loopTable);
-        loops.push(loopTable.clone());
+        loopTable = new float[baseLoop.size()];
+        float[] stackedLoop = new float[baseLoop.size()];
+        int i = 0;
+        for(Float f : baseLoop) {
+          loopTable[i] = f;
+          stackedLoop[i] = f;
+          i++;
+        }
+        loops.push(stackedLoop);
+
+        // We don't need this reference anymore since it's in the stack.
+        // Let it be garbage collected to reduce heap size. 
+        // TODO garbage collection causes playback delay. see how this affects.
+        baseLoop.clear();
+
         defined = true;
       }
     }
@@ -73,12 +85,12 @@ public class Looper extends UGen {
   public synchronized void recalculateLoopTable() {
     synchronized(this) {
       Arrays.fill(loopTable, 0f);
-      for (Float[] loop : loops)
+      for (float[] loop : loops)
         for (int i=0; i < loop.length; i++)
           loopTable[i] += loop[i];
     }
   }
-  public synchronized void removeLoopFromTable(final Float[] loop) {
+  public synchronized void removeLoopFromTable(final float[] loop) {
     synchronized(this) {
       if (loop.length != loopTable.length)
         return;
@@ -95,7 +107,7 @@ public class Looper extends UGen {
       stopRecording();
     
     if (loops.size() != 0) {
-      Float[] loop = loops.pop();
+      float[] loop = loops.pop();
       removeLoopFromTable(loop);
     }
 
@@ -111,7 +123,7 @@ public class Looper extends UGen {
 
     synchronized(this) {
       int origPointer = pointer;
-      Float[] loop = null;
+      float[] loop = null;
       if (recording && defined && loops.size() != 0)
         loop = loops.peek();
 
@@ -138,7 +150,7 @@ public class Looper extends UGen {
             buffer[i] += amplitude*loopTable[pointer];
 
           pointer = (pointer + 1) % loopTable.length;
-        }        
+        }
       }
 		}
 
