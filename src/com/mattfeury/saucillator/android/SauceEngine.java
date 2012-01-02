@@ -151,9 +151,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        if (oscA.isPlaying())
+        if (oscA.isPlaying() && ! oscA.isReleasing())
           oscA.togglePlayback();
-        if (oscB.isPlaying())
+        if (oscB.isPlaying() && ! oscB.isReleasing())
           oscB.togglePlayback();
         
         fingerA = -1;
