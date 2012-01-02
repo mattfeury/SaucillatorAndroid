@@ -1,7 +1,5 @@
 package com.mattfeury.saucillator.android;
 
-import android.util.FloatMath;
-
 /**
  * Noise oscillator (filled randomly)
  */

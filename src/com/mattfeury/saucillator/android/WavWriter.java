@@ -9,6 +9,7 @@ import android.util.Log;
  */
 public class WavWriter {
   static int numWavFiles  = 0;
+  //FIXME make this stuff instances. might prevent memory leaks
   static ByteArrayOutputStream data = new ByteArrayOutputStream();
   private static File lastFile = null;
   public static String filePrefix = "Recording";

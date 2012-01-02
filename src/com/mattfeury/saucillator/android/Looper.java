@@ -104,12 +104,12 @@ public class Looper extends UGen {
 
   }
 	
-	public boolean render(final float[] buffer) {
-		boolean didWork = renderKids(buffer);
-		
-		if (! playing) return didWork;
-		
-		synchronized(this) {
+  public boolean render(final float[] buffer) {
+    boolean didWork = renderKids(buffer);
+
+    if (! playing) return didWork;
+
+    synchronized(this) {
       int origPointer = pointer;
       Float[] loop = null;
       if (recording && defined && loops.size() != 0)

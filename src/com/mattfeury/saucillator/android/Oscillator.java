@@ -63,11 +63,8 @@ public abstract class Oscillator extends UGen {
     float previousAmp = internalAmp;
     if (attacking) {
       internalAmp = attackLagger.update();
-      android.util.Log.d("AMPERE-A", "ATTACK!!! prev: " + previousAmp + " / now: " + internalAmp);
-      
     } else if (releasing) {
       internalAmp = releaseLagger.update();
-      android.util.Log.d("AMPERE-R", "RELEASE!!! prev: " + previousAmp + " / now: " + internalAmp);      
     }
 
     if (internalAmp == previousAmp && (attacking || releasing)) {
