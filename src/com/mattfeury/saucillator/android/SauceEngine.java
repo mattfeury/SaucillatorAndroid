@@ -151,8 +151,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        oscA.stop();
-        oscB.stop();
+        if (oscA.isPlaying())
+          oscA.togglePlayback();
+        if (oscB.isPlaying())
+          oscB.togglePlayback();
         
         fingerA = -1;
         fingerB = -1;
@@ -210,6 +212,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
               //play if we were stopped
               if(! osc.isPlaying())
                 osc.togglePlayback();
+              else if (osc.isReleasing())
+                osc.startAttack();
             
               updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
               updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
@@ -231,6 +235,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
   
               if(upOsc.isPlaying())
                 upOsc.togglePlayback();
+              else if (upOsc.isAttacking())
+                upOsc.startRelease();
+              
             }
           } else if (id == fingerC) {
 //            final int upId = event.getActionIndex();

@@ -88,10 +88,11 @@ public class Looper extends UGen {
     }
   }
   public synchronized void undo() {
-    if (! defined)
+    if (! defined) {
+      reset();
       return;
-
-    stopRecording();
+    } else
+      stopRecording();
     
     if (loops.size() != 0) {
       Float[] loop = loops.pop();

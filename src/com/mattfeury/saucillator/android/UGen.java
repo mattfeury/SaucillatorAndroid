@@ -33,22 +33,20 @@ public abstract class UGen {
 			buffer[i] = 0;//gen.nextFloat() * 20; //static
 		}
 	}
-	
-	public void togglePlayback()
-	{
-		isPlaying = !isPlaying;
-	}
-	
-	public boolean isPlaying()
-	{
-		return isPlaying;
-	}
-	
-	public void stop()
-	{
-		isPlaying = false;
-	}
-	
+
+  public void togglePlayback() {
+    isPlaying = !isPlaying;
+  }
+  public boolean isPlaying() {
+    return isPlaying;
+  }
+  public void stop() {
+    isPlaying = false;
+  }
+  public void start() {
+    isPlaying = true;
+  }
+
 	protected boolean renderKids(final float[] buffer) {
 		boolean didSomeRealWork = false;
 		for(int k = 0; k < kids.size(); k++) {

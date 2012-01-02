@@ -69,7 +69,7 @@ public abstract class BasicOsc extends Oscillator {
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
 			return false;
-		} //TODO don't just return. let it die off slowly. will this work?
+		}
 
     if (lfoEnabled)
       modulate();
@@ -78,9 +78,11 @@ public abstract class BasicOsc extends Oscillator {
       float scaled = phase*ENTRIES;
       final float fraction = scaled-(int)scaled;
       final int index = (int)scaled;
-      buffer[i] += amplitude*((1.0f-fraction)*table[index&MASK]+fraction*table[(index+1)&MASK]);
+      buffer[i] += internalAmp*amplitude*((1.0f-fraction)*table[index&MASK]+fraction*table[(index+1)&MASK]);
       phase = (phase+cyclesPerSample) - (int)phase; 
     }
+
+    rendered();
 
     return true;
 	}

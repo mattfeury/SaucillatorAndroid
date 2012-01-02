@@ -30,10 +30,6 @@ public class ComplexOsc extends Oscillator {
     return components.get(index);
   }
 
-  public void togglePlayback() {
-    isPlaying = !isPlaying;
-  }
-
   public void setFreq(float freq) {
     for(Oscillator osc : components)
       osc.setFreq(freq * this.harmonic);
@@ -59,6 +55,20 @@ public class ComplexOsc extends Oscillator {
     for(Oscillator osc : components)
       osc.factorAmplitude(factor);
   }
+  @Override
+  public void startAttack() {
+    super.startAttack();
+
+    for(Oscillator osc : components)
+      osc.startAttack();    
+  }
+  @Override
+  public void startRelease() {
+    super.startRelease();
+
+    for(Oscillator osc : components)
+      osc.startRelease();    
+  }
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying) {
@@ -66,6 +76,10 @@ public class ComplexOsc extends Oscillator {
 		}
 
     Limiter.limit(buffer);
-    return renderKids(buffer);
+    boolean isClean = ! renderKids(buffer);
+
+    rendered();
+
+    return isClean;
 	}
 }
