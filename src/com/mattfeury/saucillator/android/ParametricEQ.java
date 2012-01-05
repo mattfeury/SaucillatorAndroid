@@ -6,6 +6,11 @@ public class ParametricEQ extends UGen {
                 gain = -10f, // -12 to 12db
                 q = 6f; // 0.33 - 12
 
+  private final float minFreq = 20,
+                      maxFreq = (SAMPLE_RATE - 2f) / 2f,
+                      minQ = .33f,
+                      maxQ = 12f;
+
   private float a0, a1, a2, b0, b1, b2;
   private float xm1 = 0, xm2 = 0, ym1 = 0, ym2 = 0;
 
@@ -22,15 +27,23 @@ public class ParametricEQ extends UGen {
 
     recalculate();
   }
+
+  /**
+   * These setters expect a percentage value (0.0 to 1.0) that they then scale to actual bounds
+   */
   public void setFrequency(float freq) {
-    freq = freq * (SAMPLE_RATE / 2f - 20f) + 20;
-    this.frequency = (freq >= SAMPLE_RATE / 2f) ? (SAMPLE_RATE-1) / 2f : freq;
+    this.frequency = Utilities.scale(freq, minFreq, maxFreq);
     recalculate();
   }
   public void setQ(float q) {
-    this.q = q * 12f;
-    if (q < .33) q = .33f;
+    this.q = Utilities.scale(q, minQ, maxQ);
     recalculate();
+  }
+  public float getFrequency() {
+    return Utilities.unscale(frequency, minFreq, maxFreq);
+  }
+  public float getQ() {
+    return Utilities.unscale(q, minQ, maxQ);
   }
 
   private void recalculate() {
@@ -70,8 +83,6 @@ public class ParametricEQ extends UGen {
       xm1 = xn;
       ym2 = ym1;
       ym1 = yn;
-
-      //android.util.Log.i("EQ", "orig: " + xn + " / new: " + yn);
 
       buffer[i] = yn;
     }
