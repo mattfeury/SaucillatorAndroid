@@ -56,6 +56,12 @@ public abstract class BasicOsc extends Oscillator {
   public void setModDepth(int depth) {
     modDepth = depth;
   }
+  public int getModRate() {
+    return modRate;
+  }
+  public int getModDepth() {
+    return modDepth;
+  }
   public void setLag(float rate) {
     this.rate = 1.0f - rate;
   }

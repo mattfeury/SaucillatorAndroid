@@ -27,6 +27,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private static final String TAG = "Sauce";
     private SauceView view;
 
+    public enum Modes {
+      EDIT, PLAY_MULTI
+    }
+    private Modes mode = Modes.EDIT;
+
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
     private int lag = (int)(DEFAULT_LAG * 100);
@@ -52,6 +57,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private ParametricEQ eq;
 
     // which finger ID corresponds to which instrument
+    // TODO maybe make "Fingerable" interface... lolol
+    private Object[] fingers = new Object[10]; //10 fingers is plenty, ya?
     private int fingerA = -1;
     private int fingerB = -1;
     private int fingerC = -1;
@@ -83,8 +90,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	  public void run() {
       	    try {
               //default instruments chosen here
-              oscA = InstrumentManager.getInstrument(getAssets(), "SingingSaw");//new Sine();
-              oscB = InstrumentManager.getInstrument(getAssets(), "Sine");//new Square();
+              oscA = InstrumentManager.getInstrument(getAssets(), "Sine");
+              oscB = InstrumentManager.getInstrument(getAssets(), "Square");
       	    	envA = new ExpEnv();
               //envB = new ExpEnv();
       	    	dac = new Dac();
@@ -109,6 +116,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	    	//envB.setActive(true);
       	    	dac.open();
               init = true;
+              setupParamHandlers();
               Log.i(TAG, "Sauce ready.");
 
       	      while (true) {
@@ -137,6 +145,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    public boolean isFingered(Object obj) {
+      for (int i = 0; i < fingers.length; i++)
+        if (obj.equals(fingers[i]))
+          return true;
+
+      return false;
+    }
+
     /**
      * That main goodness. Handles touch events and gets properties of them to change the oscillators
      */
@@ -159,6 +175,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         fingerA = -1;
         fingerB = -1;
         fingerC = -1;
+        for (int i = 0; i < fingers.length; i++)
+          fingers[i] = null;
 
         view.clearFingers();
         return true;
@@ -180,76 +198,113 @@ public class SauceEngine extends Activity implements OnTouchListener {
         float y = event.getY(i);
         float x = event.getX(i);
 
-        //which osc does this finger correspond to?
+        // Finger on main pad. This affects an oscillator or parameter
         if (view.isInPad(x,y)) {
-          Oscillator osc = null;
-          //if this is this finger OR this finger is not set and this finger is also not the other fingers
-          if (id == fingerA || (fingerA == -1 && fingerB != id && fingerC != id)) {
-            osc = this.oscA;
-            fingerA = id;
-          } else if (id == fingerB || (fingerB == -1 && fingerC != id)) {
-            osc = this.oscB;
-            fingerB = id;
-          } else if (fingerC == -1) {
-          	fingerC = id;
+          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
+          float yInverted = maxHeight - y;
+          float xScaled = (x - controllerWidth) / (maxWidth - controllerWidth);
+          float yScaled = yInverted / maxHeight;
+
+          Object controlled = fingers[id];
+          boolean fingerDefined = controlled != null;
+
+          if (mode == Modes.EDIT) {
+            // Determine if this edits a parameter. otherwise, edit the oscillator
+            DrawableParameter param = view.optParameter(x, y, controlled);
+
+            // If this is on a parameter AND
+            // this finger isn't controlling something or it's controlling this param)
+            if (param != null && (! fingerDefined || param.equals(controlled))) {
+              // Modify the parameter
+              if (! fingerDefined)
+                fingers[id] = param;
+
+              param.set(xScaled, yScaled);
+              view.invalidate();
+            } else if (oscA.equals(controlled) || (! fingerDefined && ! isFingered(oscA))) {
+              // Modify the osc
+              fingers[id] = oscA;
+              
+              if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+                view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+
+                //play if we were stopped
+                if(! oscA.isPlaying())
+                  oscA.togglePlayback();
+                else if (oscA.isReleasing())
+                  oscA.startAttack();
+
+                oscA.setFreqByOffset(scale, (int)(yScaled * TRACKPAD_GRID_SIZE));
+                oscA.setAmplitude(xScaled);
+              } else {
+                //finger up. kill the osc 
+                view.removeFinger(id);
+    
+                if(oscA.isPlaying())
+                  oscA.togglePlayback();
+                else if (oscA.isAttacking())
+                  oscA.startRelease();
+              } 
+            }
+          } else if (mode == Modes.PLAY_MULTI) {
+            // determine which synth this finger corresponds to
+
+            Oscillator osc = null;
+            //if this is this finger OR this finger is not set and this finger is also not the other fingers
+            if (id == fingerA || (fingerA == -1 && fingerB != id && fingerC != id)) {
+              osc = this.oscA;
+              fingerA = id;
+            } else if (id == fingerB || (fingerB == -1 && fingerC != id)) {
+              osc = this.oscB;
+              fingerB = id;
+            } else if (fingerC == -1) {
+              fingerC = id;
+            }
+
+            //TODO
+            //FIXME
+            /*if (osc != null) {
+              //finger down
+              if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+                view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
+    
+                //play if we were stopped
+                if(! osc.isPlaying())
+                  osc.togglePlayback();
+                else if (osc.isReleasing())
+                  osc.startAttack();
+              
+                updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
+                updateAmplitude(id, xScaled);
+              } else {
+                //finger up. kill the osc
+                final int upId = event.getActionIndex();
+                Oscillator upOsc;
+                if (upId == fingerA) {
+                  upOsc = this.oscA;
+                  fingerA = -1;
+                } else if (upId == fingerB) {
+                  upOsc = this.oscB;
+                  fingerB = -1;
+                } else {
+                  return false;
+                }
+                
+                view.removeFinger(upId);
+    
+                if(upOsc.isPlaying())
+                  upOsc.togglePlayback();
+                else if (upOsc.isAttacking())
+                  upOsc.startRelease();  
+              }
+            } */
+            
           }
 
-          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
-
-          float xScaled = (x - controllerWidth) / (maxWidth - controllerWidth);
-
-          if (id == fingerB) {
-            //FIXME hack to mess with EQ
-            //have frequency scale like a parabola, ie squared
-            eq.setFrequency(xScaled * xScaled);
-            eq.setQ((maxHeight - y) / maxHeight);
-            Log.i(TAG, "new freq: " + (x - controllerWidth) / (maxWidth - controllerWidth) + " / new q: " + (maxHeight - y) / maxHeight);
-          } else if (osc != null) { 
-          	//finger down
-            if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-              view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-  
-              //play if we were stopped
-              if(! osc.isPlaying())
-                osc.togglePlayback();
-              else if (osc.isReleasing())
-                osc.startAttack();
-            
-              updateFrequency(id, (int)((maxHeight - y) / maxHeight * TRACKPAD_GRID_SIZE));
-              updateAmplitude(id, (x - controllerWidth) / (maxWidth - controllerWidth));
-            } else {
-              //finger up. kill the osc
-              final int upId = event.getActionIndex();
-              Oscillator upOsc;
-              if (upId == fingerA) {
-              	upOsc = this.oscA;
-              	fingerA = -1;
-              } else if (upId == fingerB) {
-              	upOsc = this.oscB;
-              	fingerB = -1;
-              } else {
-              	return false;
-              }
-              
-              view.removeFinger(upId);
-  
-              if(upOsc.isPlaying())
-                upOsc.togglePlayback();
-              else if (upOsc.isAttacking())
-                upOsc.startRelease();
-              
-            }
-          } else if (id == fingerC) {
-//            final int upId = event.getActionIndex();
-            if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE)
-              view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-//            else
-//              view.removeFinger(upId);
-
-            oscA.setModRate((int)((x - controllerWidth) / (maxWidth - controllerWidth) * MOD_RATE_MAX));
-            oscA.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));
-            oscB.setModRate((int)((x - controllerWidth) / (maxWidth - controllerWidth) * MOD_RATE_MAX));
-            oscB.setModDepth((int)((maxHeight - y) / maxHeight * MOD_DEPTH_MAX));          	
+          if (actionCode == MotionEvent.ACTION_POINTER_UP) {
+            final int upIndex = event.getActionIndex();
+            final int upId = event.getPointerId(upIndex);
+            fingers[upId] = null;
           }
         } else {
           //controller buttons
@@ -257,9 +312,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           int buttonHeight = maxHeight / SauceView.numButtons;
 
-          final int upId = event.getActionIndex();
-          if ((actionCode == MotionEvent.ACTION_POINTER_DOWN &&
-              upId != fingerA && upId != fingerB)
+          final int upIndex = event.getActionIndex();
+          if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && upIndex == i)
               || actionCode == MotionEvent.ACTION_DOWN) {
 
             if (canVibrate)
@@ -289,6 +343,42 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return true; // indicate event was handled
     }
 
+    private void setupParamHandlers() {
+      DrawableParameter eqParam = new DrawableParameter(
+            new ParameterHandler() {
+              public void updateParameter(float x, float y) {
+                //FIXME yuck
+                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+
+                eq.setFrequency(x * x);
+                eq.setQ(y * y);
+                Log.i(TAG, "NEW NEW: " + x*x + " / new q: " + y*y);
+              }
+            },
+            eq.getFrequency(), //frequency on x
+            eq.getQ() // q on y
+          );
+
+      DrawableParameter lfoParam = new DrawableParameter(
+            new ParameterHandler() {
+              public void updateParameter(float x, float y) {
+                //FIXME yuck
+                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+
+                oscA.setModRate((int)(x * MOD_RATE_MAX));
+                oscA.setModDepth((int)(y * MOD_DEPTH_MAX));
+                
+                Log.i(TAG, "LFO rate : " + x + " / depth: " + y);
+              }
+            },
+            oscA.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
+            oscA.getModRate() / (float)MOD_DEPTH_MAX // mod depth on y
+          );
+      
+      view.addParam(eqParam);
+      view.addParam(lfoParam);
+    }
+
     /**
      * Oscillator handlers
      */
@@ -311,7 +401,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
-    }    
+    }
 
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
@@ -325,8 +415,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         ugDelay.updateRate(delayRate);
       }
       
-      oscA.setLag(lag / 100f);
-      oscB.setLag(lag / 100f);
+      //oscA.setLag(lag / 100f);
+      //oscB.setLag(lag / 100f);
     }
     
     /**

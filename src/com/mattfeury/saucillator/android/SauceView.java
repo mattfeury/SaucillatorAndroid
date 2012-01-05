@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.android;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.LinkedList;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -23,6 +24,8 @@ public class SauceView extends View {
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
     private RectButton loop, undo, reset;
+    private LinkedList<DrawableParameter> params = new LinkedList<DrawableParameter>();
+
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
     Paint backColor;
@@ -46,6 +49,29 @@ public class SauceView extends View {
       loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       undo = new RectButton("Undo", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
+    }
+
+    public void addParam(DrawableParameter p) {
+      if (! params.contains(p))
+        params.add(p);
+    }
+    public DrawableParameter optParameter(float x, float y, Object preferred) {
+      // A list of all params at this location. If there are multiple, we prefer 'preferred'
+      LinkedList<DrawableParameter> contained = new LinkedList<DrawableParameter>();
+
+      for (DrawableParameter p : params)
+        if (p.contains((int)x, (int)y))
+          contained.add(p);
+
+      int size = contained.size();
+      if (size == 0)
+        return null;
+      else if (size == 1)
+        return contained.getFirst();
+      else if (contained.contains(preferred))
+        return (DrawableParameter) preferred;
+      else
+        return contained.getLast();
     }
 
     public void setVisuals(boolean show) {
@@ -129,6 +155,9 @@ public class SauceView extends View {
       loop.draw(canvas);
       undo.draw(canvas);
       reset.draw(canvas);
+
+      for (DrawableParameter p : params)
+        p.draw(canvas);
     }
 
     class RectButton extends RectF {
@@ -180,5 +209,4 @@ public class SauceView extends View {
       }
       
     }
-
 }

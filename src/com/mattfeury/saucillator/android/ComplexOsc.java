@@ -43,6 +43,21 @@ public class ComplexOsc extends Oscillator {
     for(Oscillator osc : components)
       osc.setModDepth(depth);
   }
+
+  //TODO FIXME this assumes they all have the same LFO settings. is this right?
+  public int getModRate() {
+    for(Oscillator osc : components)
+      return osc.getModRate();
+
+    return 0;
+  }
+  public int getModDepth() {
+    for(Oscillator osc : components)
+      return osc.getModDepth();
+
+    return 0;
+  }
+
   public void setLag(float rate) {
     for(Oscillator osc : components)
       osc.setLag(rate);
