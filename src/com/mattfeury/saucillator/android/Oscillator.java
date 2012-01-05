@@ -42,19 +42,17 @@ public abstract class Oscillator extends UGen {
     this.start();
     releasing = false;
     attacking = true;
-    android.util.Log.d("ATTACKING", "release canceled");    
   }
   public void startRelease() {
     resetLaggers();
 
     attacking = false;
     releasing = true;
-    android.util.Log.d("RELEASING", "attack cancelled");
   }
   public void resetLaggers() {
     //TODO set rates
     attackLagger = new Lagger(internalAmp, 1f);
-    releaseLagger = new Lagger(1f, 0f);
+    releaseLagger = new Lagger(internalAmp, 0f);
 
     //attackLagger.setRate(0.2f);
     //releaseLagger.setRate(0.2f);
@@ -68,19 +66,14 @@ public abstract class Oscillator extends UGen {
     }
 
     if (internalAmp == previousAmp && (attacking || releasing)) {
-      android.util.Log.d("CANCELING", "ATTACK");    
       attacking = false;
 
-      // FIXME maybe require that the amp is near zero 
-      // (it won't be exactly zero because we round. generally 2.0e-5)
       if (releasing) {
-        android.util.Log.d("CANCELING", "RELEASE");    
         releasing = false;
         this.stop();
       }
     }
   }
-
 
   // Callback called post rendering
   public void rendered() {
@@ -91,6 +84,9 @@ public abstract class Oscillator extends UGen {
   public abstract void setModRate(int rate);
   public abstract void setModDepth(int depth);
   public abstract void setLag(float rate);
+
+  public abstract int getModRate();
+  public abstract int getModDepth();
 
   public abstract void setAmplitude(float amp);
   public abstract void factorAmplitude(float factor);
