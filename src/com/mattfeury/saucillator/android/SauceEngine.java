@@ -471,9 +471,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
     			return launchSettings();
     		case R.id.record:
     			return record(item);
+        case R.id.toggleMode:
+          toggleMode();
+          return true;
     		default:
     	}
       return false;
+    }
+
+    private void toggleMode() {
+      if (mode == Modes.PLAY_MULTI)
+        mode = Modes.EDIT;
+      else
+        mode = Modes.PLAY_MULTI;
     }
 
     private boolean record(MenuItem item) {

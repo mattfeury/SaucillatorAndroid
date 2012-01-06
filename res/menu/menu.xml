@@ -33,6 +33,8 @@
             </group>
         </menu>
     </item>
+
+    <item android:title="Switch Mode" android:id="@+id/toggleMode" />
             
     <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
     
