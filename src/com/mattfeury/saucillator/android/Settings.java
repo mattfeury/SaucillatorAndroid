@@ -77,38 +77,12 @@ public class Settings extends Activity {
 		finish();
 	}
 	
-	private void cancelChanges() {
-		Toast.makeText(this, "Changes Discarded.", Toast.LENGTH_SHORT).show();
-		finish();
-	}
-	
-	protected Dialog onCreateDialog(int id) {
-		Dialog dialog = null;
-		if (id == 0) {
-	        dialog = new AlertDialog.Builder(this).setMessage("Save Changes?").setCancelable(true)
-		    	.setPositiveButton("Yes",			
-				new DialogInterface.OnClickListener() {
-		        	public void onClick(DialogInterface dialog, int id) {
-		        		saveChanges();
-		        		}
-		        	}
-		        	).setNegativeButton("No", 
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							cancelChanges();
-						}
-					}
-		    ).create();
-		}
-        return dialog;
-	}
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		//Just... don't look here.
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-        	showDialog(0);
-        }
-        return true;
+		// Exit button
+    if (keyCode == KeyEvent.KEYCODE_BACK)
+      saveChanges();
+    
+    return true;
 	}
 }
