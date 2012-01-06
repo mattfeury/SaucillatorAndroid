@@ -205,6 +205,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
         float y = event.getY(i);
         float x = event.getX(i);
 
+        final int actionIndex = event.getActionIndex();
+        final int actionId = event.getPointerId(actionIndex);
+
         // Finger on main pad. This affects an oscillator or parameter
         if (view.isInPad(x,y)) {
           int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
@@ -246,7 +249,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
                 osc.setFreqByOffset(scale, (int)(yScaled * TRACKPAD_GRID_SIZE));
                 osc.setAmplitude(xScaled);
-              } else if (osc != null) {
+              } else if (osc != null && actionCode == MotionEvent.ACTION_POINTER_UP && actionIndex == i) {
                 //finger up. kill the osc 
                 view.removeFinger(id);
     
@@ -277,27 +280,21 @@ public class SauceEngine extends Activity implements OnTouchListener {
               
                 updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
                 updateAmplitude(id, xScaled);
-              } else {
+              } else if (actionIndex == i) {
                 //finger up. kill the osc
-                final int upIndex = event.getActionIndex();
+                view.removeFinger(i);
                 
-                if (upIndex == i) {
-                  view.removeFinger(i);
-                  
-                  if(osc.isPlaying())
-                    osc.togglePlayback();
-                  else if (osc.isAttacking())
-                    osc.startRelease();  
-                }
+                if(osc.isPlaying())
+                  osc.togglePlayback();
+                else if (osc.isAttacking())
+                  osc.startRelease();  
               }
             }
             
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
-            final int upIndex = event.getActionIndex();
-            final int upId = event.getPointerId(upIndex);
-            fingersById[upId] = null;
+            fingersById[actionId] = null;
           }
         } else {
           //controller buttons
