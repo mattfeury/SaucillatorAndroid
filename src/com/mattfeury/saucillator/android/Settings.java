@@ -1,30 +1,22 @@
 package com.mattfeury.saucillator.android;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class Settings extends Activity {
 
   EditText fileTextBox;
   Spinner noteSpinner;
   Spinner octaveSpinner;
-  CheckBox visualCheckBox;
+  ToggleButton visualsToggle;
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -37,8 +29,8 @@ public class Settings extends Activity {
     boolean visuals = extras.getBoolean("visuals");
 
     try {
-      visualCheckBox = (CheckBox) findViewById(R.id.visualCheckBox);
-      visualCheckBox.setChecked(visuals);
+      visualsToggle = (ToggleButton) findViewById(R.id.visualsToggler);
+      visualsToggle.setChecked(visuals);
 
       fileTextBox = (EditText) findViewById(R.id.fileName);
       fileTextBox.setText(fileName);
@@ -65,7 +57,7 @@ public class Settings extends Activity {
     int octave = octaveSpinner.getSelectedItemPosition() + 1;
     int note = noteSpinner.getSelectedItemPosition();
     String fileName = fileTextBox.getText().toString();
-    boolean visuals = visualCheckBox.isChecked();
+    boolean visuals = visualsToggle.isChecked();
 
     intent.putExtra("octave", octave);
     intent.putExtra("note", note);
