@@ -4,33 +4,20 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
 >
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:scrollbars="vertical"
-    >
-    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_width="wrap_content" android:text="Delay: " android:id="@+id/delayLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/delayValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-    </LinearLayout>
-        <SeekBar android:layout_height="wrap_content" android:max="11025" android:id="@+id/delaySlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
-        
-    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_width="wrap_content" android:text="Lag: " android:id="@+id/lagLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/lagValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-    </LinearLayout>
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/lagSlider" android:layout_width="fill_parent" android:padding="10px"></SeekBar>
-        <TextView android:layout_width="wrap_content" android:text="File Name:" android:id="@+id/fileLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <EditText android:layout_width="match_parent" android:id="@+id/fileName" android:layout_height="wrap_content">
-            <requestFocus></requestFocus>
-        </EditText>
-        <TextView android:layout_width="wrap_content" android:text="Notes" android:id="@+id/notesLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/noteChooser"></Spinner>
-        
-        <TextView android:layout_width="wrap_content" android:text="Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
-        <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
-        <CheckBox android:text="Visual Effects" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/visualCheckBox" android:layout_width="fill_parent" android:layout_height="wrap_content"></CheckBox>
-
-</LinearLayout>
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:scrollbars="vertical"
+      >
+      <requestFocus></requestFocus>    
+      <TextView android:layout_width="wrap_content" android:text="File Name:" android:id="@+id/fileLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+      <EditText android:layout_width="match_parent" android:id="@+id/fileName" android:layout_height="wrap_content"></EditText>
+      <TextView android:layout_width="wrap_content" android:text="Base Note" android:id="@+id/notesLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+      <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/noteChooser"></Spinner>
+      
+      <TextView android:layout_width="wrap_content" android:text="Base Octave" android:id="@+id/octaveLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+      <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/octaveChooser"></Spinner>
+      <CheckBox android:text="Visual Effects" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/visualCheckBox" android:layout_width="fill_parent" android:layout_height="wrap_content"></CheckBox>
+  </LinearLayout>
 </ScrollView>

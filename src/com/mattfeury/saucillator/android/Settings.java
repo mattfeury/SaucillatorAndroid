@@ -20,151 +20,59 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Settings extends Activity {
-	
-	SeekBar delaySlider;
-	SeekBar lagSlider;
-	TextView delayValue;
-	TextView lagValue;
-	Button saveButton;
-	Button cancelButton;
-	EditText fileTextBox;
-	Spinner noteSpinner;
-	Spinner octaveSpinner;
-	CheckBox visualCheckBox;
 
-  //this is nasty. these are repeated defaults
-  private int delayRate = UGen.SAMPLE_RATE;
-  private int lag = 0;
-  private String fileName = "Recording";
-  private int note = 1;
-  private int octave = 4;
-  private boolean visuals = false;
-	
-	private class DelaySliderListener implements SeekBar.OnSeekBarChangeListener {
+  EditText fileTextBox;
+  Spinner noteSpinner;
+  Spinner octaveSpinner;
+  CheckBox visualCheckBox;
 
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress,
-				boolean fromUser) {
-			// TODO Auto-generated method stub
-			delayRate = progress;
-			delayValue.setText(" " + delayRate + " ");
-		}
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.settings);
 
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
-		}
+    Bundle extras = getIntent().getExtras();
+    String fileName = extras.getString("file name");
+    int note = extras.getInt("note");
+    int octave = extras.getInt("octave");
+    boolean visuals = extras.getBoolean("visuals");
 
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	private class LagSliderListener implements SeekBar.OnSeekBarChangeListener {
+    try {
+      visualCheckBox = (CheckBox) findViewById(R.id.visualCheckBox);
+      visualCheckBox.setChecked(visuals);
 
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress,
-				boolean fromUser) {
-			// TODO Auto-generated method stub
-			lag = progress;
-			lagValue.setText(" " + lag + "% ");
-		}
+      fileTextBox = (EditText) findViewById(R.id.fileName);
+      fileTextBox.setText(fileName);
 
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
-		}
+      noteSpinner = (Spinner) findViewById(R.id.noteChooser);
+      ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
+      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        noteSpinner.setAdapter(adapter);
+        noteSpinner.setSelection(note);
 
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
+      adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
+      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
+      octaveSpinner.setAdapter(adapter);
+      octaveSpinner.setSelection(octave - 1);
 		}
-		
-	}
-	
-	private class VisualCheckBoxListener implements OnClickListener {
+    catch (Exception e) {
+      Log.e("settingsCreation", e.toString());
+    }
+  }
 
-		@Override
-		public void onClick(View v) {
-			visuals = visualCheckBox.isChecked();
-		}
-		
-	}
-	
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.settings);
+  private void saveChanges() {
+    Intent intent = new Intent(Settings.this, SauceEngine.class);
+    int octave = octaveSpinner.getSelectedItemPosition() + 1;
+    int note = noteSpinner.getSelectedItemPosition();
+    String fileName = fileTextBox.getText().toString();
+    boolean visuals = visualCheckBox.isChecked();
 
-		Bundle extras = getIntent().getExtras();
-		fileName = extras.getString("file name");
-		note = extras.getInt("note");
-		octave = extras.getInt("octave");
-		delayRate = extras.getInt("delay rate");
-		lag = extras.getInt("lag");
-		visuals = extras.getBoolean("visuals");
-		
-		try {
-			delaySlider = (SeekBar) findViewById(R.id.delaySlider);
-			delaySlider.setIndeterminate(false);
-			delaySlider.setMax(UGen.SAMPLE_RATE);
-			delaySlider.setProgress(delayRate);
-			delaySlider.setOnSeekBarChangeListener(new DelaySliderListener());
-	
-			delayValue = (TextView) findViewById(R.id.delayValue);
-			delayValue.setText(" " + delayRate);
-			
-			lagSlider = (SeekBar) findViewById(R.id.lagSlider);
-			lagSlider.setIndeterminate(false);
-			lagSlider.setMax(100);
-			lagSlider.setProgress(lag);
-			lagSlider.setOnSeekBarChangeListener(new LagSliderListener());
-			
-			visualCheckBox = (CheckBox) findViewById(R.id.visualCheckBox);
-			visualCheckBox.setChecked(visuals);
-			visualCheckBox.setOnClickListener(new VisualCheckBoxListener());
-			
-			lagValue = (TextView) findViewById(R.id.lagValue);
-			lagValue.setText(" " + lag + "%");
-			
-			fileTextBox = (EditText) findViewById(R.id.fileName);
-			fileTextBox.setText(fileName);
-			
-			noteSpinner = (Spinner) findViewById(R.id.noteChooser);
-			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    noteSpinner.setAdapter(adapter);
-		    noteSpinner.setSelection(note);
-		    
-			adapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
-			octaveSpinner.setAdapter(adapter);
-			octaveSpinner.setSelection(octave - 1);
-		}
-		catch (Exception e) {
-			Log.e("settingsCreation", e.toString());
-		}
-	}
-	
-	private void saveChanges() {
-    	Intent intent = new Intent(Settings.this, SauceEngine.class);
-    	octave = octaveSpinner.getSelectedItemPosition() + 1;
-    	note = noteSpinner.getSelectedItemPosition();
-    	fileName = fileTextBox.getText().toString();
-    	
-    	intent.putExtra("octave", octave);
-    	intent.putExtra("note", note);
-    	intent.putExtra("file name", fileName);
-    	intent.putExtra("delay rate", delayRate);
-    	intent.putExtra("lag", lag);
-    	intent.putExtra("visuals", visuals);
-		setResult(0, intent);
+    intent.putExtra("octave", octave);
+    intent.putExtra("note", note);
+    intent.putExtra("file name", fileName);
+    intent.putExtra("visuals", visuals);
+    setResult(0, intent);
+
 		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
 		finish();
 	}
