@@ -28,9 +28,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private SauceView view;
 
     public enum Modes {
-      EDIT, PLAY_MULTI
+      EDIT {
+        public String toString() {
+          return "Edit Instrument";
+        }
+      },
+      PLAY_MULTI {
+        public String toString() {
+          return "Multi Instrument";
+        }
+      }
     }
-    private Modes mode = Modes.PLAY_MULTI;
+    // When changing default, make sure to update initial menu text
+    private Modes mode = Modes.EDIT;
 
     //defaults
     private int delayRate = UGen.SAMPLE_RATE / 4;
@@ -80,6 +90,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         setContentView(R.layout.main);
         view = (SauceView)findViewById(R.id.sauceview);
         view.setOnTouchListener(this);
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         
         if (vibrator != null)
@@ -150,7 +161,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           return true;
 
       return false;
-    }
+    }    
 
     /**
      * That main goodness. Handles touch events and gets properties of them to change the oscillators
@@ -448,10 +459,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
     /**
      * Menu handlers
      */
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.menu, menu);
+
+      // Set defaults
+      MenuItem toggle = menu.findItem(R.id.toggleMode);
+      if (mode == Modes.PLAY_MULTI) {
+        toggle.setTitle(Modes.EDIT.toString());
+      } else {
+        toggle.setTitle(Modes.PLAY_MULTI.toString());
+      }
+
+      return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getGroupId()) {
@@ -472,38 +493,44 @@ public class SauceEngine extends Activity implements OnTouchListener {
     		case R.id.record:
     			return record(item);
         case R.id.toggleMode:
-          toggleMode();
+          toggleMode(item);
           return true;
     		default:
     	}
       return false;
     }
 
-    private void toggleMode() {
-      if (mode == Modes.PLAY_MULTI)
+    private Modes toggleMode(MenuItem item) {
+      Modes other = mode;
+      if (mode == Modes.PLAY_MULTI) {
         mode = Modes.EDIT;
-      else
+      } else {
         mode = Modes.PLAY_MULTI;
+      }
+
+      item.setTitle(other.toString());
+      Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
+      return mode;
     }
 
     private boolean record(MenuItem item) {
       boolean isRecording = dac.toggleRecording();
     	if (isRecording) {
-    	    item.setTitle("Stop Recording");
-    	    item.setIcon(R.drawable.ic_grey_rec);
-            Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
+        item.setTitle("Stop Recording");
+        item.setIcon(R.drawable.ic_grey_rec);
+        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
     	}
     	else {
-		    item.setTitle("Record");
-		    item.setIcon(R.drawable.ic_rec);
-	        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+        item.setTitle("Record");
+        item.setIcon(R.drawable.ic_rec);
+        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
+
+        if(WavWriter.getLastFile() == null)
+          return false;
 		    	
-	        if(WavWriter.getLastFile() == null)
-	          return false;
-		    	
-	        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-		    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
-		    	startActivity(Intent.createChooser(intent, "Share to"));
+        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+	    	startActivity(Intent.createChooser(intent, "Share to"));
     	}
       return true;
     }
