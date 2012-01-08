@@ -43,25 +43,22 @@ public abstract class BasicOsc extends Oscillator {
 
   public abstract void fill();
 
-  public synchronized void updateFrequency() {
+  public synchronized void updateFrequency(float freq) {
+    frequency = freq;
     cyclesPerSample = frequency/SAMPLE_RATE;
   }
   public synchronized void setFreq(float freq) {
-    setFreq(freq, false);
-  }
-  public synchronized void setFreq(float freq, boolean viaLfo) {
     // Don't change to the same frequency we're already on since the LFO may be on
-    if (preLfoFrequency == freq * harmonic && ! viaLfo)
+    if (preLfoFrequency == freq * harmonic)
       return;
 
-    frequency = freq * this.harmonic;
+    preLfoFrequency = freq * this.harmonic;
+    t = 0;
 
-    if (! viaLfo) {
-      preLfoFrequency = frequency;
-      t = 0;
-    }
-
-    updateFrequency();
+    updateFrequency(freq * this.harmonic);
+  }
+  public void resetFreq() {
+    updateFrequency(preLfoFrequency);
   }
 
   public void setModRate(int rate) {
@@ -77,10 +74,6 @@ public abstract class BasicOsc extends Oscillator {
   }
   public int getModDepth() {
     return modDepth;
-  }
-  public void resetFreq() {
-    frequency = preLfoFrequency;
-    updateFrequency();
   }
   public void setLag(float rate) {
     this.rate = 1.0f - rate;
@@ -114,9 +107,9 @@ public abstract class BasicOsc extends Oscillator {
 	}
 
   public synchronized void modulate() {
-  	float lfo = updateLfo();
-  	float lag = updateLag();
-  	setFreq(lfo + lag, true);
+    float lfo = updateLfo();
+    float lag = updateLag();
+    updateFrequency((lfo + lag) * harmonic);
   }
   public synchronized float updateLfo() {
     if (modRate == 0) return 0f;
