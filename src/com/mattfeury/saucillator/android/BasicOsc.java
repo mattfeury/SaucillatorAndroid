@@ -21,7 +21,7 @@ public abstract class BasicOsc extends Oscillator {
   private float rate = SauceEngine.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
   private float t = 0f;
   private float lagOut;
-  private float preLfoFrequency = frequency; //since LFO modifies the actual frequency variable
+  private float preLfoFrequency = frequency * harmonic; //since LFO modifies the actual frequency variable
 
   final float[] table;
 
