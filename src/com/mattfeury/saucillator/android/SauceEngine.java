@@ -409,8 +409,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private void updateOscSettings() {
       //TODO FIXME  move these to be specified in the .sauce files
       float newFreq = Theory.getFrequencyForNote(note + 1, octave);
-      //oscA.setBaseFreq(newFreq);
-      //oscB.setBaseFreq(newFreq);
+      oscA.setBaseFreq(newFreq);
+      oscB.setBaseFreq(newFreq);
 
       if (delayRate == 0) {
         ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
