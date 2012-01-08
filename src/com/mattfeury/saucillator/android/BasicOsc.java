@@ -21,6 +21,7 @@ public abstract class BasicOsc extends Oscillator {
   private float rate = SauceEngine.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
   private float t = 0f;
   private float lagOut;
+  private float preLfoFrequency = frequency; //since LFO modifies the actual frequency variable
 
   final float[] table;
 
@@ -46,14 +47,29 @@ public abstract class BasicOsc extends Oscillator {
     cyclesPerSample = frequency/SAMPLE_RATE;
   }
   public synchronized void setFreq(float freq) {
+    setFreq(freq, false);
+  }
+  public synchronized void setFreq(float freq, boolean viaLfo) {
+    // Don't change to the same frequency we're already on since the LFO may be on
+    if (preLfoFrequency == freq * harmonic && ! viaLfo)
+      return;
+
     frequency = freq * this.harmonic;
+
+    if (! viaLfo) {
+      preLfoFrequency = frequency;
+      t = 0;
+    }
+
     updateFrequency();
   }
 
   public void setModRate(int rate) {
+    resetFreq();
     modRate = rate;
   }
   public void setModDepth(int depth) {
+    resetFreq();
     modDepth = depth;
   }
   public int getModRate() {
@@ -61,6 +77,10 @@ public abstract class BasicOsc extends Oscillator {
   }
   public int getModDepth() {
     return modDepth;
+  }
+  public void resetFreq() {
+    frequency = preLfoFrequency;
+    updateFrequency();
   }
   public void setLag(float rate) {
     this.rate = 1.0f - rate;
@@ -96,7 +116,7 @@ public abstract class BasicOsc extends Oscillator {
   public synchronized void modulate() {
   	float lfo = updateLfo();
   	float lag = updateLag();
-  	setFreq(lfo + lag);
+  	setFreq(lfo + lag, true);
   }
   public synchronized float updateLfo() {
     if (modRate == 0) return 0f;
