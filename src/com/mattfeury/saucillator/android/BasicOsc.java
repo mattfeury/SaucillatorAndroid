@@ -121,7 +121,7 @@ public abstract class BasicOsc extends Oscillator {
     return lfoFn;
   }
   public synchronized float updateLag() {
-    lagOut = lagOut + rate * (frequency / harmonic - lagOut);
+    lagOut = lagOut + rate * (preLfoFrequency / harmonic - lagOut);
     return lagOut;
   }
 
