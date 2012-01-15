@@ -110,6 +110,9 @@ public class InstrumentManager {
   private static ComplexOsc decomposeJsonInstrument(JSONObject json) throws Exception {
     // Lookup and create timbre
     ComplexOsc instrument = new ComplexOsc();
+
+    String name = json.optString("name", "Unknown");
+    instrument.setName(name);
     
     JSONArray timbres = json.getJSONArray("timbre");
     int numHarmonics = timbres.length();

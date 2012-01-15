@@ -5,6 +5,8 @@ package com.mattfeury.saucillator.android;
  */
 public abstract class Oscillator extends UGen {
 
+  protected String name = "Unknown";
+
   protected float frequency = 440f;
   protected float amplitude = 1.0f,
                   internalAmp = 0f; //used to calculate. changes
@@ -98,5 +100,12 @@ public abstract class Oscillator extends UGen {
   public synchronized void setFreqByOffset(int[] scale, int offset) {
     float freq = Theory.getFrequencyForScaleNote(scale, BASE_FREQ, offset);
     setFreq(freq);
+  }
+
+  public String getName() {
+    return name;
+  }
+  public void setName(String name) {
+    this.name = name;
   }
 }

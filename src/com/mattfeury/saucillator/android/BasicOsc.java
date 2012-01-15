@@ -35,6 +35,8 @@ public abstract class BasicOsc extends Oscillator {
     this(amp, 0);
   }
   public BasicOsc(float amp, int phase) {
+    name = "BasicInstrument";
+
     this.oscPhase = phase;
     amplitude = amp;
     table = new float[ENTRIES];
