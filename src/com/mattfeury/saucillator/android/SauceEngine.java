@@ -42,7 +42,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         }
       }
     }
-    // When changing default, make sure to update initial menu text
     private Modes mode = Modes.EDIT;
 
     //defaults
@@ -61,18 +60,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private boolean init = false;
     
-    //synth elements
-    private Dac dac;
-    private Oscillator oscA, oscB;
-    private ExpEnv envA, envB;
-    private Delay ugDelay;
-    private Looper looper;
-    private ParametricEQ eq;
-
     // which finger ID corresponds to which instrument
     // TODO maybe make "Fingerable" interface... lolol
     private final int maxFingers = 5;
     private Object[] fingersById = new Object[maxFingers];
+
+    //synth elements
+    private Dac dac;
+    private Delay ugDelay;
+    private Looper looper;
+    private ParametricEQ eq;
     private Oscillator[] oscillatorsById = new Oscillator[maxFingers];
 
     MediaPlayer secretSauce;
@@ -105,11 +102,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-              //default instruments chosen here
-              oscA = InstrumentManager.getInstrument(getAssets(), "Sine");
-              oscB = InstrumentManager.getInstrument(getAssets(), "Square");
-      	    	envA = new ExpEnv();
-              //envB = new ExpEnv();
       	    	dac = new Dac();
       	    	ugDelay = new Delay(delayRate);
       	    	looper = new Looper();
@@ -119,17 +111,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	    	looper.chuck(eq);
       	    	ugDelay.chuck(looper);
 
-      	    	envA.chuck(ugDelay);
-              //envB.chuck(ugDelay);
-
-              //TODO these should get chucked to different envelopes but it seems to cause issues
-      	    	oscA.chuck(envA);
-      	    	oscB.chuck(envA);
-
-      	    	envA.setFactor(ExpEnv.medFactor);
-      	    	envA.setActive(true);
-      	    	//envB.setFactor(ExpEnv.medFactor);
-      	    	//envB.setActive(true);
       	    	dac.open();
               init = true;
               setupParamHandlers();
@@ -393,7 +374,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       //TODO have this lookup in a map or something that can be changed by a UI
       osc = InstrumentManager.getInstrument(getAssets(), "Sine");
-      osc.chuck(envA);
+      connectOsc(osc);
       oscillatorsById[id] = osc;
       
       return osc;
@@ -413,19 +394,17 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
-      //TODO FIXME  move these to be specified in the .sauce files
       float newFreq = Theory.getFrequencyForNote(note + 1, octave);
-      oscA.setBaseFreq(newFreq);
-      oscB.setBaseFreq(newFreq);
+      for (Oscillator osc : oscillatorsById)
+        if (osc != null)
+          osc.setBaseFreq(newFreq);
 
+      //TODO FIXME  move these to be specified in the .sauce files
       if (delayRate == 0) {
         ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
       } else {
         ugDelay.updateRate(delayRate);
       }
-      
-      //oscA.setLag(lag / 100f);
-      //oscB.setLag(lag / 100f);
     }
     
     /**
