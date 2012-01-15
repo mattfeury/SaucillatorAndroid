@@ -1,5 +1,7 @@
 package com.mattfeury.saucillator.android;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnTouchListener;
@@ -74,8 +77,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     MediaPlayer secretSauce;
     private Vibrator vibrator;
+    private SubMenu instrumentMenu;
+    private final int instrumentMenuId = 9;
     private boolean canVibrate = false;
     private int VIBRATE_SPEED = 100; //in ms
+    public static final String DATA_FOLDER = "/sdcard/sauce/";
     
     /** Called when the activity is first created. */
     @Override
@@ -461,6 +467,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
       MenuInflater inflater = getMenuInflater();
       inflater.inflate(R.menu.menu, menu);
 
+      // FIXME this is vomit-inducing
+      // Make sure that instrument selector is first item in menu
+      instrumentMenu = menu.getItem(0).getSubMenu();
+
       // Set defaults
       MenuItem toggle = menu.findItem(R.id.toggleMode);
       if (mode == Modes.PLAY_MULTI) {
@@ -471,15 +481,35 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       return true;
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+      boolean result = super.onPrepareOptionsMenu(menu);
+
+      // TODO lookup all instruments
+      instrumentMenu.clear();
+
+      // TODO set checked based on current
+      ArrayList<String> instruments = InstrumentManager.getAllInstrumentNames(getAssets());
+      String[] names = instruments.toArray(new String[0]);
+      int i = 0;
+      for (String name : names) {
+        instrumentMenu.add(instrumentMenuId, i, i, name);
+        i++;
+      }
+
+      instrumentMenu.setGroupCheckable(instrumentMenuId, true, true);
+      
+      return result;
+    }
     public boolean onOptionsItemSelected(MenuItem item) {
+
     	switch (item.getGroupId()) {
-    		case R.id.instrumentsA:
-    			return instrumentSelection(item, 0);
-    		case R.id.instrumentsB:
-    			return instrumentSelection(item, 1);
     		case R.id.scales:
     			return scaleSelection(item);
+        case instrumentMenuId:
+          return instrumentSelection(item, 0); //TODO pass in an id for multi mode
     		default:
+          android.util.Log.d("no group id", ""+item.getGroupId());          
     	}
     	switch (item.getItemId()) {
     		case R.id.quit:
@@ -560,57 +590,34 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	return false;
     }
 
-    private boolean instrumentSelection(MenuItem item, int oscNum) {
-      /**
-       * FIXME
-       */
-    	if (item.isChecked()) {
+    private void connectOsc(Oscillator osc) {
+      osc.chuck(ugDelay);
+    }
+    private void disconnectOsc(Oscillator osc) {
+      osc.unchuck(ugDelay);
+    }
+    private boolean instrumentSelection(MenuItem item, int id) {
+    	if (item.isChecked())
     		return true;
-    	}
-    	item.setChecked(true);
-      int instrumentId = item.getItemId();
 
-      Oscillator oldOsc;
-      if (oscNum == 0) {
-        oldOsc = this.oscA;
-        this.oscA.unchuck(envA);        
-      } else if (oscNum == 1) {
-        oldOsc = this.oscB;
-        this.oscB.unchuck(envA);
-      } else {
-      	return false;
-      }
-      //TODO destroy old maybe? make sure it gets garbage collected
+      String name = (String) item.getTitle();
+      ComplexOsc newOsc = InstrumentManager.getInstrument(getAssets(), name);
 
-      switch (instrumentId) {
-        case R.id.singingsaw: //singing saw
-          oldOsc = InstrumentManager.getInstrument(getAssets(), "SingingSaw");
-          break;
-        case R.id.sine: //sine
-          oldOsc = InstrumentManager.getInstrument(getAssets(), "Sine");
-          break;
-        case R.id.square: //square
-          oldOsc = InstrumentManager.getInstrument(getAssets(), "Square");
-          break;
-        case R.id.saw: //saw
-          oldOsc = InstrumentManager.getInstrument(getAssets(), "Saw");
-          break;
-        default:
-          oldOsc = InstrumentManager.getInstrument(getAssets(), "Sine");
+      if (newOsc == null) {
+        Toast.makeText(this, "Bad Instrument.", Toast.LENGTH_SHORT).show();
+        return false;
       }
 
-      if (oscNum == 0) {
-        this.oscA = oldOsc;
-        this.oscA.chuck(envA);
-      } else if (oscNum == 1) {
-        this.oscB = oldOsc;
-        this.oscB.chuck(envA);
-      }
-      
+      if (oscillatorsById[id] != null)
+        disconnectOsc(oscillatorsById[id]);
+
+      connectOsc(newOsc);
+      oscillatorsById[id] = newOsc;
+
       //FIXME this is a hack for now so that the instrument specific settings (lag & base freq)
       //FIXME get reset on every instrument. We should abstract as InstrumentSettings and pass them around that way.
       updateOscSettings();
-    	
-    	return false;
+
+      return true;
     }
 }

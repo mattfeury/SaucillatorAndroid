@@ -1,11 +1,10 @@
 package com.mattfeury.saucillator.android;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import org.json.*;
 
@@ -14,9 +13,53 @@ import android.util.Log;
 
 public class InstrumentManager {
 
-  public static ComplexOsc getInstrument(AssetManager man, String name) {
+  private static final String assetPath = "instruments";
+  private static final String extension = ".json";
+  private static final String dataFolder = SauceEngine.DATA_FOLDER + "instruments/";
+  
+  public static String getFilename(String file) {
+    int extensionIndex = file.lastIndexOf(extension);
+    return file.substring(0, extensionIndex);
+  }
+
+  public static ArrayList<String> getAllInstrumentNames(AssetManager man) {
+    ArrayList<String> instruments = new ArrayList<String>();
+
+    // Get built-in asset instruments
+    String[] assets;
     try {
-      JSONObject json = getJsonForInstrument(man, name);
+      assets = man.list(assetPath);
+      for (String asset : assets) {
+        instruments.add(getFilename(asset));
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // Get user created
+    File file =  new File(dataFolder);
+    if (file.exists() && file.isDirectory()) {
+      String[] files = file.list();
+      for (String fileName : files) {
+        instruments.add(getFilename(fileName));
+      }
+    }
+    
+    return instruments;
+  }  
+
+  public static ComplexOsc getInstrument(AssetManager man, String name) {
+    return getInstrument(man, name, false);
+  }
+
+  public static ComplexOsc getInstrument(AssetManager man, String name, boolean external) {
+    try {
+      JSONObject json;
+      if (external) {
+        json = getJsonForCustomInstrument(name);
+      } else {
+        json = getJsonForInternalInstrument(man, name);
+      }
       return decomposeJsonInstrument(json);
     } catch (Exception e) {
       e.printStackTrace();
@@ -26,8 +69,26 @@ public class InstrumentManager {
     return null;
   }
 
-  private static JSONObject getJsonForInstrument(AssetManager man, String name) throws Exception {
-    InputStream is = man.open("instruments/" + name + ".json");
+  private static JSONObject getJsonForCustomInstrument(String name) throws Exception {
+    FileInputStream stream = new FileInputStream(new File(dataFolder + name + extension));
+
+    String jsonString = "";
+    try {
+      FileChannel fc = stream.getChannel();
+      MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+      /* Instead of using default, pass in a decoder. */
+      jsonString = Charset.defaultCharset().decode(bb).toString();
+    }
+    finally {
+      stream.close();
+    }
+
+    JSONObject json = new JSONObject(jsonString);
+    return json;
+  }
+
+  private static JSONObject getJsonForInternalInstrument(AssetManager man, String name) throws Exception {
+    InputStream is = man.open(assetPath + "/" + name + extension);
     Writer writer = new StringWriter();
     char[] buffer = new char[1024];
     try {
