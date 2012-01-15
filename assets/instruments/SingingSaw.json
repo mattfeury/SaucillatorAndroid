@@ -21,9 +21,14 @@
       }
     },
     {
+      id: 'sine', //used to be noise
+      harmonic: 4, //fundamental
+      amplitude: 0.5
+    },
+    {
       id: 'sine',
       harmonic: 2,
-      phase: 180,
+      phase: 0,
       amplitude: 1.0, //maybe auto calculate
       //TODO make envelopes work?
       envelope: {
@@ -37,7 +42,17 @@
         release: [1.0, 0.0],
         loop: true
       }
-    }  
+    },
+    {
+      id: 'sine',
+      harmonic: 3,
+      amplitude: 1.0
+    },
+    {
+      id: 'sine',
+      harmonic: 4,
+      amplitude: 1.0
+    }
   ],
   fx: {
     delay: {

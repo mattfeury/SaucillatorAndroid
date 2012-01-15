@@ -17,7 +17,7 @@ public class InstrumentManager {
   private static final String extension = ".json";
   private static final String dataFolder = SauceEngine.DATA_FOLDER + "instruments/";
   
-  public static String getFilename(String file) {
+  public static String stripExtension(String file) {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
   }
@@ -30,7 +30,7 @@ public class InstrumentManager {
     try {
       assets = man.list(assetPath);
       for (String asset : assets) {
-        instruments.add(getFilename(asset));
+        instruments.add(stripExtension(asset));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -41,24 +41,39 @@ public class InstrumentManager {
     if (file.exists() && file.isDirectory()) {
       String[] files = file.list();
       for (String fileName : files) {
-        instruments.add(getFilename(fileName));
+        instruments.add(stripExtension(fileName));
       }
     }
     
     return instruments;
-  }  
-
-  public static ComplexOsc getInstrument(AssetManager man, String name) {
-    return getInstrument(man, name, false);
   }
 
-  public static ComplexOsc getInstrument(AssetManager man, String name, boolean external) {
+  // TODO make files lowercase
+  public static String getAssetPath(String filename) {
+    return assetPath + "/" + filename + extension;
+  }
+
+  public static ComplexOsc getInstrument(AssetManager man, String name) {
+    boolean isInternal = true;
+
+    try {
+      man.open(getAssetPath(name));
+    } catch(Exception e) {
+      isInternal = false;
+    } finally {
+      android.util.Log.d("BALZ", name + "   :   " + isInternal);
+    }
+
+    return getInstrument(man, name, isInternal);
+  }
+
+  public static ComplexOsc getInstrument(AssetManager man, String name, boolean internal) {
     try {
       JSONObject json;
-      if (external) {
-        json = getJsonForCustomInstrument(name);
-      } else {
+      if (internal) {
         json = getJsonForInternalInstrument(man, name);
+      } else {
+        json = getJsonForCustomInstrument(name);
       }
       return decomposeJsonInstrument(json);
     } catch (Exception e) {
@@ -88,7 +103,7 @@ public class InstrumentManager {
   }
 
   private static JSONObject getJsonForInternalInstrument(AssetManager man, String name) throws Exception {
-    InputStream is = man.open(assetPath + "/" + name + extension);
+    InputStream is = man.open(getAssetPath(name));
     Writer writer = new StringWriter();
     char[] buffer = new char[1024];
     try {
