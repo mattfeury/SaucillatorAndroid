@@ -593,9 +593,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       connectOsc(newOsc);
       oscillatorsById[id] = newOsc;
 
-      //FIXME this is a hack for now so that the instrument specific settings (lag & base freq)
-      //FIXME get reset on every instrument. We should abstract as InstrumentSettings and pass them around that way.
       updateOscSettings();
+      setupParamHandlers();
 
       return true;
     }
