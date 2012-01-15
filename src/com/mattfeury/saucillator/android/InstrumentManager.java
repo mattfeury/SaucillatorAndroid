@@ -60,8 +60,6 @@ public class InstrumentManager {
       man.open(getAssetPath(name));
     } catch(Exception e) {
       isInternal = false;
-    } finally {
-      android.util.Log.d("BALZ", name + "   :   " + isInternal);
     }
 
     return getInstrument(man, name, isInternal);
