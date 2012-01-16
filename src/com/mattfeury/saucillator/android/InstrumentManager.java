@@ -52,16 +52,20 @@ public class InstrumentManager {
   public static String getAssetPath(String filename) {
     return assetPath + "/" + filename + extension;
   }
-
-  public static ComplexOsc getInstrument(AssetManager man, String name) {
+  public static boolean isInternal(AssetManager man, String name) {
     boolean isInternal = true;
 
     try {
       man.open(getAssetPath(name));
     } catch(Exception e) {
       isInternal = false;
+    } finally {
+      return isInternal;
     }
+  }
 
+  public static ComplexOsc getInstrument(AssetManager man, String name) {
+    boolean isInternal = isInternal(man ,name);
     return getInstrument(man, name, isInternal);
   }
 

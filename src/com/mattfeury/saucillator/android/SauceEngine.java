@@ -60,9 +60,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private boolean init = false;
     
-    // which finger ID corresponds to which instrument
-    // TODO maybe make "Fingerable" interface... lolol
     private final int maxFingers = 5;
+    // which finger ID corresponds to which instrument
+    // maybe make "Fingerable" interface... lolol
     private Object[] fingersById = new Object[maxFingers];
 
     //synth elements
@@ -74,10 +74,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     MediaPlayer secretSauce;
     private Vibrator vibrator;
-    private SubMenu instrumentMenu;
-    private final int instrumentMenuId = 9;
     private boolean canVibrate = false;
     private int VIBRATE_SPEED = 100; //in ms
+    private SubMenu instrumentMenu;
+    private final int instrumentMenuId = 9;
     public static final String DATA_FOLDER = "/sdcard/sauce/";
     
     /** Called when the activity is first created. */
@@ -148,7 +148,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           return true;
 
       return false;
-    }    
+    }
 
     /**
      * That main goodness. Handles touch events and gets properties of them to change the oscillators
@@ -237,14 +237,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 osc.setFreqByOffset(scale, (int)(yScaled * TRACKPAD_GRID_SIZE));
                 osc.setAmplitude(xScaled);
               } else if (osc != null && actionCode == MotionEvent.ACTION_POINTER_UP && actionIndex == i) {
-                //finger up. kill the osc 
+                //finger up. kill the osc
                 view.removeFinger(id);
-    
+
                 if(osc.isPlaying())
                   osc.togglePlayback();
                 else if (osc.isAttacking())
                   osc.startRelease();
-              } 
+              }
             }
           } else if (mode == Modes.PLAY_MULTI) {
 
@@ -258,26 +258,26 @@ public class SauceEngine extends Activity implements OnTouchListener {
               //finger down
               if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
                 view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-    
+
                 //play if we were stopped
                 if(! osc.isPlaying())
                   osc.togglePlayback();
                 else if (osc.isReleasing())
                   osc.startAttack();
-              
+
                 updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
                 updateAmplitude(id, xScaled);
               } else if (actionIndex == i) {
                 //finger up. kill the osc
                 view.removeFinger(i);
-                
+
                 if(osc.isPlaying())
                   osc.togglePlayback();
                 else if (osc.isAttacking())
-                  osc.startRelease();  
+                  osc.startRelease();
               }
             }
-            
+
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
