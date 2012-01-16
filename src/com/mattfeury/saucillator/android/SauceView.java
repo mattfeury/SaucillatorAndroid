@@ -55,6 +55,9 @@ public class SauceView extends View {
       if (! params.contains(p))
         params.add(p);
     }
+    public void resetParams() {
+      params.clear();
+    }
     public DrawableParameter optParameter(float x, float y, Object preferred) {
       // A list of all params at this location. If there are multiple, we prefer 'preferred'
       LinkedList<DrawableParameter> contained = new LinkedList<DrawableParameter>();

@@ -323,6 +323,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private void setupParamHandlers() {
       // TODO is this always edit mode?      
       Oscillator osc = getOrCreateOscillator(0);
+
+      view.resetParams();
       
       DrawableParameter eqParam = new DrawableParameter(
             new ParameterHandler() {
