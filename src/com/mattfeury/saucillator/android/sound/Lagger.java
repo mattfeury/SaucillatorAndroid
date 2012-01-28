@@ -1,5 +1,6 @@
 package com.mattfeury.saucillator.android.sound;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 /**
@@ -8,7 +9,7 @@ import java.text.DecimalFormat;
  *
  * Output = Output + Rate * (Input - Output)
  */
-public class Lagger {
+public class Lagger implements Serializable {
   private float in, out, rate = .025f;
 
   // When approaching 0, the lagger will never reach it as it will keep constantly dividing.

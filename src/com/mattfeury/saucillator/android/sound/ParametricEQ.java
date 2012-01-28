@@ -1,6 +1,6 @@
 package com.mattfeury.saucillator.android.sound;
 
-import com.mattfeury.saucillator.android.Utilities;
+import com.mattfeury.saucillator.android.utilities.Utilities;
 
 public class ParametricEQ extends UGen {
 

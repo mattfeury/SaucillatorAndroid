@@ -6,6 +6,7 @@ import com.mattfeury.saucillator.android.instruments.*;
 import com.mattfeury.saucillator.android.settings.ModifyInstrument;
 import com.mattfeury.saucillator.android.settings.Settings;
 import com.mattfeury.saucillator.android.sound.*;
+import com.mattfeury.saucillator.android.utilities.Utilities;
 import com.mattfeury.saucillator.android.visuals.*;
 
 import android.app.Activity;
