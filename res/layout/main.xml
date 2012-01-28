@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-    <com.mattfeury.saucillator.android.SauceView
+    <com.mattfeury.saucillator.android.visuals.SauceView
             android:id="@+id/sauceview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

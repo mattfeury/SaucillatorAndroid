@@ -2,6 +2,21 @@ package com.mattfeury.saucillator.android;
 
 import java.util.ArrayList;
 
+import com.mattfeury.saucillator.android.instruments.ComplexOsc;
+import com.mattfeury.saucillator.android.instruments.InstrumentManager;
+import com.mattfeury.saucillator.android.instruments.Oscillator;
+import com.mattfeury.saucillator.android.instruments.Theory;
+import com.mattfeury.saucillator.android.settings.Settings;
+import com.mattfeury.saucillator.android.sound.Dac;
+import com.mattfeury.saucillator.android.sound.Delay;
+import com.mattfeury.saucillator.android.sound.Looper;
+import com.mattfeury.saucillator.android.sound.ParametricEQ;
+import com.mattfeury.saucillator.android.sound.UGen;
+import com.mattfeury.saucillator.android.sound.WavWriter;
+import com.mattfeury.saucillator.android.visuals.DrawableParameter;
+import com.mattfeury.saucillator.android.visuals.ParameterHandler;
+import com.mattfeury.saucillator.android.visuals.SauceView;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
