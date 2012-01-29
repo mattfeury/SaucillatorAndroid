@@ -1,6 +1,6 @@
 {
   id: 5,//perhaps a unique id based on date + millis
-  name: "Singing Saw",
+  name: "SingingSaw",
   author: "Matt Feury", //not necessary
   timbre: [
     {

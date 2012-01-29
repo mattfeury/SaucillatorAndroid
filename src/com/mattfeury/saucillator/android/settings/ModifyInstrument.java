@@ -39,8 +39,6 @@ public class ModifyInstrument extends PreferenceActivity {
     creating = extras.getBoolean("createNew");
 
     // Set default values
-    SharedPreferences customSharedPreference = PreferenceManager.getDefaultSharedPreferences(this);
-    SharedPreferences.Editor editor = customSharedPreference.edit();
     if (creating) {
       modifying = new ComplexOsc();
     } else {
@@ -49,7 +47,6 @@ public class ModifyInstrument extends PreferenceActivity {
  
       namePref.setText(modifying.getName());
       namePref.setSummary(modifying.getName());
-      android.util.Log.d("NUTS", "written: "+customSharedPreference.getString("namePref",""));
     }
 
     // Bind FX, timbre handlers

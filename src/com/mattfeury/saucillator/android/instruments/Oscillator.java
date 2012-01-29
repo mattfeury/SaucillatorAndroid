@@ -13,7 +13,7 @@ public abstract class Oscillator extends UGen {
   protected float frequency = 440f;
   protected float amplitude = 1.0f,
                   internalAmp = 0f; //used to calculate. changes
-  protected int oscPhase = 1;
+  protected int oscPhase = 0;
 
   protected float BASE_FREQ = 440f;
   protected int harmonic = 1;
@@ -116,5 +116,8 @@ public abstract class Oscillator extends UGen {
   }
   public void setName(String name) {
     this.name = name;
+  }
+  public int getPhase() {
+    return oscPhase;
   }
 }

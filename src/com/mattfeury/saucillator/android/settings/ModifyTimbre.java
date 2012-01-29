@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +21,12 @@ import android.view.KeyEvent;
 import android.view.View;
 
 public class ModifyTimbre extends ListActivity {
+  LinkedList<Oscillator> timbres;
+  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.modify_timbre);
 
     ComplexOsc osc = ModifyInstrument.modifying;
     if (osc == null) {
@@ -30,16 +34,35 @@ public class ModifyTimbre extends ListActivity {
       return;
     }
 
-    LinkedList<Oscillator> timbres = osc.getComponents();
+    Button deleteButton = (Button) findViewById(R.id.add_timbre);
+
+    deleteButton.setOnClickListener(
+      new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          Toast.makeText(getApplicationContext(),"I deed it", Toast.LENGTH_SHORT).show();
+        }
+      }
+    );
+    
+
+    timbres = osc.getComponents();
     setListAdapter(new TimbreAdapter(this, this, R.layout.harmonic_list_item, timbres));
 
     ListView lv = getListView();
-    lv.setTextFilterEnabled(true);
+    lv.setTextFilterEnabled(false);
 
     lv.setOnItemClickListener(new OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // When clicked, show a toast with the TextView text
-        //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(ModifyTimbre.this, TimbrePreferences.class);
+        Oscillator timbre = timbres.get(position);
+
+        intent.putExtra("createNew", false);
+        intent.putExtra("type", timbre.getName());
+        intent.putExtra("harmonic", timbre.getHarmonic());
+        intent.putExtra("amplitude", timbre.getAmplitude());
+        intent.putExtra("phase", timbre.getPhase());
+        startActivityForResult(intent, 0);
       }
     });
   }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical"
+    >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="Timbre Type:"
+    />
+    <Spinner 
+        android:id="@+id/timbreSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    />
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+      <TextView android:layout_width="wrap_content" android:text="Harmonic: " android:id="@+id/harmonicLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+      <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/harmonicValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:max="64" android:id="@+id/harmonicSlider" android:layout_width="fill_parent" android:padding="10px"/>
+        
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+      <TextView android:layout_width="wrap_content" android:text="Amplitude: " android:id="@+id/amplitudeLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+      <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/amplitudeValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:id="@+id/amplitudeSlider" android:layout_width="fill_parent" android:max="100" android:padding="10px"/>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+      <TextView android:layout_width="wrap_content" android:text="Phase: " android:id="@+id/phaseLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+      <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/phaseValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:id="@+id/phaseSlider" android:layout_width="fill_parent" android:max="359" android:padding="10px"/>
+
+    <!--<LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+      <TextView android:layout_width="wrap_content" android:text="Attack time: " android:id="@+id/attackLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+      <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/attackValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:id="@+id/attackSlider" android:layout_width="fill_parent" android:max="100" android:padding="10px"/>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+      <TextView android:layout_width="wrap_content" android:text="Release time: " android:id="@+id/releaseLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+      <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/releaseValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:id="@+id/releaseSlider" android:layout_width="fill_parent" android:max="100" android:padding="10px"/>-->
+</LinearLayout>
+</ScrollView>
