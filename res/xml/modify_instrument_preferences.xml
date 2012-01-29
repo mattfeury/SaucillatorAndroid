@@ -14,4 +14,18 @@
             android:title="Edit Effects"
             android:key="effectsPref" />
   </PreferenceCategory>
+  <PreferenceCategory android:title="Maintain">
+    <Preference
+            android:title="Save to Disk"
+            android:summary=""
+            android:key="savePref" />
+    <Preference
+            android:title="Revert to Saved"
+            android:summary=""
+            android:key="revertPref" />
+    <Preference
+            android:title="Delete from Disk"
+            android:summary=""
+            android:key="deletePref" />
+  </PreferenceCategory>
 </PreferenceScreen>

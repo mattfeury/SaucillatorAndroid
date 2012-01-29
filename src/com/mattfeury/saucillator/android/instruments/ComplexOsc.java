@@ -28,6 +28,9 @@ public class ComplexOsc extends Oscillator {
       osc.chuck(this);
     }
   }
+  public LinkedList<Oscillator> getComponents() {
+    return components;
+  }
   public Oscillator getComponent(int index) {
     return components.get(index);
   }

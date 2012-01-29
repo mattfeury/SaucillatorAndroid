@@ -26,6 +26,9 @@ public abstract class Oscillator extends UGen {
   public void setHarmonic(int h) {
     this.harmonic = h;
   }
+  public int getHarmonic() {
+    return harmonic;
+  }
 
   @Override
   public void togglePlayback() {
@@ -93,6 +96,9 @@ public abstract class Oscillator extends UGen {
   public abstract int getModRate();
   public abstract int getModDepth();
 
+  public float getAmplitude() {
+    return amplitude;
+  }
   public abstract void setAmplitude(float amp);
   public abstract void factorAmplitude(float factor);
 

@@ -5,15 +5,17 @@ package com.mattfeury.saucillator.android.instruments;
  * Noise oscillator (filled randomly)
  */
 public class Noise extends BasicOsc {
-  
   public Noise() {
     super();
+    name = "Noise";
   }
   public Noise(int phase) {
     super(phase);
+    name = "Noise";
   }
   public Noise(float amp) {
     super(amp);
+    name = "Noise";
   }
 
   public void fill() {

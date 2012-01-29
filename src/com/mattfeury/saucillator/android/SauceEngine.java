@@ -462,6 +462,12 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	startActivityForResult(intent, 0);
     	return true;
     }
+    private boolean editInstrument() {
+    	Intent intent = new Intent(SauceEngine.this, ModifyInstrument.class);
+    	intent.putExtra("createNew", false);
+    	startActivityForResult(intent, 1);
+    	return true;
+    }
     // Called when settings activity ends. Updates proper params
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
       if (requestCode == 0 && data != null) {

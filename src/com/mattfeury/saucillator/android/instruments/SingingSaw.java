@@ -17,6 +17,8 @@ public class SingingSaw extends ComplexOsc {
     fifth = new Sine(0.5f);
 
     fill(fundamental, third, fifth);
+    
+    name = "Singing Saw";
   }
 
   public void setFreq(float freq) {
