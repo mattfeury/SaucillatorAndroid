@@ -78,6 +78,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private Looper looper;
     private ParametricEQ eq;
     private Oscillator[] oscillatorsById = new Oscillator[maxFingers];
+    
+    // The currentOscillator is never actually heard
+    // It is kept as a template and updated anytime an instrument is edited/created
+    // We create a deepCopy of it for actually playing.
+    private static ComplexOsc currentOscillator;
 
     MediaPlayer secretSauce;
     private Vibrator vibrator;
@@ -102,6 +107,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
         view.setOnTouchListener(this);
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        
+        //Default
+        currentOscillator = InstrumentManager.getInstrument(getAssets(), "Sine");
         
         if (vibrator != null)
           canVibrate = true;
@@ -356,6 +364,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
                 Oscillator osc = getOrCreateOscillator(0);
 
+                // Set the template and the playing oscillator
+                // We do this so we don't have to recreate a new oscillator everytime
+                // a param is changed. Since we used deep copies, that would probably hurt performance.
+                currentOscillator.setModRate((int)(x * MOD_RATE_MAX));
+                currentOscillator.setModDepth((int)(y * MOD_DEPTH_MAX));
                 osc.setModRate((int)(x * MOD_RATE_MAX));
                 osc.setModDepth((int)(y * MOD_DEPTH_MAX));
                 
@@ -373,6 +386,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
     /**
      * Oscillator handlers
      */
+    public static ComplexOsc getCurrentOscillator() {
+      return currentOscillator;
+    }
+    public void resetOscillators() {
+      for (int i = 0; i < oscillatorsById.length; i++) {
+        Oscillator osc = oscillatorsById[i];
+        if (osc != null)
+          disconnectOsc(osc);
+
+        oscillatorsById[i] = null;
+      }
+
+    }
     public Oscillator optOscillator(int id) {
       return oscillatorsById[id];
     }
@@ -381,8 +407,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
       if (osc != null)
         return osc;
 
-      //TODO have this lookup in a map or something that can be changed by a UI
-      osc = InstrumentManager.getInstrument(getAssets(), "Sine");
+      Object copy = Utilities.deepCopy(currentOscillator);
+      if (copy != null)
+        osc = (Oscillator)copy;
+      else {
+        osc = InstrumentManager.getInstrument(getAssets(), "Sine");
+        Toast.makeText(this, "Error: Unable to duplicate instrument", Toast.LENGTH_SHORT).show();
+      }
+
       connectOsc(osc);
       oscillatorsById[id] = osc;
       
@@ -523,6 +555,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         mode = Modes.PLAY_MULTI;
       }
 
+      resetOscillators();
       item.setTitle(other.toString());
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;
@@ -590,14 +623,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       String name = (String) item.getTitle();
       ComplexOsc newOsc = InstrumentManager.getInstrument(getAssets(), name);
+      currentOscillator = newOsc;
 
       if (newOsc == null) {
         Toast.makeText(this, "Bad Instrument.", Toast.LENGTH_SHORT).show();
         return false;
       }
 
-      if (oscillatorsById[id] != null)
-        disconnectOsc(oscillatorsById[id]);
+      resetOscillators();
 
       connectOsc(newOsc);
       oscillatorsById[id] = newOsc;
