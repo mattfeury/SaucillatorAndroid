@@ -16,8 +16,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.view.KeyEvent;
-import android.view.View;
+import android.view.*;
+import android.view.ContextMenu.ContextMenuInfo;
 
 public class ModifyTimbre extends ListActivity {
   private LinkedList<Oscillator> timbres;
@@ -52,6 +52,7 @@ public class ModifyTimbre extends ListActivity {
     setListAdapter(adapter);
 
     ListView lv = getListView();
+    registerForContextMenu(lv);
     lv.setTextFilterEnabled(false);
 
     lv.setOnItemClickListener(new OnItemClickListener() {
@@ -97,6 +98,20 @@ public class ModifyTimbre extends ListActivity {
     }
   }
 
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+    menu.setHeaderTitle(timbres.get(info.position).getName());
+    menu.add(Menu.NONE, 0, 0, "Delete");
+  }
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+    
+    timbres.remove(info.position);
+    adapter.notifyDataSetChanged();
+    return true;
+  }
 
   public void exit() {
     Intent intent = new Intent(ModifyTimbre.this, ModifyInstrument.class);

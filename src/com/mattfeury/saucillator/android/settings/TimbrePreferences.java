@@ -7,7 +7,8 @@ import com.mattfeury.saucillator.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.android.instruments.InstrumentManager;
 import com.mattfeury.saucillator.android.utilities.Utilities;
 
-import android.app.Activity;
+import android.app.*;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -64,39 +65,67 @@ public class TimbrePreferences extends Activity {
 
   }
 
-  public void exit() {
+  public void exit(boolean save) {
     Intent intent = new Intent(TimbrePreferences.this, ModifyTimbre.class);
 
-    Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
-    String timbre = (String)timbreSpinner.getSelectedItem();
+    if (save) {
+      Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
+      String timbre = (String)timbreSpinner.getSelectedItem();
 
-    TextView harmonicView = (TextView) findViewById(R.id.harmonicValue);
-    String harmonic = (String)harmonicView.getText();
+      TextView harmonicView = (TextView) findViewById(R.id.harmonicValue);
+      String harmonic = (String)harmonicView.getText();
 
-    TextView amplitudeView = (TextView) findViewById(R.id.amplitudeValue);
-    String amplitude = (String)amplitudeView.getText();
+      TextView amplitudeView = (TextView) findViewById(R.id.amplitudeValue);
+      String amplitude = (String)amplitudeView.getText();
 
-    TextView phaseView = (TextView) findViewById(R.id.phaseValue);
-    String phase = (String)phaseView.getText();
+      TextView phaseView = (TextView) findViewById(R.id.phaseValue);
+      String phase = (String)phaseView.getText();
 
-    intent.putExtra("createNew", createNew);
-    intent.putExtra("type", timbre);
-    intent.putExtra("timbrePosition", timbrePosition);
-    intent.putExtra("harmonic", Integer.parseInt(harmonic));
-    intent.putExtra("amplitude", Float.parseFloat(amplitude));
-    intent.putExtra("phase", Integer.parseInt(phase));
+      intent.putExtra("createNew", createNew);
+      intent.putExtra("type", timbre);
+      intent.putExtra("timbrePosition", timbrePosition);
+      intent.putExtra("harmonic", Integer.parseInt(harmonic));
+      intent.putExtra("amplitude", Float.parseFloat(amplitude));
+      intent.putExtra("phase", Integer.parseInt(phase));
 
-    setResult(0, intent);
+      setResult(0, intent);
+    } else {
+      setResult(1, intent);
+    }
+
 		finish();
   }
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     // Exit button
     if (keyCode == KeyEvent.KEYCODE_BACK)
-      exit();
+      showDialog(0);
 
     return true;
   }
+  protected Dialog onCreateDialog(int id) {
+    Dialog dialog = null;
+    if (id == 0) {
+      dialog =
+        new AlertDialog.Builder(this)
+              .setMessage("Save Changes?")
+              .setCancelable(true)
+              .setPositiveButton("Yes",
+                  new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                      exit(true);
+                    }
+              })
+              .setNegativeButton("No",
+                  new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                      exit(false);
+                    }
+              })
+              .create();
+    }
+    return dialog;
+  } 
 
   public void bindSliderToVariable(int sliderId, int textId, int progress) {
     SeekBar slider = (SeekBar) findViewById(sliderId);
