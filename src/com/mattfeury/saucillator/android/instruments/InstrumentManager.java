@@ -152,7 +152,7 @@ public class InstrumentManager {
       Oscillator osc = getOscillatorForTimbre(man, timbreId);
       osc.setPhase(phase);
       osc.setHarmonic(harmonic);
-      osc.setMaxInternalAmp(amplitude);
+      osc.setAmplitude(amplitude);
 
       instrument.fill(osc);
     }

@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.android.instruments;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.android.sound.Lagger;
 import com.mattfeury.saucillator.android.sound.Limiter;
 
 /**
@@ -11,7 +12,16 @@ import com.mattfeury.saucillator.android.sound.Limiter;
 public class ComplexOsc extends Oscillator {
 
   protected LinkedList<Oscillator> components;
-  public static final float MAX_AMPLITUDE = 1.0f;
+
+  public static final float MAX_AMPLITUDE = 1.0f;//what is this for, eh?
+
+  private float maxInternalAmp = 1.0f, // have internalAmp always range from 0-1
+                internalAmp = 0f; //used to calculate. changes
+  protected float attack = 0f,
+                  release = 0f;
+  protected Lagger attackLagger = new Lagger(0f, 1f),
+                   releaseLagger = new Lagger(1f, 0f);
+  protected boolean attacking = false, releasing = false;
 
   public ComplexOsc() {
     this(1.0f);
@@ -67,28 +77,73 @@ public class ComplexOsc extends Oscillator {
     for(Oscillator osc : components)
       osc.setLag(rate);
   }
-  public void setAmplitude(float amp) {
-    for(Oscillator osc : components)
-      osc.setAmplitude(amp);
+  public void setMaxInternalAmp(float amp) {
+    this.maxInternalAmp = amp;
   }
-  public void factorAmplitude(float factor) {
-    for(Oscillator osc : components)
-      osc.factorAmplitude(factor);
+  public float getMaxInternalAmp() {
+    return maxInternalAmp;
   }
+
+  /**
+   * Envelope stuff
+   * Maybe make this an interface or something
+   */
   @Override
+  public void togglePlayback() {
+    if ((releasing && isPlaying()) || ! isPlaying())
+      startAttack();
+    else
+      startRelease();
+  }
+  public boolean isReleasing() {
+    return releasing;
+  }
+  public boolean isAttacking() {
+    return attacking;
+  }
+
   public void startAttack() {
-    super.startAttack();
+    resetLaggers();
 
-    for(Oscillator osc : components)
-      osc.startAttack();    
+    this.start();
+    releasing = false;
+    attacking = true;
   }
-  @Override
   public void startRelease() {
-    super.startRelease();
+    resetLaggers();
 
-    for(Oscillator osc : components)
-      osc.startRelease();    
+    attacking = false;
+    releasing = true;
   }
+  public void resetLaggers() {
+    //TODO set rates
+    attackLagger = new Lagger(internalAmp, maxInternalAmp);
+    releaseLagger = new Lagger(internalAmp, 0f);
+
+    //attackLagger.setRate(0.2f);
+    //releaseLagger.setRate(0.2f);
+  }
+  public void updateEnvelope() {
+    float previousAmp = internalAmp;
+    if (attacking) {
+      internalAmp = attackLagger.update();
+    } else if (releasing) {
+      internalAmp = releaseLagger.update();
+    }
+
+    if (internalAmp == previousAmp && (attacking || releasing)) {
+      attacking = false;
+
+      if (releasing) {
+        releasing = false;
+        this.stop();
+      }
+    }
+  }
+
+  public void rendered() {
+    updateEnvelope();
+  }  
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying()) {
@@ -96,8 +151,10 @@ public class ComplexOsc extends Oscillator {
 		}
 
     Limiter.limit(buffer);
-    // TODO use amplitude ('volume') here, not the children
     boolean isClean = ! renderKids(buffer);
+    for(int i = 0; i < CHUNK_SIZE; i++) {
+      buffer[i] *= amplitude*internalAmp;
+    }
 
     rendered();
 

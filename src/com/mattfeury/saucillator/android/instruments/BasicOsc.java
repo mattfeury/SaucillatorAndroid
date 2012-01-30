@@ -82,13 +82,11 @@ public abstract class BasicOsc extends Oscillator {
   public void setLag(float rate) {
     this.rate = 1.0f - rate;
   }
-  public void setAmplitude(float amp) {
-    this.amplitude = amp;
-  }
-  public void factorAmplitude(float factor) {
-    this.amplitude *= factor;
-  }
 
+  public void rendered() {
+    //Noop
+  }
+  
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
 		if(! isPlaying()) {
 			return false;
@@ -101,12 +99,10 @@ public abstract class BasicOsc extends Oscillator {
       float scaled = phase*ENTRIES;
       final float fraction = scaled-(int)scaled;
       final int index = (int)scaled;
-      buffer[i] += internalAmp*amplitude*((1.0f-fraction)*table[index&MASK]+fraction*table[(index+1)&MASK]);
+      buffer[i] += amplitude*((1.0f-fraction)*table[index&MASK]+fraction*table[(index+1)&MASK]);
       phase = (phase+cyclesPerSample) - (int)phase; 
     }
 
-    // TODO maybe remove this from updating the envelope
-    // let the complexOscs handle all enveloping.
     rendered();
 
     return true;

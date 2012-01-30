@@ -11,18 +11,11 @@ public abstract class Oscillator extends UGen {
   protected String name = "Unknown";
 
   protected float frequency = 440f;
-  protected float amplitude = 1.0f, //TODO make this 'volume' and scale internalAmp
-                  maxInternalAmp = 1.0f, // have internalAmp always range from 0-1
-                  internalAmp = 0f; //used to calculate. changes
+  protected float amplitude = 1.0f;
   protected int oscPhase = 0;
 
   protected float BASE_FREQ = 440f;
   protected int harmonic = 1;
-  protected float attack = 0f,
-                  release = 0f;
-  protected Lagger attackLagger = new Lagger(0f, 1f),
-                   releaseLagger = new Lagger(1f, 0f);
-  protected boolean attacking = false, releasing = false;
 
   public void setHarmonic(int h) {
     this.harmonic = h;
@@ -31,63 +24,8 @@ public abstract class Oscillator extends UGen {
     return harmonic;
   }
 
-  @Override
-  public void togglePlayback() {
-    if ((releasing && isPlaying()) || ! isPlaying())
-      startAttack();
-    else
-      startRelease();
-  }
-  public boolean isReleasing() {
-    return releasing;
-  }
-  public boolean isAttacking() {
-    return attacking;
-  }
-
-  public void startAttack() {
-    resetLaggers();
-
-    this.start();
-    releasing = false;
-    attacking = true;
-  }
-  public void startRelease() {
-    resetLaggers();
-
-    attacking = false;
-    releasing = true;
-  }
-  public void resetLaggers() {
-    //TODO set rates
-    attackLagger = new Lagger(internalAmp, maxInternalAmp);
-    releaseLagger = new Lagger(internalAmp, 0f);
-
-    //attackLagger.setRate(0.2f);
-    //releaseLagger.setRate(0.2f);
-  }
-  public void updateEnvelope() {
-    float previousAmp = internalAmp;
-    if (attacking) {
-      internalAmp = attackLagger.update();
-    } else if (releasing) {
-      internalAmp = releaseLagger.update();
-    }
-
-    if (internalAmp == previousAmp && (attacking || releasing)) {
-      attacking = false;
-
-      if (releasing) {
-        releasing = false;
-        this.stop();
-      }
-    }
-  }
-
   // Callback called post rendering
-  public void rendered() {
-    updateEnvelope();
-  }
+  public abstract void rendered();
   
   public abstract void setFreq(float freq);
   public abstract void setModRate(int rate);
@@ -100,13 +38,11 @@ public abstract class Oscillator extends UGen {
   public float getAmplitude() {
     return amplitude;
   }
-  public abstract void setAmplitude(float amp);
-  public abstract void factorAmplitude(float factor);
-  public void setMaxInternalAmp(float amp) {
-    this.maxInternalAmp = amp;
+  public void setAmplitude(float amp) {
+    this.amplitude = amp;
   }
-  public float getMaxInternalAmp() {
-    return maxInternalAmp;
+  public void factorAmplitude(float factor) {
+    this.amplitude *= factor;
   }
 
   public void setBaseFreq(float freq) {
