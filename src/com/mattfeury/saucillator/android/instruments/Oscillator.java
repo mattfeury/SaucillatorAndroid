@@ -120,4 +120,10 @@ public abstract class Oscillator extends UGen {
   public int getPhase() {
     return oscPhase;
   }
+  public void setPhase(int phase) {
+    this.oscPhase = phase;
+    // We need to recalc the tables here
+    // FIXME
+    //fill();
+  }
 }

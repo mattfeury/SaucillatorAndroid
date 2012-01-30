@@ -50,9 +50,8 @@ public class InstrumentManager {
     return instruments;
   }
 
-  // TODO make files lowercase
   public static String getAssetPath(String filename) {
-    return assetPath + "/" + filename + extension;
+    return assetPath + "/" + filename.toLowerCase() + extension;
   }
   public static boolean isInternal(AssetManager man, String name) {
     boolean isInternal = true;
@@ -79,7 +78,7 @@ public class InstrumentManager {
       } else {
         json = getJsonForCustomInstrument(name);
       }
-      return decomposeJsonInstrument(json);
+      return decomposeJsonInstrument(man, json);
     } catch (Exception e) {
       e.printStackTrace();
       Log.e("INSTR SAUCE", "bad instrument " + e.toString());
@@ -89,7 +88,7 @@ public class InstrumentManager {
   }
 
   private static JSONObject getJsonForCustomInstrument(String name) throws Exception {
-    FileInputStream stream = new FileInputStream(new File(dataFolder + name + extension));
+    FileInputStream stream = new FileInputStream(new File(dataFolder + name.toLowerCase() + extension));
 
     String jsonString = "";
     try {
@@ -126,7 +125,7 @@ public class InstrumentManager {
     return json;
   }
 
-  private static ComplexOsc decomposeJsonInstrument(JSONObject json) throws Exception {
+  private static ComplexOsc decomposeJsonInstrument(AssetManager man, JSONObject json) throws Exception {
     // Lookup and create timbre
     ComplexOsc instrument = new ComplexOsc();
 
@@ -150,7 +149,8 @@ public class InstrumentManager {
 
       totalAmp += amplitude;
 
-      Oscillator osc = getOscillatorForTimbre(timbreId, phase);
+      Oscillator osc = getOscillatorForTimbre(man, timbreId);
+      osc.setPhase(phase);
       osc.setHarmonic(harmonic);
       osc.setAmplitude(amplitude);
 
@@ -189,17 +189,18 @@ public class InstrumentManager {
     return instrument;
   }
 
-  public static Oscillator getOscillatorForTimbre(String id, int phase) {
+  public static Oscillator getOscillatorForTimbre(AssetManager man, String id) {
+    id = id.toLowerCase();
     if ("sine".equals(id))
-      return new Sine(phase);
+      return new Sine();
     else if ("saw".equals(id))
-      return new Saw(phase);
+      return new Saw();
     else if ("square".equals(id))
-      return new Square(phase);
+      return new Square();
     else if ("noise".equals(id))
-      return new Noise(phase);
+      return new Noise();
     else //TODO lookup osc from files
-      return new Sine(phase);
+      return getInstrument(man, id);
   }
 
 }
