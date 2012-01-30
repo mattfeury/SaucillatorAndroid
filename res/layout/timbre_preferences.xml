@@ -28,7 +28,7 @@
       <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/harmonicValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
     </LinearLayout>
     <SeekBar android:layout_height="wrap_content" android:max="64" android:id="@+id/harmonicSlider" android:layout_width="fill_parent" android:padding="10px"/>
-        
+
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent">
       <TextView android:layout_width="wrap_content" android:text="Amplitude: " android:id="@+id/amplitudeLabel" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>
       <TextView android:layout_width="wrap_content" android:text="x"  android:id="@+id/amplitudeValue" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"/>

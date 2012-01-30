@@ -105,6 +105,8 @@ public abstract class BasicOsc extends Oscillator {
       phase = (phase+cyclesPerSample) - (int)phase; 
     }
 
+    // TODO maybe remove this from updating the envelope
+    // let the complexOscs handle all enveloping.
     rendered();
 
     return true;

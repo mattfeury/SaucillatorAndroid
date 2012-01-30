@@ -38,7 +38,7 @@ public class TimbreAdapter extends ArrayAdapter<Oscillator> {
       if (tt != null)
         tt.setText("Type: "+o.getName());
       if (bt != null)
-        bt.setText("Harmonic: " + o.getHarmonic() + ", Amplitude: " + o.getAmplitude());
+        bt.setText("Harmonic: " + o.getHarmonic() + ", Amplitude: " + o.getMaxInternalAmp());
     }
     return v;
   }

@@ -227,7 +227,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
             // Modify the osc (stored as id = 0)
             // TODO fail nicely if this doesn't exist. alert the user to choose an instrument
-            Oscillator osc = getOrCreateOscillator(0);
+            int oscId = 0;
+            Oscillator osc = getOrCreateOscillator(oscId);
 
             // If this is on a parameter AND
             // this finger isn't controlling something or it's controlling this param)
@@ -250,8 +251,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 else if (osc.isReleasing())
                   osc.startAttack();
 
-                osc.setFreqByOffset(scale, (int)(yScaled * TRACKPAD_GRID_SIZE));
-                osc.setAmplitude(xScaled);
+                updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
+                updateAmplitude(oscId, xScaled);
               } else if (osc != null && actionCode == MotionEvent.ACTION_POINTER_UP && actionIndex == i) {
                 //finger up. kill the osc
                 view.removeFinger(id);

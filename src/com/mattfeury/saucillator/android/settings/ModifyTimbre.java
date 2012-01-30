@@ -65,7 +65,7 @@ public class ModifyTimbre extends ListActivity {
         intent.putExtra("timbrePosition", position);
         intent.putExtra("type", timbre.getName());
         intent.putExtra("harmonic", timbre.getHarmonic());
-        intent.putExtra("amplitude", timbre.getAmplitude());
+        intent.putExtra("amplitude", timbre.getMaxInternalAmp());
         intent.putExtra("phase", timbre.getPhase());
         startActivityForResult(intent, 0);
       }
@@ -85,7 +85,7 @@ public class ModifyTimbre extends ListActivity {
         int phase = extras.getInt("phase");
 
         Oscillator osc = InstrumentManager.getOscillatorForTimbre(getAssets(), type);
-        osc.setAmplitude(amplitude);
+        osc.setMaxInternalAmp(amplitude);
         osc.setHarmonic(harmonic);
         osc.setPhase(phase);
 

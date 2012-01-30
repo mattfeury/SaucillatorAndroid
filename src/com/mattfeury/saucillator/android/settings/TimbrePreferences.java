@@ -43,7 +43,7 @@ public class TimbrePreferences extends Activity {
     ArrayList<String> timbres = InstrumentManager.getAllInstrumentNames(getAssets());
 
     if (! creating) { //don't allow recursive timbre
-      int index = timbres.lastIndexOf(osc.getName());
+      int index = timbres.lastIndexOf(osc.getName().toLowerCase());
 
       if (index > -1)
         timbres.remove(index);
@@ -54,9 +54,11 @@ public class TimbrePreferences extends Activity {
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     timbreSpinner.setAdapter(adapter);
     
-    int index = timbres.lastIndexOf(type);
-    if (index > -1)
-      timbreSpinner.setSelection(index);
+    if (! createNew) {
+      int index = timbres.lastIndexOf(type.toLowerCase());
+      if (index > -1)
+        timbreSpinner.setSelection(index);
+    }
 
     // Sliders
     bindSliderToVariable(R.id.harmonicSlider, R.id.harmonicValue, harmonic, 1);

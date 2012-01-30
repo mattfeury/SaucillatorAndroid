@@ -96,6 +96,7 @@ public class ComplexOsc extends Oscillator {
 		}
 
     Limiter.limit(buffer);
+    // TODO use amplitude ('volume') here, not the children
     boolean isClean = ! renderKids(buffer);
 
     rendered();

@@ -11,7 +11,8 @@ public abstract class Oscillator extends UGen {
   protected String name = "Unknown";
 
   protected float frequency = 440f;
-  protected float amplitude = 1.0f,
+  protected float amplitude = 1.0f, //TODO make this 'volume' and scale internalAmp
+                  maxInternalAmp = 1.0f, // have internalAmp always range from 0-1
                   internalAmp = 0f; //used to calculate. changes
   protected int oscPhase = 0;
 
@@ -59,7 +60,7 @@ public abstract class Oscillator extends UGen {
   }
   public void resetLaggers() {
     //TODO set rates
-    attackLagger = new Lagger(internalAmp, 1f);
+    attackLagger = new Lagger(internalAmp, maxInternalAmp);
     releaseLagger = new Lagger(internalAmp, 0f);
 
     //attackLagger.setRate(0.2f);
@@ -101,6 +102,12 @@ public abstract class Oscillator extends UGen {
   }
   public abstract void setAmplitude(float amp);
   public abstract void factorAmplitude(float factor);
+  public void setMaxInternalAmp(float amp) {
+    this.maxInternalAmp = amp;
+  }
+  public float getMaxInternalAmp() {
+    return maxInternalAmp;
+  }
 
   public void setBaseFreq(float freq) {
     BASE_FREQ = freq;
