@@ -25,8 +25,7 @@ public class ModifyInstrument extends PreferenceActivity {
   // the edit timbre / fx views
   public static ComplexOsc modifying;
   //private ComplexOsc loaded;
-
-  private boolean creating = true;
+  public static boolean creating = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

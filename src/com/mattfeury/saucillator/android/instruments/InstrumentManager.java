@@ -189,7 +189,7 @@ public class InstrumentManager {
     return instrument;
   }
 
-  private static Oscillator getOscillatorForTimbre(String id, int phase) {
+  public static Oscillator getOscillatorForTimbre(String id, int phase) {
     if ("sine".equals(id))
       return new Sine(phase);
     else if ("saw".equals(id))
