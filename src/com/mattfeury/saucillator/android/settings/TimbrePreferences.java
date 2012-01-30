@@ -89,14 +89,14 @@ public class TimbrePreferences extends Activity {
     setResult(0, intent);
 		finish();
   }
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Exit button
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    // Exit button
     if (keyCode == KeyEvent.KEYCODE_BACK)
       exit();
 
     return true;
-	}
+  }
 
   public void bindSliderToVariable(int sliderId, int textId, int progress) {
     SeekBar slider = (SeekBar) findViewById(sliderId);

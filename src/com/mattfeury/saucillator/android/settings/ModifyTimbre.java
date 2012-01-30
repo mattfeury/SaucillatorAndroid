@@ -102,16 +102,16 @@ public class ModifyTimbre extends ListActivity {
     Intent intent = new Intent(ModifyTimbre.this, ModifyInstrument.class);
     setResult(0, intent);
 
-		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
-		finish();
+    Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
+    finish();
   }
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Exit button
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    // Exit button
     if (keyCode == KeyEvent.KEYCODE_BACK)
       exit();
 
     return true;
-	}
+  }
 }  
 
