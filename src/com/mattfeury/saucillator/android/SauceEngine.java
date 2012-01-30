@@ -77,7 +77,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private Delay ugDelay;
     private Looper looper;
     private ParametricEQ eq;
-    private Oscillator[] oscillatorsById = new Oscillator[maxFingers];
+    private ComplexOsc[] oscillatorsById = new ComplexOsc[maxFingers];
     
     // The currentOscillator is never actually heard
     // It is kept as a template and updated anytime an instrument is edited/created
@@ -181,7 +181,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
         for (int i = 0; i < fingersById.length; i++) {
-          Oscillator osc = oscillatorsById[i];
+          ComplexOsc osc = oscillatorsById[i];
           if (osc != null && osc.isPlaying() && ! osc.isReleasing())
             osc.togglePlayback();
 
@@ -228,7 +228,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             // Modify the osc (stored as id = 0)
             // TODO fail nicely if this doesn't exist. alert the user to choose an instrument
             int oscId = 0;
-            Oscillator osc = getOrCreateOscillator(oscId);
+            ComplexOsc osc = getOrCreateOscillator(oscId);
 
             // If this is on a parameter AND
             // this finger isn't controlling something or it's controlling this param)
@@ -266,7 +266,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           } else if (mode == Modes.PLAY_MULTI) {
 
             // Determine which synth this finger corresponds to
-            Oscillator osc = getOrCreateOscillator(id);
+            ComplexOsc osc = getOrCreateOscillator(id);
 
             if (! fingerDefined)
               fingersById[id] = osc;
@@ -339,7 +339,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private void setupParamHandlers() {
       // TODO is this always edit mode?      
-      Oscillator osc = getOrCreateOscillator(0);
+      ComplexOsc osc = getOrCreateOscillator(0);
 
       view.resetParams();
       
@@ -364,7 +364,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 //FIXME yuck
                 x = Utilities.unscale(x, SauceView.controllerWidth, 1);
 
-                Oscillator osc = getOrCreateOscillator(0);
+                ComplexOsc osc = getOrCreateOscillator(0);
 
                 // Set the template and the playing oscillator
                 // We do this so we don't have to recreate a new oscillator everytime
@@ -393,7 +393,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
     public void resetOscillators() {
       for (int i = 0; i < oscillatorsById.length; i++) {
-        Oscillator osc = oscillatorsById[i];
+        ComplexOsc osc = oscillatorsById[i];
         if (osc != null)
           disconnectOsc(osc);
 
@@ -401,17 +401,17 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
 
     }
-    public Oscillator optOscillator(int id) {
+    public ComplexOsc optOscillator(int id) {
       return oscillatorsById[id];
     }
-    public Oscillator getOrCreateOscillator(int id) {
-      Oscillator osc = oscillatorsById[id];
+    public ComplexOsc getOrCreateOscillator(int id) {
+      ComplexOsc osc = oscillatorsById[id];
       if (osc != null)
         return osc;
 
       Object copy = Utilities.deepCopy(currentOscillator);
       if (copy != null)
-        osc = (Oscillator)copy;
+        osc = (ComplexOsc) copy;
       else {
         osc = InstrumentManager.getInstrument(getAssets(), "Sine");
         Toast.makeText(this, "Error: Unable to duplicate instrument", Toast.LENGTH_SHORT).show();
@@ -423,13 +423,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return osc;
     }
     public void updateAmplitude(int id, float amp) {
-      Oscillator osc = optOscillator(id);
+      ComplexOsc osc = optOscillator(id);
 
       if (osc != null)
         osc.setAmplitude(amp);
     }      
     public void updateFrequency(int id, int offset) {
-      Oscillator osc = optOscillator(id);
+      ComplexOsc osc = optOscillator(id);
 
       if (osc != null)
         osc.setFreqByOffset(scale, offset);
@@ -438,7 +438,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
       float newFreq = Theory.getFrequencyForNote(note + 1, octave);
-      for (Oscillator osc : oscillatorsById)
+      for (ComplexOsc osc : oscillatorsById)
         if (osc != null)
           osc.setBaseFreq(newFreq);
 
@@ -623,10 +623,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	return false;
     }
 
-    private void connectOsc(Oscillator osc) {
+    private void connectOsc(ComplexOsc osc) {
       osc.chuck(ugDelay);
     }
-    private void disconnectOsc(Oscillator osc) {
+    private void disconnectOsc(ComplexOsc osc) {
       osc.unchuck(ugDelay);
     }
     private boolean instrumentSelection(MenuItem item, int id) {
