@@ -21,7 +21,7 @@ public class ComplexOsc extends Oscillator {
     components = new LinkedList<Oscillator>();
   }
 
-  protected void fill(Oscillator... oscs) {
+  public void fill(Oscillator... oscs) {
     for(Oscillator osc : oscs) {
       osc.setPlaying(true); //we manage playback here, so all the children should be available for rendering
       components.add(osc);

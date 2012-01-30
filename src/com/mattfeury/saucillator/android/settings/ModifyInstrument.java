@@ -17,6 +17,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 public class ModifyInstrument extends PreferenceActivity {
@@ -69,10 +70,18 @@ public class ModifyInstrument extends PreferenceActivity {
     
   }
 
-  private void exit() {
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    String name = prefs.getString("namePref", "");
-    
-  }
+  public void exit() {
+    Intent intent = new Intent(ModifyInstrument.this, SauceEngine.class);
+    setResult(0, intent);
 
+    finish();
+  }
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    // Exit button
+    if (keyCode == KeyEvent.KEYCODE_BACK)
+      exit();
+
+    return true;
+  }
 }

@@ -59,7 +59,7 @@ public class TimbrePreferences extends Activity {
       timbreSpinner.setSelection(index);
 
     // Sliders
-    bindSliderToVariable(R.id.harmonicSlider, R.id.harmonicValue, harmonic);
+    bindSliderToVariable(R.id.harmonicSlider, R.id.harmonicValue, harmonic, 1);
     bindSliderToVariable(R.id.amplitudeSlider, R.id.amplitudeValue, amplitude, 2f);
     bindSliderToVariable(R.id.phaseSlider, R.id.phaseValue, phase);
 
@@ -128,15 +128,18 @@ public class TimbrePreferences extends Activity {
   } 
 
   public void bindSliderToVariable(int sliderId, int textId, int progress) {
+    bindSliderToVariable(sliderId, textId, progress, 0);
+  }
+  public void bindSliderToVariable(int sliderId, int textId, int progress, final int startAt) {
     SeekBar slider = (SeekBar) findViewById(sliderId);
     slider.setIndeterminate(false);
-    slider.setProgress(progress);
+    slider.setProgress(progress - startAt);
     final TextView value = (TextView) findViewById(textId);
     value.setText(""+progress);
     slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int change, boolean fromUser) {
-        value.setText(""+change);
+        value.setText(""+(change+startAt));
       }
       @Override
       public void onStartTrackingTouch(SeekBar seekBar) {}

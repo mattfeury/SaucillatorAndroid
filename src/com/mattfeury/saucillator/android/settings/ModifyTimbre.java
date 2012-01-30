@@ -84,14 +84,15 @@ public class ModifyTimbre extends ListActivity {
         float amplitude = extras.getFloat("amplitude");
         int phase = extras.getInt("phase");
 
-        Oscillator osc = InstrumentManager.getOscillatorForTimbre(type.toLowerCase(), phase);
+        Oscillator osc = InstrumentManager.getOscillatorForTimbre(getAssets(), type);
         osc.setAmplitude(amplitude);
         osc.setHarmonic(harmonic);
+        osc.setPhase(phase);
 
-        if (createNew)
-          timbres.add(osc);
-        else
-          timbres.set(position, osc);
+        if (! createNew)
+          timbres.remove(position);
+
+        ModifyInstrument.modifying.fill(osc);
 
         adapter.notifyDataSetChanged();
       }

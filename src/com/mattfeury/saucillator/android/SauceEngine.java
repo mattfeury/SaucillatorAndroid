@@ -91,6 +91,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private SubMenu instrumentMenu;
     private final int instrumentMenuId = 9;
     public static final String DATA_FOLDER = "/sdcard/sauce/";
+    public static final int MODIFY_ACTION = 1;
     
     /** Called when the activity is first created. */
     @Override
@@ -465,7 +466,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private boolean editInstrument() {
     	Intent intent = new Intent(SauceEngine.this, ModifyInstrument.class);
     	intent.putExtra("createNew", false);
-    	startActivityForResult(intent, 1);
+    	startActivityForResult(intent, SauceEngine.MODIFY_ACTION);
     	return true;
     }
     // Called when settings activity ends. Updates proper params
@@ -482,6 +483,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
           view.setVisuals(extras.getBoolean("visuals"));
           updateOscSettings();
         }
+      } else if (requestCode == SauceEngine.MODIFY_ACTION) {
+        Log.d(TAG,"EDITTED INSTRUMENTES");
+        currentOscillator = ModifyInstrument.modifying;
+        resetOscillators();
       }
     }
 
