@@ -20,6 +20,9 @@ import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 
 public class ModifyTimbre extends ListActivity {
+  private static final int COPY_ID = 0;
+  private static final int DELETE_ID = 1;
+
   private LinkedList<Oscillator> timbres;
   private TimbreAdapter adapter;
   
@@ -103,13 +106,25 @@ public class ModifyTimbre extends ListActivity {
   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
     menu.setHeaderTitle(timbres.get(info.position).getName());
-    menu.add(Menu.NONE, 0, 0, "Delete");
+    menu.add(Menu.NONE, COPY_ID, COPY_ID, "Duplicate");
+    menu.add(Menu.NONE, DELETE_ID, DELETE_ID, "Delete");
   }
   @Override
   public boolean onContextItemSelected(MenuItem item) {
     AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
     
-    timbres.remove(info.position);
+    switch(info.position) {
+      case COPY_ID:
+        Oscillator o = timbres.get(info.position);
+        Oscillator copy = InstrumentManager.copyInstrument(o);
+        timbres.add(copy);
+        break;
+      case DELETE_ID:
+        timbres.remove(info.position);
+        break;
+      default:
+    }
+    
     adapter.notifyDataSetChanged();
     return true;
   }
