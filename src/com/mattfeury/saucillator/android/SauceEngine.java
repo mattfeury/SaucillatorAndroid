@@ -409,7 +409,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       if (osc != null)
         return osc;
 
-      Object copy = Utilities.deepCopy(currentOscillator);
+      Oscillator copy = InstrumentManager.copyInstrument(currentOscillator);
       if (copy != null)
         osc = (ComplexOsc) copy;
       else {

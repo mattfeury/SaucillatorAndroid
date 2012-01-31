@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.json.*;
 
 import com.mattfeury.saucillator.android.SauceEngine;
+import com.mattfeury.saucillator.android.utilities.Utilities;
 
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -201,6 +202,11 @@ public class InstrumentManager {
       return new Noise();
     else //TODO lookup osc from files
       return getInstrument(man, id);
+  }
+
+  public static Oscillator copyInstrument(Oscillator o) {
+    //TODO make this not deepCopy. maybe json or something
+    return (Oscillator)Utilities.deepCopy(o);
   }
 
 }
