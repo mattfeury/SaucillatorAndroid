@@ -33,7 +33,7 @@ public class ComplexOsc extends Oscillator {
 
   public void fill(Oscillator... oscs) {
     for(Oscillator osc : oscs) {
-      osc.setPlaying(true); //we manage playback here, so all the children should be available for rendering
+      osc.setPlaying(true); //we manage playback here, so all the children should always be playing
       components.add(osc);
       osc.chuck(this);
     }
@@ -146,18 +146,19 @@ public class ComplexOsc extends Oscillator {
   }  
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
-		if(! isPlaying()) {
-			return true;
-		}
+    if(! isPlaying()) {
+      return true;
+    }
 
     Limiter.limit(buffer);
-    boolean isClean = ! renderKids(buffer);
+    final float[] kidsBuffer = new float[CHUNK_SIZE];
+    boolean didWork = renderKids(kidsBuffer);
     for(int i = 0; i < CHUNK_SIZE; i++) {
-      buffer[i] *= amplitude*internalAmp;
+      buffer[i] += amplitude*internalAmp*kidsBuffer[i];
     }
 
     rendered();
 
-    return isClean;
-	}
+    return didWork;
+  }
 }
