@@ -8,6 +8,12 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class ViewBinders {
+
+  /**
+   * Binds a SeekBar to update a TextView with the value, passing in
+   * the current value (integer) and what the "min" of the slider is.
+   * The max should be set via the layout xml. 
+   */
   public static void bindSliderToVariable(Activity a, int sliderId, int textId, int progress) {
     bindSliderToVariable(a, sliderId, textId, progress, 0);
   }
@@ -31,6 +37,12 @@ public class ViewBinders {
   public static void bindSliderToVariable(Activity a, int sliderId, int textId, float percent) {
     bindSliderToVariable(a, sliderId, textId, percent, 1f);
   }
+  
+  /**
+   * Binds a SeekBar to update a TextView with the value, passing in
+   * the current value (percentage, float 0.0-1.0) and what the "max" of the slider is.
+   * Min is 0.
+   */
   public static void bindSliderToVariable(Activity a, int sliderId, int textId, float percent, final float max) {
     SeekBar slider = (SeekBar) a.findViewById(sliderId);
     slider.setIndeterminate(false);
@@ -48,6 +60,11 @@ public class ViewBinders {
       public void onStopTrackingTouch(SeekBar seekBar) {}
     });    
   }
+  
+  /**
+   * Enables any number of sliders depending on if a checkbox is checked.
+   * It seems that this can only get called on a checkbox once, so pass through as many as needed.
+   */
   public static void bindCheckboxToSlider(Activity a, int checkboxId, int... sliderIds) {
     CheckBox checkbox = (CheckBox) a.findViewById(checkboxId);
     boolean enabled = checkbox.isChecked();

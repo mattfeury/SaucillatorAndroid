@@ -32,6 +32,8 @@ public class EffectsPreferences extends Activity {
     final int modDepth = extras.getInt("modDepth", 0);
     final int delay = extras.getInt("delay", 1);
     float lag = extras.getFloat("lag", 0f);
+    float attack = extras.getFloat("attack", 0f);
+    float release = extras.getFloat("release", 0f);
 
     ComplexOsc osc = ModifyInstrument.modifying;
 
@@ -39,12 +41,17 @@ public class EffectsPreferences extends Activity {
     ViewBinders.bindSliderToVariable(this, R.id.modRateSlider, R.id.modRateValue, modRate);
     ViewBinders.bindSliderToVariable(this, R.id.modDepthSlider, R.id.modDepthValue, modDepth);
 
-    ViewBinders.bindSliderToVariable(this, R.id.delaySlider, R.id.delayValue, delay);
+    ViewBinders.bindSliderToVariable(this, R.id.delaySlider, R.id.delayValue, delay, 1);
     ViewBinders.bindSliderToVariable(this, R.id.lagSlider, R.id.lagValue, lag);
-    
+
+    ViewBinders.bindSliderToVariable(this, R.id.attackSlider, R.id.attackValue, attack);
+    ViewBinders.bindSliderToVariable(this, R.id.releaseSlider, R.id.releaseValue, release);
+
+    // Checkboxes
     ViewBinders.bindCheckboxToSlider(this, R.id.lfoEnabler, R.id.modRateSlider, R.id.modDepthSlider);
     ViewBinders.bindCheckboxToSlider(this, R.id.delayEnabler, R.id.delaySlider);
     ViewBinders.bindCheckboxToSlider(this, R.id.lagEnabler, R.id.lagSlider);
+    ViewBinders.bindCheckboxToSlider(this, R.id.envelopeEnabler, R.id.attackSlider, R.id.releaseSlider);
   }
 
   public void exit(boolean save) {

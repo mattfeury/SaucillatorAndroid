@@ -64,7 +64,7 @@
           android:gravity="center_horizontal"
           android:layout_gravity="right"/>
     </LinearLayout>
-    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/modDepthSlider" android:padding="5px" android:layout_weight="1"></SeekBar>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/modDepthSlider" android:padding="5px" android:layout_weight="1"/>
 
     <CheckBox android:id="@+id/delayEnabler"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
           android:gravity="center_horizontal"
           android:layout_gravity="right"/>
     </LinearLayout>
-    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delaySlider" android:padding="5px" android:layout_weight="1"></SeekBar>    
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delaySlider" android:padding="5px" android:layout_weight="1"/>    
 
     <CheckBox android:id="@+id/lagEnabler"
         android:layout_height="wrap_content"
@@ -116,7 +116,62 @@
           android:gravity="center_horizontal"
           android:layout_gravity="right"/>
     </LinearLayout>
-    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/lagSlider" android:padding="5px" android:layout_weight="1"></SeekBar>    
-    
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/lagSlider" android:padding="5px" android:layout_weight="1"/>
+
+    <CheckBox android:id="@+id/envelopeEnabler"
+        android:layout_height="wrap_content"
+        android:text="Envelope"
+        android:layout_width="match_parent"
+        android:layout_gravity="center" />
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/attackText"
+          android:text="Attack: "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/attackValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:id="@+id/attackSlider"
+      android:padding="5px"
+      android:layout_weight="1"/>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/releaseText"
+          android:text="Release: "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/releaseValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/releaseSlider" android:padding="5px" android:layout_weight="1"/>
+
   </LinearLayout>
 </ScrollView>
