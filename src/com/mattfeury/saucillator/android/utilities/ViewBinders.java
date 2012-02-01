@@ -21,12 +21,15 @@ public class ViewBinders {
     SeekBar slider = (SeekBar) a.findViewById(sliderId);
     slider.setIndeterminate(false);
     slider.setProgress(progress - startAt);
+    final int max = slider.getMax();
+
     final TextView value = (TextView) a.findViewById(textId);
     value.setText(""+progress);
     slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int change, boolean fromUser) {
-        value.setText(""+(change+startAt));
+        int scaled = (int) ((max-startAt)/(float)max * change + startAt);
+        value.setText(""+scaled);
       }
       @Override
       public void onStartTrackingTouch(SeekBar seekBar) {}
