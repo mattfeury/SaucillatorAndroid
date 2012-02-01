@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+>
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:scrollbars="vertical"
+      >
+
+    <CheckBox android:id="@+id/lfoEnabler"
+        android:layout_height="wrap_content"
+        android:text="LFO (Low Frequency Oscillator)"
+        android:layout_width="match_parent"
+        android:layout_gravity="center" />
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/modRateText"
+          android:text="Mod Rate: "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/modRateValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:id="@+id/modRateSlider"
+      android:padding="5px"
+      android:layout_weight="1"/>
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/modDepthText"
+          android:text="Mod Depth: "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/modDepthValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/modDepthSlider" android:padding="5px" android:layout_weight="1"></SeekBar>
+
+    <CheckBox android:id="@+id/delayEnabler"
+        android:layout_height="wrap_content"
+        android:text="Delay" android:layout_width="match_parent" android:layout_gravity="center" />
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/delayText"
+          android:text="Delay (in samples): "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/delayValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delaySlider" android:padding="5px" android:layout_weight="1"></SeekBar>    
+
+    <CheckBox android:id="@+id/lagEnabler"
+        android:layout_height="wrap_content"
+        android:text="Lag" android:layout_width="match_parent" android:layout_gravity="center" />
+
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/lagText"
+          android:text="Lag %: "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/lagValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/lagSlider" android:padding="5px" android:layout_weight="1"></SeekBar>    
+    
+  </LinearLayout>
+</ScrollView>

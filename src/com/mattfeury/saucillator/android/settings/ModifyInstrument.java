@@ -61,9 +61,9 @@ public class ModifyInstrument extends PreferenceActivity {
     Preference fxPref = (Preference) findPreference("effectsPref");
     fxPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
-        Toast.makeText(getBaseContext(),
-                        "The custom preference has been clicked",
-                        Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(ModifyInstrument.this, EffectsPreferences.class);
+        intent.putExtra("modRate", 0);
+        startActivityForResult(intent, 0);
         return true;
       }
     });
