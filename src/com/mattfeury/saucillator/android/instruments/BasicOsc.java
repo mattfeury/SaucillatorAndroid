@@ -82,6 +82,9 @@ public abstract class BasicOsc extends Oscillator {
   public void setLag(float rate) {
     this.rate = 1.0f - rate;
   }
+  public float getLag() {
+    return 1.0f - rate;
+  }
 
   public void rendered() {
     //Noop

@@ -27,6 +27,9 @@ public class ModifyInstrument extends PreferenceActivity {
   public static ComplexOsc modifying;
   //private ComplexOsc loaded;
   public static boolean creating = true;
+  
+  private final static int timbreActivity = 0;
+  private final static int fxActivity = 1;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class ModifyInstrument extends PreferenceActivity {
     timbrePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
         Intent intent = new Intent(ModifyInstrument.this, ModifyTimbre.class);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, timbreActivity);
         return true;
       }
     });
@@ -62,13 +65,38 @@ public class ModifyInstrument extends PreferenceActivity {
     fxPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
         Intent intent = new Intent(ModifyInstrument.this, EffectsPreferences.class);
-        intent.putExtra("modRate", 0);
-        startActivityForResult(intent, 0);
+        intent.putExtra("modRate", modifying.getModRate());
+        intent.putExtra("modDepth", modifying.getModDepth());
+        //intent.putExtra("delay", modifying.getDelay());
+        intent.putExtra("lag", modifying.getLag());
+        intent.putExtra("attack", modifying.getAttack());
+        intent.putExtra("release", modifying.getRelease());
+
+        startActivityForResult(intent, fxActivity);
         return true;
       }
-    });
-    
+    }); 
   }
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == fxActivity && data != null) {
+      Bundle extras = data.getExtras();
+      
+      final int modRate = extras.getInt("modRate", 0);
+      final int modDepth = extras.getInt("modDepth", 0);
+      final int delay = extras.getInt("delay", 1);
+      float lag = extras.getFloat("lag", 0f);
+      float attack = extras.getFloat("attack", 0f);
+      float release = extras.getFloat("release", 0f);
+
+      modifying.setModRate(modRate);
+      modifying.setModDepth(modDepth);
+      //modifying.setDelay(delay);
+      modifying.setLag(lag);
+      modifying.setAttack(attack);
+      modifying.setRelease(release);
+    }
+  }
+
 
   public void exit() {
     Intent intent = new Intent(ModifyInstrument.this, SauceEngine.class);

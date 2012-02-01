@@ -1,22 +1,15 @@
 package com.mattfeury.saucillator.android.settings;
 
-import java.util.ArrayList;
-
 import com.mattfeury.saucillator.android.R;
-import com.mattfeury.saucillator.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.android.instruments.InstrumentManager;
-import com.mattfeury.saucillator.android.utilities.Utilities;
+import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.utilities.ViewBinders;
 
 import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
-import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class EffectsPreferences extends Activity {
@@ -35,9 +28,17 @@ public class EffectsPreferences extends Activity {
     float attack = extras.getFloat("attack", 0f);
     float release = extras.getFloat("release", 0f);
 
-    ComplexOsc osc = ModifyInstrument.modifying;
+    // Set defaults on view elements
+    SeekBar seek = (SeekBar) findViewById(R.id.modRateSlider);
+    seek.setMax(SauceEngine.MOD_RATE_MAX);
 
-    // Sliders
+    seek = (SeekBar) findViewById(R.id.modDepthSlider);
+    seek.setMax(SauceEngine.MOD_DEPTH_MAX);
+
+    seek = (SeekBar) findViewById(R.id.delaySlider);
+    seek.setMax(SauceEngine.DELAY_MAX);
+
+    // Bind Sliders to Values
     ViewBinders.bindSliderToVariable(this, R.id.modRateSlider, R.id.modRateValue, modRate);
     ViewBinders.bindSliderToVariable(this, R.id.modDepthSlider, R.id.modDepthValue, modDepth);
 
@@ -47,7 +48,7 @@ public class EffectsPreferences extends Activity {
     ViewBinders.bindSliderToVariable(this, R.id.attackSlider, R.id.attackValue, attack);
     ViewBinders.bindSliderToVariable(this, R.id.releaseSlider, R.id.releaseValue, release);
 
-    // Checkboxes
+    // Bind Checkboxes to Sliders
     ViewBinders.bindCheckboxToSlider(this, R.id.lfoEnabler, R.id.modRateSlider, R.id.modDepthSlider);
     ViewBinders.bindCheckboxToSlider(this, R.id.delayEnabler, R.id.delaySlider);
     ViewBinders.bindCheckboxToSlider(this, R.id.lagEnabler, R.id.lagSlider);
@@ -58,22 +59,30 @@ public class EffectsPreferences extends Activity {
     Intent intent = new Intent(EffectsPreferences.this, ModifyInstrument.class);
 
     if (save) {
-      Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
-      String timbre = (String)timbreSpinner.getSelectedItem();
+      TextView view = (TextView) findViewById(R.id.modRateValue);
+      int modRate = Integer.parseInt((String)view.getText());
 
-      TextView harmonicView = (TextView) findViewById(R.id.harmonicValue);
-      String harmonic = (String)harmonicView.getText();
+      view = (TextView) findViewById(R.id.modDepthValue);
+      int modDepth = Integer.parseInt((String)view.getText());
 
-      TextView amplitudeView = (TextView) findViewById(R.id.amplitudeValue);
-      String amplitude = (String)amplitudeView.getText();
+      view = (TextView) findViewById(R.id.delayValue);
+      int delay = Integer.parseInt((String)view.getText());
 
-      TextView phaseView = (TextView) findViewById(R.id.phaseValue);
-      String phase = (String)phaseView.getText();
+      view = (TextView) findViewById(R.id.lagValue);
+      float lag = Float.parseFloat((String)view.getText());
 
-      intent.putExtra("type", timbre);
-      intent.putExtra("harmonic", Integer.parseInt(harmonic));
-      intent.putExtra("amplitude", Float.parseFloat(amplitude));
-      intent.putExtra("phase", Integer.parseInt(phase));
+      view = (TextView) findViewById(R.id.attackValue);
+      float attack = Float.parseFloat((String)view.getText());
+
+      view = (TextView) findViewById(R.id.releaseValue);
+      float release = Float.parseFloat((String)view.getText());
+
+      intent.putExtra("modRate", modRate);
+      intent.putExtra("modDepth", modDepth);
+      intent.putExtra("delay", delay);
+      intent.putExtra("lag", lag);
+      intent.putExtra("attack", attack);
+      intent.putExtra("release", release);
 
       setResult(0, intent);
     } else {
@@ -95,7 +104,7 @@ public class EffectsPreferences extends Activity {
     if (id == 0) {
       dialog =
         new AlertDialog.Builder(this)
-              .setMessage("Save Changes?")
+              .setMessage("Save?")
               .setCancelable(true)
               .setPositiveButton("Yes",
                   new DialogInterface.OnClickListener() {

@@ -31,6 +31,7 @@ public abstract class Oscillator extends UGen {
   public abstract void setModRate(int rate);
   public abstract void setModDepth(int depth);
   public abstract void setLag(float rate);
+  public abstract float getLag();
 
   public abstract int getModRate();
   public abstract int getModDepth();

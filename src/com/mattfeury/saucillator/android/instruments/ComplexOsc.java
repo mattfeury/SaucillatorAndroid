@@ -88,7 +88,13 @@ public class ComplexOsc extends Oscillator {
     return 0;
   }
 
-  public void setLag(float rate) {
+  public float getLag() {
+    for(Oscillator osc : components)
+      return osc.getLag();
+    
+    return 0;
+  }
+public void setLag(float rate) {
     for(Oscillator osc : components)
       osc.setLag(rate);
   }
@@ -117,9 +123,15 @@ public class ComplexOsc extends Oscillator {
     return attacking;
   }
 
+  public float getAttack() {
+    return attack;
+  }
   public void setAttack(float a) {
     attack = a;
     resetLaggers();
+  }
+  public float getRelease() {
+    return release;
   }
   public void setRelease(float r) {
     release = r;

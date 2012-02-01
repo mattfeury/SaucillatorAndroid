@@ -60,8 +60,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
     //music shtuffs
     public int[] scale = Theory.pentatonicScale;
 
+    public final static int DELAY_MAX = UGen.SAMPLE_RATE; //Is this right?
     public final static int MOD_RATE_MAX = 20;
     public final static int MOD_DEPTH_MAX = 1000;
+
     public final static float DEFAULT_LAG = 0.5f;
     public static int TRACKPAD_GRID_SIZE = 12;
 
@@ -378,7 +380,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
               }
             },
             osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
-            osc.getModRate() / (float)MOD_DEPTH_MAX // mod depth on y
+            osc.getModDepth() / (float)MOD_DEPTH_MAX // mod depth on y
           );
       
       view.addParam(eqParam);
@@ -488,6 +490,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         Log.d(TAG,"EDITTED INSTRUMENTES");
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
+        setupParamHandlers();
       }
     }
 
