@@ -113,7 +113,7 @@ public class ModifyTimbre extends ListActivity {
   public boolean onContextItemSelected(MenuItem item) {
     AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
     
-    switch(info.position) {
+    switch(item.getItemId()) {
       case COPY_ID:
         Oscillator o = timbres.get(info.position);
         Oscillator copy = InstrumentManager.copyInstrument(o);
