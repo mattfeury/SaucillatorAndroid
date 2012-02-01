@@ -183,7 +183,13 @@ public class InstrumentManager {
         instrument.setModDepth(depth);
       } catch (Exception e) {}
 
-      //TODO delay
+      //TODO
+      //
+      // Delay
+      //
+      // Envelope
+      //
+      // ...?
 
     } catch (Exception e) {}
 
@@ -200,8 +206,10 @@ public class InstrumentManager {
       return new Square();
     else if ("noise".equals(id))
       return new Noise();
-    else //TODO lookup osc from files
-      return getInstrument(man, id);
+    else {
+      ComplexOsc osc = getInstrument(man, id);
+      return (osc != null) ? osc.resetEffects() : null;
+    }
   }
 
   public static Oscillator copyInstrument(Oscillator o) {

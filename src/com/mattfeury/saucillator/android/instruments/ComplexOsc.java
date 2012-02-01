@@ -15,13 +15,14 @@ public class ComplexOsc extends Oscillator {
 
   public static final float MAX_AMPLITUDE = 1.0f;//what is this for, eh?
 
-  private float maxInternalAmp = 1.0f, // have internalAmp always range from 0-1
-                internalAmp = 0f; //used to calculate. changes
-  protected float attack = 0f,
-                  release = 0f;
+  private float maxInternalAmp = 1.0f, // internalAmp always ranges from 0-1
+                internalAmp = 0f; // used to calculate attack and release to/from maxInternalAmp
+
+  protected float attack = 0.2f,  // these are really just a percentage
+                  release = 0.2f; // can we translate them to something more meaningful?
   protected Lagger attackLagger = new Lagger(0f, 1f),
                    releaseLagger = new Lagger(1f, 0f);
-  protected boolean attacking = false, releasing = false;
+  protected boolean attacking = false, releasing = false, envelopeEnabled = true;
 
   public ComplexOsc() {
     this(1.0f);
@@ -50,6 +51,21 @@ public class ComplexOsc extends Oscillator {
       osc.setFreq(freq * this.harmonic);
   }
 
+  // TODO 
+  // Let's make an Effect object, keep a list, and cycle through.
+  public ComplexOsc resetEffects() {
+    setModRate(0);
+    setModDepth(0);
+    setLag(0);
+
+    envelopeEnabled = false;
+    //setAttack(0);
+    //setRelease(0);
+
+    // For chaining. Because, why not?
+    return this;
+  }
+
   public void setModRate(int rate) {
     for(Oscillator osc : components)
       osc.setModRate(rate);
@@ -59,7 +75,6 @@ public class ComplexOsc extends Oscillator {
       osc.setModDepth(depth);
   }
 
-  //TODO FIXME this assumes they all have the same LFO settings. is this right?
   public int getModRate() {
     for(Oscillator osc : components)
       return osc.getModRate();
@@ -102,6 +117,14 @@ public class ComplexOsc extends Oscillator {
     return attacking;
   }
 
+  public void setAttack(float a) {
+    attack = a;
+    resetLaggers();
+  }
+  public void setRelease(float r) {
+    release = r;
+    resetLaggers();
+  }
   public void startAttack() {
     resetLaggers();
 
@@ -120,8 +143,8 @@ public class ComplexOsc extends Oscillator {
     attackLagger = new Lagger(internalAmp, maxInternalAmp);
     releaseLagger = new Lagger(internalAmp, 0f);
 
-    //attackLagger.setRate(0.2f);
-    //releaseLagger.setRate(0.2f);
+    //attackLagger.setRate(attack);
+    //releaseLagger.setRate(release);
   }
   public void updateEnvelope() {
     float previousAmp = internalAmp;
@@ -142,7 +165,8 @@ public class ComplexOsc extends Oscillator {
   }
 
   public void rendered() {
-    updateEnvelope();
+    if (envelopeEnabled)
+      updateEnvelope();
   }  
 
   public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
@@ -154,7 +178,10 @@ public class ComplexOsc extends Oscillator {
     final float[] kidsBuffer = new float[CHUNK_SIZE];
     boolean didWork = renderKids(kidsBuffer);
     for(int i = 0; i < CHUNK_SIZE; i++) {
-      buffer[i] += amplitude*internalAmp*kidsBuffer[i];
+      if (envelopeEnabled)
+        buffer[i] += amplitude*internalAmp*kidsBuffer[i];
+      else
+        buffer[i] += amplitude*kidsBuffer[i];
     }
 
     rendered();
