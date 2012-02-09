@@ -1,5 +1,7 @@
 package com.mattfeury.saucillator.android.visuals;
 
+import java.text.DecimalFormat;
+
 import com.mattfeury.saucillator.android.utilities.Utilities;
 
 import android.graphics.*;
@@ -9,14 +11,19 @@ import android.graphics.*;
  */
 public class DrawableParameter {
 
-  //protected Point point = new Point();
   private float x = 0f, y = 0f;
   private int lastX = 0, lastY = 0;
-  protected Paint paint = new Paint();
-  private int radius = 20;
+  protected Paint paint = new Paint(),
+                  textPaint = new Paint();
+  private int radius = 20,
+              textSize = 14;
 
   private boolean enabled = true;
+  protected boolean showCoords = true;
 
+  private static final DecimalFormat df = new DecimalFormat("#.00");
+  private int textOffset = radius * 2;
+ 
   // The radius of the circle that encompasses this drawable circle
   // that is the touchable area for this parameters
   public int touchRadius = radius * 2;
@@ -35,6 +42,8 @@ public class DrawableParameter {
   }
   private void init() {
     paint.setARGB(150, 200, 0, 0);
+    textPaint.setARGB(150, 200, 200, 200);
+    textPaint.setTextSize(textSize);
   }
 
   public void draw(Canvas canvas) {
@@ -42,6 +51,18 @@ public class DrawableParameter {
       lastX = (int) (this.x * canvas.getWidth());
       lastY = canvas.getHeight() - (int) (this.y * canvas.getHeight());
       canvas.drawCircle(lastX, lastY, radius, paint);
+
+      if (showCoords) {
+        int textWidth = 100,
+            textHeight = textSize;
+        int textX = (lastX - textWidth - textOffset) > 0 ?
+                      lastX - textWidth - textOffset : lastX + textOffset;
+
+        int textY = (lastY - textHeight - textOffset) > 0 ?
+                      lastY - textHeight - textOffset : lastY + textOffset;
+
+        canvas.drawText("(X: "+Float.valueOf(df.format(x))+", Y: "+Float.valueOf(df.format(y))+")", textX, textY, textPaint);
+      }
     }
   }
   public void toggle() {

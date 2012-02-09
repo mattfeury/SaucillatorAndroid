@@ -98,7 +98,7 @@
           android:layout_width="wrap_content"
           android:textAppearance="?android:attr/textAppearanceLarge"
           android:id="@+id/delayDecayText"
-          android:text="Delay Decay (%): "
+          android:text="Delay Decay (Amplitude): "
           android:layout_gravity="left"
           android:padding="2px"/>
         <TextView

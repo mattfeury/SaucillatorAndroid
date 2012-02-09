@@ -16,13 +16,11 @@ public class Delay extends UGen {
 		line = new float[UGen.SAMPLE_RATE];
 	}
 
-  // Decay makes sense to go from 0% to 100%, but internally
-  // it is used as amplitude so we want to invert.
   public float getDecay() {
-    return 1.0f - decay;
+    return decay;
   }
   public void setDecay(float decay) {
-    this.decay = 1.0f - decay;
+    this.decay = decay;
   }
   public int getRate() {
     return length;
