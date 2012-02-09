@@ -45,8 +45,8 @@ public class EffectsPreferences extends Activity {
     ViewBinders.bindSliderToVariable(this, R.id.delaySlider, R.id.delayValue, delay, 1);
     ViewBinders.bindSliderToVariable(this, R.id.lagSlider, R.id.lagValue, lag);
 
-    ViewBinders.bindSliderToVariable(this, R.id.attackSlider, R.id.attackValue, attack);
-    ViewBinders.bindSliderToVariable(this, R.id.releaseSlider, R.id.releaseValue, release);
+    ViewBinders.bindSliderToVariable(this, R.id.attackSlider, R.id.attackValue, attack, 0.99f);
+    ViewBinders.bindSliderToVariable(this, R.id.releaseSlider, R.id.releaseValue, release, 0.99f);
 
     // Bind Checkboxes to Sliders
     //ViewBinders.bindCheckboxToSlider(this, R.id.lfoEnabler, R.id.modRateSlider, R.id.modDepthSlider);

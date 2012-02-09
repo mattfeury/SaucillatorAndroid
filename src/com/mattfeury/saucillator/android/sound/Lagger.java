@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 
 /**
  * Output approaches Input exponentially by rate.
- * When rate is 1, output = input. When rate is 0, output is constant.
+ * When rate is 0, output = input. When rate is 1, output is constant. Rate should rarely be 1.
  *
  * Output = Output + Rate * (Input - Output)
  */
@@ -16,16 +16,17 @@ public class Lagger implements Serializable {
   // To fix this, we round to 5 decimal places so we can achieve a "zero" inevitably.
   private static final DecimalFormat df = new DecimalFormat("#.00000");
 
-  public Lagger(float f, float approaches) {
+  public Lagger(float f, float approaches, float rate) {
     this.in = approaches;
     this.out = f;
-  }
-  public Lagger(float def) {
-    this(def, def);
+    this.rate = rate;
   }
 
+  // TODO figure out a way to do this linearly
   public float update() {
-    out += rate * (in - out);
+    // Internally, in = out when rate is 1. This doesn't make sense logically though,
+    // so we expose the inverse to functionality.
+    out += (1f - rate) * (in - out);
     out = Float.valueOf(df.format(out));
     return out;
   }

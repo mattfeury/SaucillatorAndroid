@@ -15,13 +15,13 @@ public class ComplexOsc extends Oscillator {
 
   public static final float MAX_AMPLITUDE = 1.0f;//what is this for, eh?
 
-  private float maxInternalAmp = 1.0f, // internalAmp always ranges from 0-1
+  private float maxInternalAmp = 1.0f, // internalAmp always ranges from 0-maxInternalAmp
                 internalAmp = 0f; // used to calculate attack and release to/from maxInternalAmp
 
-  protected float attack = 0.2f,  // these are really just a percentage
-                  release = 0.2f; // can we translate them to something more meaningful?
-  protected Lagger attackLagger = new Lagger(0f, 1f),
-                   releaseLagger = new Lagger(1f, 0f);
+  protected float attack = 0.85f,  // these are really just a percentage
+                  release = 0.85f; // can we translate them to something more meaningful?
+  protected Lagger attackLagger = new Lagger(0f, 1f, attack),
+                   releaseLagger = new Lagger(1f, 0f, release);
   protected boolean attacking = false, releasing = false, envelopeEnabled = true;
 
   public ComplexOsc() {
@@ -151,12 +151,8 @@ public void setLag(float rate) {
     releasing = true;
   }
   public void resetLaggers() {
-    //TODO set rates
-    attackLagger = new Lagger(internalAmp, maxInternalAmp);
-    releaseLagger = new Lagger(internalAmp, 0f);
-
-    //attackLagger.setRate(attack);
-    //releaseLagger.setRate(release);
+    attackLagger = new Lagger(internalAmp, maxInternalAmp, attack);
+    releaseLagger = new Lagger(internalAmp, 0f, release);
   }
   public void updateEnvelope() {
     float previousAmp = internalAmp;
