@@ -7,6 +7,7 @@ public class Delay extends UGen {
 	final float[] line;
 	int pointer;
 	int length;
+  private float decay = 0.5f;
 	boolean enabled = true;
 	
 	public Delay(int length) {
@@ -15,6 +16,14 @@ public class Delay extends UGen {
 		line = new float[UGen.SAMPLE_RATE];
 	}
 
+  // Decay makes sense to go from 0% to 100%, but internally
+  // it is used as amplitude so we want to invert.
+  public float getDecay() {
+    return 1.0f - decay;
+  }
+  public void setDecay(float decay) {
+    this.decay = 1.0f - decay;
+  }
   public int getRate() {
     return length;
   }
@@ -39,7 +48,7 @@ public class Delay extends UGen {
 		
 		final float[] localLine = line;
 		for(int i = 0; i < CHUNK_SIZE; i++) {
-      buffer[i] = buffer[i] - 0.5f*localLine[pointer];
+      buffer[i] = buffer[i] - decay*localLine[pointer];
       localLine[pointer] = buffer[i];
       pointer = (pointer+1)%length;
 		}

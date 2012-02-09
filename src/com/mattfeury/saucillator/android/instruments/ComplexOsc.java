@@ -115,6 +115,12 @@ public class ComplexOsc extends Oscillator {
   public int getDelayRate() {
     return delay.getRate();
   }
+  public float getDelayDecay() {
+    return delay.getDecay();
+  }
+  public void setDelayDecay(float decay) {
+    delay.setDecay(decay);
+  }
 
   public void setMaxInternalAmp(float amp) {
     this.maxInternalAmp = amp;

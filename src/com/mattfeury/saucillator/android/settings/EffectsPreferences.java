@@ -23,7 +23,8 @@ public class EffectsPreferences extends Activity {
     Bundle extras = getIntent().getExtras();
     final int modRate = extras.getInt("modRate", 0);
     final int modDepth = extras.getInt("modDepth", 0);
-    final int delay = extras.getInt("delay", 0);
+    final int delayRate = extras.getInt("delayRate", 0);
+    final float delayDecay = extras.getFloat("delayDecay", 0);
     float lag = extras.getFloat("lag", 0f);
     float attack = extras.getFloat("attack", 0f);
     float release = extras.getFloat("release", 0f);
@@ -35,15 +36,17 @@ public class EffectsPreferences extends Activity {
     seek = (SeekBar) findViewById(R.id.modDepthSlider);
     seek.setMax(SauceEngine.MOD_DEPTH_MAX);
 
-    seek = (SeekBar) findViewById(R.id.delaySlider);
+    seek = (SeekBar) findViewById(R.id.delayRateSlider);
     seek.setMax(SauceEngine.DELAY_MAX);
 
     // Bind Sliders to Values
     ViewBinders.bindSliderToVariable(this, R.id.modRateSlider, R.id.modRateValue, modRate);
     ViewBinders.bindSliderToVariable(this, R.id.modDepthSlider, R.id.modDepthValue, modDepth);
 
-    ViewBinders.bindSliderToVariable(this, R.id.delaySlider, R.id.delayValue, delay, 1);
-    ViewBinders.bindSliderToVariable(this, R.id.lagSlider, R.id.lagValue, lag);
+    ViewBinders.bindSliderToVariable(this, R.id.delayRateSlider, R.id.delayRateValue, delayRate, 1);
+    ViewBinders.bindSliderToVariable(this, R.id.delayDecaySlider, R.id.delayDecayValue, delayDecay);
+
+    ViewBinders.bindSliderToVariable(this, R.id.lagSlider, R.id.lagValue, lag, 0.99f);
 
     ViewBinders.bindSliderToVariable(this, R.id.attackSlider, R.id.attackValue, attack, 0.99f);
     ViewBinders.bindSliderToVariable(this, R.id.releaseSlider, R.id.releaseValue, release, 0.99f);
@@ -65,8 +68,11 @@ public class EffectsPreferences extends Activity {
       view = (TextView) findViewById(R.id.modDepthValue);
       int modDepth = Integer.parseInt((String)view.getText());
 
-      view = (TextView) findViewById(R.id.delayValue);
-      int delay = Integer.parseInt((String)view.getText());
+      view = (TextView) findViewById(R.id.delayRateValue);
+      int delayRate = Integer.parseInt((String)view.getText());
+
+      view = (TextView) findViewById(R.id.delayDecayValue);
+      float delayDecay = Float.parseFloat((String)view.getText());
 
       view = (TextView) findViewById(R.id.lagValue);
       float lag = Float.parseFloat((String)view.getText());
@@ -79,7 +85,8 @@ public class EffectsPreferences extends Activity {
 
       intent.putExtra("modRate", modRate);
       intent.putExtra("modDepth", modDepth);
-      intent.putExtra("delay", delay);
+      intent.putExtra("delayRate", delayRate);
+      intent.putExtra("delayDecay", delayDecay);
       intent.putExtra("lag", lag);
       intent.putExtra("attack", attack);
       intent.putExtra("release", release);

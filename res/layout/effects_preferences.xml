@@ -76,21 +76,42 @@
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:textAppearance="?android:attr/textAppearanceLarge"
-          android:id="@+id/delayText"
-          android:text="Delay (in samples): "
+          android:id="@+id/delayRateText"
+          android:text="Delay Rate (in samples): "
           android:layout_gravity="left"
           android:padding="2px"/>
         <TextView
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:text="x"
-          android:id="@+id/delayValue"
+          android:id="@+id/delayRateValue"
           android:textAppearance="?android:attr/textAppearanceLarge"
           android:padding="2px"
           android:gravity="center_horizontal"
           android:layout_gravity="right"/>
     </LinearLayout>
-    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delaySlider" android:padding="5px" android:layout_weight="1"/>    
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delayRateSlider" android:padding="5px" android:layout_weight="1"/>    
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
+        <TextView
+          android:gravity="center_horizontal"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:id="@+id/delayDecayText"
+          android:text="Delay Decay (%): "
+          android:layout_gravity="left"
+          android:padding="2px"/>
+        <TextView
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:text="x"
+          android:id="@+id/delayDecayValue"
+          android:textAppearance="?android:attr/textAppearanceLarge"
+          android:padding="2px"
+          android:gravity="center_horizontal"
+          android:layout_gravity="right"/>
+    </LinearLayout>
+    <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delayDecaySlider" android:padding="5px" android:layout_weight="1"/>    
 
     <!--<CheckBox android:id="@+id/lagEnabler"
         android:layout_height="wrap_content"

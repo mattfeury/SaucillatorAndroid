@@ -335,7 +335,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     private void setupParamHandlers() {
-      // TODO is this always edit mode?      
       ComplexOsc osc = getOrCreateOscillator(0);
 
       view.resetParams();
@@ -377,9 +376,29 @@ public class SauceEngine extends Activity implements OnTouchListener {
             osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
             osc.getModDepth() / (float)MOD_DEPTH_MAX // mod depth on y
           );
+
+      // Delay: rate on x, decay on y
+      DrawableParameter delayParam = new DrawableParameter(
+            new ParameterHandler() {
+              public void updateParameter(float x, float y) {
+                ComplexOsc osc = getOrCreateOscillator(0);
+
+                // Set the template and the playing oscillator
+                // We do this so we don't have to recreate a new oscillator everytime
+                // a param is changed. Since we used deep copies, that would probably hurt performance.
+                currentOscillator.setDelayRate((int)(x * DELAY_MAX));
+                currentOscillator.setDelayDecay(y);
+                osc.setDelayRate((int)(x * DELAY_MAX));
+                osc.setDelayDecay(y);
+              }
+            },
+            osc.getDelayRate() / (float)DELAY_MAX,
+            osc.getDelayDecay()
+          );
       
       view.addParam(eqParam);
       view.addParam(lfoParam);
+      view.addParam(delayParam);
     }
 
     /**
