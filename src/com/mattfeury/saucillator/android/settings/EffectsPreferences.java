@@ -23,7 +23,7 @@ public class EffectsPreferences extends Activity {
     Bundle extras = getIntent().getExtras();
     final int modRate = extras.getInt("modRate", 0);
     final int modDepth = extras.getInt("modDepth", 0);
-    final int delay = extras.getInt("delay", 1);
+    final int delay = extras.getInt("delay", 0);
     float lag = extras.getFloat("lag", 0f);
     float attack = extras.getFloat("attack", 0f);
     float release = extras.getFloat("release", 0f);

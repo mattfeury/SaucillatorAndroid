@@ -67,7 +67,7 @@ public class ModifyInstrument extends PreferenceActivity {
         Intent intent = new Intent(ModifyInstrument.this, EffectsPreferences.class);
         intent.putExtra("modRate", modifying.getModRate());
         intent.putExtra("modDepth", modifying.getModDepth());
-        //intent.putExtra("delay", modifying.getDelay());
+        intent.putExtra("delay", modifying.getDelayRate());
         intent.putExtra("lag", modifying.getLag());
         intent.putExtra("attack", modifying.getAttack());
         intent.putExtra("release", modifying.getRelease());
@@ -84,14 +84,14 @@ public class ModifyInstrument extends PreferenceActivity {
       
       final int modRate = extras.getInt("modRate", 0);
       final int modDepth = extras.getInt("modDepth", 0);
-      final int delay = extras.getInt("delay", 1);
+      final int delay = extras.getInt("delay", 0);
       float lag = extras.getFloat("lag", 0f);
       float attack = extras.getFloat("attack", 0f);
       float release = extras.getFloat("release", 0f);
 
       modifying.setModRate(modRate);
       modifying.setModDepth(modDepth);
-      //modifying.setDelay(delay);
+      modifying.setDelayRate(delay);
       modifying.setLag(lag);
       modifying.setAttack(attack);
       modifying.setRelease(release);

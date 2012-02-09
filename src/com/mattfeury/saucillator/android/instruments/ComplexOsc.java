@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.android.instruments;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.android.sound.Delay;
 import com.mattfeury.saucillator.android.sound.Lagger;
 import com.mattfeury.saucillator.android.sound.Limiter;
 
@@ -15,6 +16,9 @@ public class ComplexOsc extends Oscillator {
 
   public static final float MAX_AMPLITUDE = 1.0f;//what is this for, eh?
 
+  // TODO break out FX into a common trait
+
+  // Envelopes
   private float maxInternalAmp = 1.0f, // internalAmp always ranges from 0-maxInternalAmp
                 internalAmp = 0f; // used to calculate attack and release to/from maxInternalAmp
 
@@ -23,6 +27,11 @@ public class ComplexOsc extends Oscillator {
   protected Lagger attackLagger = new Lagger(0f, 1f, attack),
                    releaseLagger = new Lagger(1f, 0f, release);
   protected boolean attacking = false, releasing = false, envelopeEnabled = true;
+
+  // Delay
+  private Delay delay = new Delay(0);
+
+  // Lfo is handled by the children
 
   public ComplexOsc() {
     this(1.0f);
@@ -51,8 +60,6 @@ public class ComplexOsc extends Oscillator {
       osc.setFreq(freq * this.harmonic);
   }
 
-  // TODO 
-  // Let's make an Effect object, keep a list, and cycle through.
   public ComplexOsc resetEffects() {
     setModRate(0);
     setModDepth(0);
@@ -66,6 +73,7 @@ public class ComplexOsc extends Oscillator {
     return this;
   }
 
+  // LFO methods
   public void setModRate(int rate) {
     for(Oscillator osc : components)
       osc.setModRate(rate);
@@ -88,16 +96,26 @@ public class ComplexOsc extends Oscillator {
     return 0;
   }
 
+  // Lag
   public float getLag() {
     for(Oscillator osc : components)
       return osc.getLag();
     
     return 0;
   }
-public void setLag(float rate) {
+  public void setLag(float rate) {
     for(Oscillator osc : components)
       osc.setLag(rate);
   }
+
+  // Delay
+  public void setDelayRate(int rate) {
+    delay.setRate(rate);
+  }
+  public int getDelayRate() {
+    return delay.getRate();
+  }
+
   public void setMaxInternalAmp(float amp) {
     this.maxInternalAmp = amp;
   }
@@ -177,20 +195,21 @@ public void setLag(float rate) {
       updateEnvelope();
   }  
 
-  public synchronized boolean render(final float[] buffer) { // assume t is in 0.0 to 1.0
-    if(! isPlaying()) {
-      return true;
+  public synchronized boolean render(final float[] buffer) {
+    boolean didWork = false;
+    if(isPlaying()) {
+      Limiter.limit(buffer);
+      final float[] kidsBuffer = new float[CHUNK_SIZE];
+      didWork = renderKids(kidsBuffer);
+      for(int i = 0; i < CHUNK_SIZE; i++) {
+        if (envelopeEnabled)
+          buffer[i] += amplitude*internalAmp*kidsBuffer[i];
+        else
+          buffer[i] += amplitude*kidsBuffer[i];
+      }
     }
 
-    Limiter.limit(buffer);
-    final float[] kidsBuffer = new float[CHUNK_SIZE];
-    boolean didWork = renderKids(kidsBuffer);
-    for(int i = 0; i < CHUNK_SIZE; i++) {
-      if (envelopeEnabled)
-        buffer[i] += amplitude*internalAmp*kidsBuffer[i];
-      else
-        buffer[i] += amplitude*kidsBuffer[i];
-    }
+    delay.render(buffer);
 
     rendered();
 

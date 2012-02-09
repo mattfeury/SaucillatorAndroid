@@ -52,8 +52,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private Modes mode = Modes.EDIT;
 
     //defaults
-    private int delayRate = UGen.SAMPLE_RATE / 4;
-    private int lag = (int)(DEFAULT_LAG * 100);
     private int note = 0;
     private int octave = 4;
 
@@ -76,7 +74,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     //synth elements
     private Dac dac;
-    private Delay ugDelay;
     private Looper looper;
     private ParametricEQ eq;
     private ComplexOsc[] oscillatorsById = new ComplexOsc[maxFingers];
@@ -121,13 +118,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	  public void run() {
       	    try {
       	    	dac = new Dac();
-      	    	ugDelay = new Delay(delayRate);
       	    	looper = new Looper();
 
       	    	eq = new ParametricEQ();
       	    	eq.chuck(dac);
       	    	looper.chuck(eq);
-      	    	ugDelay.chuck(looper);
 
       	    	dac.open();
               init = true;
@@ -443,13 +438,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
       for (ComplexOsc osc : oscillatorsById)
         if (osc != null)
           osc.setBaseFreq(newFreq);
-
-      //TODO FIXME  move these to be specified in the .sauce files
-      if (delayRate == 0) {
-        ugDelay.updateRate(1); //i'm a hack. FIXME rate of 0 doesn't work
-      } else {
-        ugDelay.updateRate(delayRate);
-      }
     }
     
     /**
@@ -460,8 +448,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	intent.putExtra("octave", octave);
     	intent.putExtra("note", note);
     	intent.putExtra("file name", WavWriter.filePrefix);
-    	intent.putExtra("delay rate", delayRate);
-    	intent.putExtra("lag", lag);
     	intent.putExtra("visuals", view.getVisuals());
     	startActivityForResult(intent, 0);
     	return true;
@@ -481,8 +467,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
           WavWriter.filePrefix = extras.getString("file name");
           note = extras.getInt("note");
           octave = extras.getInt("octave");
-          lag = extras.getInt("lag");
-          delayRate = extras.getInt("delay rate");
           view.setVisuals(extras.getBoolean("visuals"));
           updateOscSettings();
         }
@@ -627,10 +611,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     private void connectOsc(ComplexOsc osc) {
-      osc.chuck(ugDelay);
+      osc.chuck(looper);
     }
     private void disconnectOsc(ComplexOsc osc) {
-      osc.unchuck(ugDelay);
+      osc.unchuck(looper);
     }
     private boolean instrumentSelection(MenuItem item, int id) {
     	if (item.isChecked())

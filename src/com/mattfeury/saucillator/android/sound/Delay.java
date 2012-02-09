@@ -15,7 +15,10 @@ public class Delay extends UGen {
 		line = new float[UGen.SAMPLE_RATE];
 	}
 
-  public void updateRate(int length) {
+  public int getRate() {
+    return length;
+  }
+  public void setRate(int length) {
 		this.length = length;
   }
   public void enable() {
@@ -29,7 +32,10 @@ public class Delay extends UGen {
   }
 	
 	public boolean render(final float[] buffer) {
-		renderKids(buffer);
+		boolean didWork = renderKids(buffer);
+
+    if (length == 0 || ! enabled)
+      return didWork;
 		
 		final float[] localLine = line;
 		for(int i = 0; i < CHUNK_SIZE; i++) {
@@ -38,6 +44,6 @@ public class Delay extends UGen {
       pointer = (pointer+1)%length;
 		}
 		
-		return true; //this doesn't actually mean anything here
+		return didWork; //this doesn't actually mean anything here
 	}
 }
