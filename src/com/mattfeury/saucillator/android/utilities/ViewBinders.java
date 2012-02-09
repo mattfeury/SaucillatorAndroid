@@ -68,10 +68,7 @@ public class ViewBinders {
    * Enables any number of sliders depending on if a checkbox is checked.
    * It seems that this can only get called on a checkbox once, so pass through as many as needed.
    */
-  public static void bindCheckboxToSlider(Activity a, int checkboxId, int... sliderIds) {
-    CheckBox checkbox = (CheckBox) a.findViewById(checkboxId);
-    boolean enabled = checkbox.isChecked();
-    
+  public static void bindCheckboxToSlider(Activity a, int checkboxId, boolean enabled, int... sliderIds) {
     final SeekBar[] sliders = new SeekBar[sliderIds.length];
     int i = 0;
     for (int id : sliderIds) {
@@ -80,7 +77,8 @@ public class ViewBinders {
       sliders[i] = slider;
       i++;
     }
-    
+
+    CheckBox checkbox = (CheckBox) a.findViewById(checkboxId);
     checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
       @Override
       public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

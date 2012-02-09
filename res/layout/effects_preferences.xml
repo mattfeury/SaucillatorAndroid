@@ -11,11 +11,11 @@
       android:scrollbars="vertical"
       >
 
-    <CheckBox android:id="@+id/lfoEnabler"
+    <!--<CheckBox android:id="@+id/lfoEnabler"
         android:layout_height="wrap_content"
         android:text="LFO (Low Frequency Oscillator)"
         android:layout_width="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" />-->
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
         <TextView
@@ -66,9 +66,9 @@
     </LinearLayout>
     <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/modDepthSlider" android:padding="5px" android:layout_weight="1"/>
 
-    <CheckBox android:id="@+id/delayEnabler"
+    <!--<CheckBox android:id="@+id/delayEnabler"
         android:layout_height="wrap_content"
-        android:text="Delay" android:layout_width="match_parent" android:layout_gravity="center" />
+        android:text="Delay" android:layout_width="match_parent" android:layout_gravity="center" />-->
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
         <TextView
@@ -92,9 +92,9 @@
     </LinearLayout>
     <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/delaySlider" android:padding="5px" android:layout_weight="1"/>    
 
-    <CheckBox android:id="@+id/lagEnabler"
+    <!--<CheckBox android:id="@+id/lagEnabler"
         android:layout_height="wrap_content"
-        android:text="Lag" android:layout_width="match_parent" android:layout_gravity="center" />
+        android:text="Lag" android:layout_width="match_parent" android:layout_gravity="center" />-->
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
         <TextView
@@ -118,11 +118,11 @@
     </LinearLayout>
     <SeekBar android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/lagSlider" android:padding="5px" android:layout_weight="1"/>
 
-    <CheckBox android:id="@+id/envelopeEnabler"
+    <!--<CheckBox android:id="@+id/envelopeEnabler"
         android:layout_height="wrap_content"
         android:text="Envelope"
         android:layout_width="match_parent"
-        android:layout_gravity="center" />
+        android:layout_gravity="center" />-->
 
     <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
         <TextView
