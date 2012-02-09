@@ -78,7 +78,8 @@ public class ModifyInstrument extends PreferenceActivity {
     }); 
   }
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == fxActivity && data != null) {
+    // resultCode of 0 means save. TODO remove magic number
+    if (requestCode == fxActivity && resultCode == 0 && data != null) {
       Bundle extras = data.getExtras();
       
       final int modRate = extras.getInt("modRate", 0);
