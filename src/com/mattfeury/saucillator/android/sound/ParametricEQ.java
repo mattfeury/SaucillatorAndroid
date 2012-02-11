@@ -8,10 +8,10 @@ public class ParametricEQ extends UGen {
                 gain = -10f, // -12 to 12db
                 q = 6f; // 0.33 - 12
 
-  private final float minFreq = 20,
-                      maxFreq = (SAMPLE_RATE - 2f) / 2f,
-                      minQ = .33f,
-                      maxQ = 12f;
+  public static final float minFreq = 20,
+                            maxFreq = (SAMPLE_RATE - 2f) / 2f,
+                            minQ = .33f,
+                            maxQ = 12f;
 
   private float a0, a1, a2, b0, b1, b2;
   private float xm1 = 0, xm2 = 0, ym1 = 0, ym2 = 0;

@@ -296,6 +296,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
       view.resetParams();
       
       DrawableParameter eqParam = new DrawableParameter(
+            "EQ",
+            "EQ",
+            "freq",
+            "Q",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
                 //FIXME yuck
@@ -306,10 +310,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
               }
             },
             (float) Math.sqrt(eq.getFrequency()), //frequency on x
-            (float) Math.sqrt(eq.getQ()) // q on y
+            (float) Math.sqrt(eq.getQ()), // q on y
+            (int)ParametricEQ.maxFreq,
+            1
           );
 
       DrawableParameter lfoParam = new DrawableParameter(
+            "LFO",
+            "LFO",
+            "rate",
+            "depth",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
                 //FIXME yuck
@@ -336,10 +346,12 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       // Delay: rate on x, decay on y
       DrawableParameter delayParam = new DrawableParameter(
+            "Delay",
+            "DLY",
+            "rate",
+            "decay",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
-                //FIXME yuck... still
-                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
 
                 ComplexOsc osc = getOrCreateOscillator(0);
 
