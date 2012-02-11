@@ -208,7 +208,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         final int actionIndex = event.getActionIndex();
         final int actionId = event.getPointerId(actionIndex);
 
-        // Finger on main pad. This affects an oscillator or parameter
+        // Finger on main pad. This affects an oscillator or parameter (when in edit mode)
         if (view.isInPad(x,y)) {
           int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
           float yInverted = maxHeight - y;
@@ -237,28 +237,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
               param.set(xScaled, yScaled);
               view.invalidate();
             } else if (osc != null && (osc.equals(controlled) || (! fingerDefined && ! isFingered(osc)))) {
+              // Update oscillator
               fingersById[id] = osc;
-
-              if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-                view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-
-                //play if we were stopped
-                if(! osc.isPlaying())
-                  osc.togglePlayback();
-                else if (osc.isReleasing())
-                  osc.startAttack();
-
-                updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
-                updateAmplitude(oscId, xScaled);
-              } else if (osc != null && actionCode == MotionEvent.ACTION_POINTER_UP && actionIndex == i) {
-                //finger up. kill the osc
-                view.removeFinger(id);
-
-                if(osc.isPlaying())
-                  osc.togglePlayback();
-                else if (osc.isAttacking())
-                  osc.startRelease();
-              }
+              handleTouchForOscillator(id, v, event);
             }
           } else if (mode == Modes.PLAY_MULTI) {
 
@@ -268,30 +249,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             if (! fingerDefined)
               fingersById[id] = osc;
 
-            if (osc != null) {
-              //finger down
-              if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-                view.updateOrCreateFinger(id, event.getX(i), event.getY(i), event.getSize(i), event.getPressure(i));
-
-                //play if we were stopped
-                if(! osc.isPlaying())
-                  osc.togglePlayback();
-                else if (osc.isReleasing())
-                  osc.startAttack();
-
-                updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
-                updateAmplitude(id, xScaled);
-              } else if (actionIndex == i) {
-                //finger up. kill the osc
-                view.removeFinger(i);
-
-                if(osc.isPlaying())
-                  osc.togglePlayback();
-                else if (osc.isAttacking())
-                  osc.startRelease();
-              }
-            }
-
+            handleTouchForOscillator(id, v, event);
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
@@ -410,6 +368,47 @@ public class SauceEngine extends Activity implements OnTouchListener {
     /**
      * Oscillator handlers
      */
+    public void handleTouchForOscillator(int id, View v, MotionEvent event) {
+      ComplexOsc osc = getOrCreateOscillator(id);
+
+      if (osc == null) return;
+
+      final int index = event.findPointerIndex(id);
+      final int action = event.getAction();
+      final int actionCode = action & MotionEvent.ACTION_MASK;
+      final int actionIndex = event.getActionIndex();
+      final int actionId = event.getPointerId(actionIndex);
+
+      final float y = event.getY(index);
+      final float x = event.getX(index);
+      final int height = v.getMeasuredHeight();
+      final int width = v.getMeasuredWidth();
+      final int controllerWidth = (int) (width * SauceView.controllerWidth);
+      final float yInverted = height - y;
+      final float xScaled = (x - controllerWidth) / (width - controllerWidth);
+      final float yScaled = yInverted / height;
+ 
+      if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+        view.updateOrCreateFinger(id, event.getX(index), event.getY(index), event.getSize(index), event.getPressure(index));
+
+        //play if we were stopped
+        if(! osc.isPlaying())
+          osc.togglePlayback();
+        else if (osc.isReleasing())
+          osc.startAttack();
+
+        updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
+        updateAmplitude(id, xScaled);
+      } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
+        //finger up. kill the osc
+        view.removeFinger(id);
+
+        if(osc.isPlaying() && ! osc.isReleasing())
+          osc.togglePlayback();
+      }
+      
+    }
+
     public static ComplexOsc getCurrentOscillator() {
       return currentOscillator;
     }
