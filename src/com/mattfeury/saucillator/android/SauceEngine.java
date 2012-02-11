@@ -272,34 +272,43 @@ public class SauceEngine extends Activity implements OnTouchListener {
             fingersById[actionId] = null;
           }
         } else {
-          //controller buttons
-          //TODO FIXME there needs to be a more abstracted way to do these
-
-          int buttonHeight = maxHeight / SauceView.numButtons;
+          // Buttons!
+          // FIXME there needs to be a more abstracted way to do these
 
           final int upIndex = event.getActionIndex();
           if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && upIndex == i)
               || actionCode == MotionEvent.ACTION_DOWN) {
 
-            if (canVibrate)
-              vibrator.vibrate(VIBRATE_SPEED);
+            // Add a small buffer here to the right side to make accidental presses less frequent
+            float controllerWidth = maxWidth * SauceView.controllerWidth;
+            if (x < controllerWidth - (controllerWidth * .15f)) {
+              if (canVibrate)
+                vibrator.vibrate(VIBRATE_SPEED);
 
-          	if (y <= buttonHeight) {
-              //Toggle Looper Button
-              boolean isRecording = looper.toggleRecording();
-              if (isRecording)
-              	view.focusLooper();
-              else
-              	view.unfocusLooper();
+              int buttonHeight = maxHeight / SauceView.numButtons;          
+              // Looper buttons
+              if (y <= buttonHeight) {
+                //Toggle Looper Button
+                boolean isRecording = looper.toggleRecording();
+                if (isRecording)
+                  view.focusLooper();
+                else
+                  view.unfocusLooper();
+              } else if (y <= buttonHeight * 2) {
+                //Undo Looper Button
+                looper.undo();
+                view.unfocusLooper();
+              } else {
+                //Reset Looper Button
+                looper.reset();
+                view.unfocusLooper();
+              }
+            } else if (x > maxWidth * SauceView.controllerWidth) {
+              if (canVibrate)
+                vibrator.vibrate(VIBRATE_SPEED);
 
-            } else if (y <= buttonHeight * 2) {
-              //Undo Looper Button
-              looper.undo();
-              view.unfocusLooper();
-            } else {
-              //Reset Looper Button
-              looper.reset();
-              view.unfocusLooper();
+              // Param toggler buttons
+              view.toggleEnablerAt(x, y);
             }
           }
         }
@@ -332,6 +341,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
             (int)ParametricEQ.maxFreq,
             1
           );
+
+      view.addParam(eqParam);
+      
+      // Below are instrument specific params. If we are not in edit mode,
+      // don't show them.
+      if (mode != Modes.EDIT)
+        return;
 
       DrawableParameter lfoParam = new DrawableParameter(
             "LFO",
@@ -388,7 +404,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             1
           );
       
-      view.addParam(eqParam);
       view.addParam(lfoParam);
       view.addParam(delayParam);
     }
@@ -604,6 +619,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
 
       resetOscillators();
+      setupParamHandlers();
       item.setTitle(other.toString());
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;

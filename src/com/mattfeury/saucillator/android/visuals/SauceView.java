@@ -74,11 +74,32 @@ public class SauceView extends View {
         enabler.set(i * buttonWidth + controllerWidth, padHeight, buttonWidth, buttonHeight);
       }
     }
+    // Takes in pixel values
+    public void toggleEnablerAt(float x, float y) {
+      for (RectButton enabler : paramEnablers) {
+        if (enabler.contains(x, y)) {
+          boolean isEnabled = enabler.toggleFocus();
+          
+          DrawableParameter corresponding = null;
+          for (DrawableParameter param : params)
+            if (param.getFullName().equals(enabler.getName())) {
+              corresponding = param;
+              break;
+            }
+          
+          if (corresponding != null)
+            corresponding.setEnabled(isEnabled);
+          
+          return;
+        }
+      }
+    }
     public void addParam(DrawableParameter p) {
       if (! params.contains(p)) {
         params.add(p);
 
-        RectButton enabler = new RectButton("ay!");
+        RectButton enabler = new RectButton(p.getFullName());
+        enabler.focus();
         paramEnablers.add(enabler);
         recalculateParamEnablerSize();
       }
@@ -92,7 +113,7 @@ public class SauceView extends View {
       LinkedList<DrawableParameter> contained = new LinkedList<DrawableParameter>();
 
       for (DrawableParameter p : params)
-        if (p.contains((int)x, (int)y))
+        if (p.contains((int)x, (int)y) && p.isEnabled())
           contained.add(p);
 
       int size = contained.size();
@@ -228,16 +249,24 @@ public class SauceView extends View {
         text = new Paint();
         Random rnd = new Random();
 
-        bg.setARGB(100, 242,204,133);
-        focusedBg.setARGB(255, 155 + rnd.nextInt(100), 0, 0);
+        bg.setARGB(200, 12, 81, 4);
+        focusedBg.setARGB(255, 28, 171, 11);
         text.setARGB(255, 255,255,255);
         
         bg.setStrokeWidth(5);
 
       }
+      public String getName() {
+        return name;
+      }
       public void set(int x, int y, int width, int height) {
         super.set(x, y, x + width, y + height);      	
       }
+      public boolean contains(int x, int y) {
+        return (x > left && x <= right) &&
+                (y > top && y <= bottom);
+      }
+      
       public void draw(Canvas canvas) {
         if (focused) {
           canvas.drawRect(left, top, right, top + borderWidth, focusedBg); //top line
@@ -261,6 +290,11 @@ public class SauceView extends View {
       public void unfocus() {
       	focused = false;
       	invalidate();
+      }
+      public boolean toggleFocus() {
+        focused = ! focused;
+        invalidate();
+        return focused;
       }
       
     }

@@ -53,10 +53,13 @@ public class DrawableParameter {
     init();
   }
   protected void init() {
-    paint.setARGB(150, 200, 0, 0);
+    paint.setARGB(150, 28, 201, 11);//(150, 200, 0, 0);
     textPaint.setARGB(150, 200, 200, 200);
     textPaint.setTextSize(textSize);
-    textPaint.setFakeBoldText(true);
+  }
+
+  public String getFullName() {
+    return fullName;
   }
   
   private float formatFloat(float f) {
@@ -87,6 +90,12 @@ public class DrawableParameter {
   }
   public void toggle() {
     enabled = ! enabled;
+  }
+  public void setEnabled(boolean isEnabled) {
+    enabled = isEnabled;
+  }
+  public boolean isEnabled() {
+    return enabled;
   }
 
   public void set(float x, float y) {
