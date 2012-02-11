@@ -12,7 +12,8 @@ import android.graphics.*;
 public class DrawableParameter {
 
   private float x = 0f, y = 0f;
-  private int lastX = 0, lastY = 0;
+  private int lastX = 0, lastY = 0,
+              maxX = 1, maxY = 1;
   protected Paint paint = new Paint(),
                   textPaint = new Paint();
   private int radius = 20,
@@ -35,10 +36,15 @@ public class DrawableParameter {
     init();
   }
   public DrawableParameter(ParameterHandler handler, float x, float y) {
+    this(handler, x, y, 1, 1);
+  }
+  public DrawableParameter(ParameterHandler handler, float x, float y, int maxX, int maxY) {
     this(handler);
 
     this.x = Utilities.scale(x, SauceView.controllerWidth, 1);
     this.y = y;
+    this.maxX = maxX;
+    this.maxY = maxY;
   }
   private void init() {
     paint.setARGB(150, 200, 0, 0);
@@ -61,7 +67,9 @@ public class DrawableParameter {
         int textY = (lastY - textHeight - textOffset) > 0 ?
                       lastY - textHeight - textOffset : lastY + textOffset;
 
-        canvas.drawText("(X: "+Float.valueOf(df.format(x))+", Y: "+Float.valueOf(df.format(y))+")", textX, textY, textPaint);
+        float xVal = Float.valueOf(df.format(x)) * maxX;
+        float yVal = Float.valueOf(df.format(y)) * maxY;
+        canvas.drawText("(X: " + xVal + ", Y: " + yVal + ")", textX, textY, textPaint);
       }
     }
   }

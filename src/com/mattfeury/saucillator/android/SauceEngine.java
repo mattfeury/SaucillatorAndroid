@@ -347,7 +347,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
                 eq.setFrequency(x * x);
                 eq.setQ(y * y);
-                Log.i(TAG, "NEW NEW: " + x*x + " / new q: " + y*y);
               }
             },
             eq.getFrequency(), //frequency on x
@@ -374,13 +373,18 @@ public class SauceEngine extends Activity implements OnTouchListener {
               }
             },
             osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
-            osc.getModDepth() / (float)MOD_DEPTH_MAX // mod depth on y
+            osc.getModDepth() / (float)MOD_DEPTH_MAX, // mod depth on y
+            MOD_RATE_MAX,
+            MOD_DEPTH_MAX
           );
 
       // Delay: rate on x, decay on y
       DrawableParameter delayParam = new DrawableParameter(
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
+                //FIXME yuck... still
+                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+
                 ComplexOsc osc = getOrCreateOscillator(0);
 
                 // Set the template and the playing oscillator
@@ -393,7 +397,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
               }
             },
             osc.getDelayRate() / (float)DELAY_MAX,
-            osc.getDelayDecay()
+            osc.getDelayDecay(),
+            DELAY_MAX,
+            1
           );
       
       view.addParam(eqParam);
