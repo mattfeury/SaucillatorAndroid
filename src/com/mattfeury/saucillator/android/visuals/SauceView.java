@@ -16,7 +16,8 @@ import android.view.View;
 public class SauceView extends View {
 
     //for the controller
-    public static final float controllerWidth = .15f; //percentage
+    public static final float controllerWidth = .15f,
+                              padHeight = .85f; //percentage
     public static final float padWidth = 1.0f - controllerWidth;
     public static final int numButtons = 3;
     
@@ -26,6 +27,7 @@ public class SauceView extends View {
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
     private RectButton loop, undo, reset;
     private LinkedList<DrawableParameter> params = new LinkedList<DrawableParameter>();
+    private LinkedList<RectButton> paramEnablers = new LinkedList<RectButton>();
 
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
@@ -52,12 +54,32 @@ public class SauceView extends View {
       reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
     }
 
+    public void recalculateParamEnablerSize() {
+      final int numEnablers = paramEnablers.size(),
+                width = getWidth(),
+                height = getHeight(),
+                buttonWidth = (int) (width * padWidth / numEnablers),
+                buttonHeight = (int) (height * (1f - padHeight)),
+                controllerWidth = (int) (width * SauceView.controllerWidth),
+                padHeight = (int) (height * SauceView.padHeight);
+
+      for (int i = 0; i < numEnablers; i++) {
+        RectButton enabler = paramEnablers.get(i);
+        enabler.set(i * buttonWidth + controllerWidth, padHeight, buttonWidth, buttonHeight);
+      }
+    }
     public void addParam(DrawableParameter p) {
-      if (! params.contains(p))
+      if (! params.contains(p)) {
         params.add(p);
+
+        RectButton enabler = new RectButton("ay!");
+        paramEnablers.add(enabler);
+        recalculateParamEnablerSize();
+      }
     }
     public void resetParams() {
       params.clear();
+      paramEnablers.clear();
     }
     public DrawableParameter optParameter(float x, float y, Object preferred) {
       // A list of all params at this location. If there are multiple, we prefer 'preferred'
@@ -87,8 +109,23 @@ public class SauceView extends View {
     }
 
     public boolean isInPad(float x, float y) {
-      return x > (getMeasuredWidth() * controllerWidth);
+      return x > (getMeasuredWidth() * controllerWidth) &&
+              (getMeasuredHeight() * padHeight) > y; 
     }
+    /**
+     * Takes a point x,y on the screen and turns it into
+     * a percentage from 0.0 to 1.0 of each's respective
+     * location in the pad.
+     */
+    public float[] scaleToPad(float x, float y) {
+      int controllerWidth = (int) (getWidth() * SauceView.controllerWidth),
+          padHeight = (int) (getHeight() * SauceView.padHeight);
+      final float padX = (x - controllerWidth) / (getWidth() - controllerWidth),
+                  padY = (padHeight - y) / (float)padHeight;
+
+      return new float[]{padX, padY};
+    }
+
     public void focusLooper() {
       loop.focus();
     }
@@ -162,6 +199,9 @@ public class SauceView extends View {
 
       for (DrawableParameter p : params)
         p.draw(canvas);
+      
+      for (RectButton enabler : paramEnablers)
+        enabler.draw(canvas);
     }
 
     class RectButton extends RectF {
@@ -169,6 +209,11 @@ public class SauceView extends View {
       private int borderWidth = 5;
       private String name;
       private boolean focused = false;
+      public static final int textWidth = -8; //in pixels, i guess? just an estimate.
+
+      public RectButton(String name) {
+        this(name, 0, 0, 0, 0);
+      }
       public RectButton(String name, int x, int y, int width, int height) {
         super(x, y, x + width, y + height);
         this.name = name;
@@ -193,14 +238,14 @@ public class SauceView extends View {
           //canvas.drawRect(left, top, left + borderWidth, bottom - borderWidth, focusedBg); //left line
           //canvas.drawRect(left, bottom - borderWidth, right, bottom, focusedBg); //bottom line
           //canvas.drawRect(right - borderWidth, top, right, bottom - borderWidth, focusedBg); //right line
-          canvas.drawText(name, left + right * .3f, top + (bottom - top)* .5f, focusedBg);
+          canvas.drawText(name, (right + left) / 2f - name.length() / 2f, top + (bottom - top)* .5f, focusedBg);
         } else {
           canvas.drawRect(left + borderWidth, top, right - borderWidth, top + borderWidth, bg); //top line
           canvas.drawRect(left, top, left + borderWidth, bottom - borderWidth, bg); //left line
           canvas.drawRect(left, bottom - borderWidth, right, bottom, bg); //bottom line
           canvas.drawRect(right - borderWidth, top, right, bottom - borderWidth, bg); //right line
           
-          canvas.drawText(name, left + right * .3f, top + (bottom - top)* .5f, text);
+          canvas.drawText(name, (right + left) / 2f - name.length() / 2f, top + (bottom - top)* .5f, text);
         }
       }
       public void focus() {

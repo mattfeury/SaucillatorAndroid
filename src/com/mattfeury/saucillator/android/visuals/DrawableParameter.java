@@ -11,15 +11,14 @@ import android.graphics.*;
  */
 public class DrawableParameter {
 
-  private float x = 0f, y = 0f;
-  private int lastX = 0, lastY = 0,
-              maxX = 1, maxY = 1;
+  protected float x = 0f, y = 0f;
+  protected int lastX = 0, lastY = 0, maxX = 1, maxY = 1;
   protected Paint paint = new Paint(),
                   textPaint = new Paint();
-  private int radius = 20,
-              textSize = 14;
+  protected int radius = 20,
+                textSize = 14;
 
-  private boolean enabled = true;
+  protected boolean enabled = true;
   protected boolean showCoords = true;
 
   private static final DecimalFormat df = new DecimalFormat("#.00");
@@ -42,11 +41,11 @@ public class DrawableParameter {
     this(handler);
 
     this.x = Utilities.scale(x, SauceView.controllerWidth, 1);
-    this.y = y;
+    this.y = Utilities.scale(y, 1f - SauceView.padHeight, 1);
     this.maxX = maxX;
     this.maxY = maxY;
   }
-  private void init() {
+  protected void init() {
     paint.setARGB(150, 200, 0, 0);
     textPaint.setARGB(150, 200, 200, 200);
     textPaint.setTextSize(textSize);
@@ -67,8 +66,8 @@ public class DrawableParameter {
         int textY = (lastY - textHeight - textOffset) > 0 ?
                       lastY - textHeight - textOffset : lastY + textOffset;
 
-        float xVal = Float.valueOf(df.format(x)) * maxX;
-        float yVal = Float.valueOf(df.format(y)) * maxY;
+        float xVal = Float.valueOf(Utilities.unscale(x, SauceView.controllerWidth, 1)) * maxX;
+        float yVal = Float.valueOf(df.format(Utilities.unscale(y, 1f - SauceView.padHeight, 1))) * maxY;
         canvas.drawText("(X: " + xVal + ", Y: " + yVal + ")", textX, textY, textPaint);
       }
     }
@@ -80,9 +79,10 @@ public class DrawableParameter {
   public void set(float x, float y) {
     //FIXME is there a better way to remove the controller width?
     this.x = Utilities.scale(x, SauceView.controllerWidth, 1);
-    this.y = y;
+    this.y = Utilities.scale(y, 1f - SauceView.padHeight, 1);
 
-    handler.updateParameter(this.x, this.y);
+    android.util.Log.d("GAS", "updatin %: x: "+x+"  , y: "+y);
+    handler.updateParameter(x, y);
   }
 
   public boolean contains(int x, int y) {

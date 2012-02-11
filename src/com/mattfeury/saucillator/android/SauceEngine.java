@@ -210,10 +210,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
         // Finger on main pad. This affects an oscillator or parameter (when in edit mode)
         if (view.isInPad(x,y)) {
-          int controllerWidth = (int) (maxWidth * SauceView.controllerWidth);
-          float yInverted = maxHeight - y;
-          float xScaled = (x - controllerWidth) / (maxWidth - controllerWidth);
-          float yScaled = yInverted / maxHeight;
+          float[] scaledCoords = view.scaleToPad(x,y);
+          float xScaled = scaledCoords[0];
+          float yScaled = scaledCoords[1];
 
           Object controlled = fingersById[id];
           boolean fingerDefined = controlled != null;
@@ -223,7 +222,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             DrawableParameter param = view.optParameter(x, y, controlled);
 
             // Modify the osc (stored as id = 0)
-            // TODO fail nicely if this doesn't exist. alert the user to choose an instrument
             int oscId = 0;
             ComplexOsc osc = getOrCreateOscillator(oscId);
 
@@ -301,21 +299,21 @@ public class SauceEngine extends Activity implements OnTouchListener {
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
                 //FIXME yuck
-                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
 
                 eq.setFrequency(x * x);
                 eq.setQ(y * y);
               }
             },
-            eq.getFrequency(), //frequency on x
-            eq.getQ() // q on y
+            (float) Math.sqrt(eq.getFrequency()), //frequency on x
+            (float) Math.sqrt(eq.getQ()) // q on y
           );
 
       DrawableParameter lfoParam = new DrawableParameter(
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
                 //FIXME yuck
-                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
 
                 ComplexOsc osc = getOrCreateOscillator(0);
 
@@ -341,7 +339,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
                 //FIXME yuck... still
-                x = Utilities.unscale(x, SauceView.controllerWidth, 1);
+                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
 
                 ComplexOsc osc = getOrCreateOscillator(0);
 
@@ -381,13 +379,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       final float y = event.getY(index);
       final float x = event.getX(index);
-      final int height = v.getMeasuredHeight();
-      final int width = v.getMeasuredWidth();
-      final int controllerWidth = (int) (width * SauceView.controllerWidth);
-      final float yInverted = height - y;
-      final float xScaled = (x - controllerWidth) / (width - controllerWidth);
-      final float yScaled = yInverted / height;
- 
+      final float[] scaledCoords = view.scaleToPad(x,y);
+      final float xScaled = scaledCoords[0];
+      final float yScaled = scaledCoords[1];
+
       if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
         view.updateOrCreateFinger(id, event.getX(index), event.getY(index), event.getSize(index), event.getPressure(index));
 
