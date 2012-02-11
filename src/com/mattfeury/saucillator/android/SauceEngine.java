@@ -234,34 +234,23 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           Object controlled = fingersById[id];
           boolean fingerDefined = controlled != null;
-          
-          if (mode == Modes.EDIT) {
-            // Determine if this edits a parameter. otherwise, edit the oscillator
-            DrawableParameter param = view.optParameter(x, y, controlled);
 
-            // Modify the osc (stored as id = 0)
-            int oscId = 0;
-            ComplexOsc osc = getOrCreateOscillator(oscId);
+          // Determine if this edits a parameter. Otherwise, edit an osc, depending on mode.
+          DrawableParameter param = view.optParameter(x, y, controlled);
+          int oscId = mode == Modes.EDIT ? 0 : id;
+          ComplexOsc osc = getOrCreateOscillator(oscId);
 
-            // If this is on a parameter AND
-            // this finger isn't controlling something or it's controlling this param)
-            if (param != null && (! fingerDefined || param.equals(controlled))) {
-              // Modify the parameter
-              if (! fingerDefined)
-                fingersById[id] = param;
+          // If this is on a parameter AND
+          // this finger isn't controlling something or it's controlling this param)
+          if (param != null && (! fingerDefined || param.equals(controlled))) {
+            // Modify the parameter
+            if (! fingerDefined)
+              fingersById[id] = param;
 
-              param.set(xScaled, yScaled);
-              view.invalidate();
-            } else if (osc != null && (osc.equals(controlled) || (! fingerDefined && ! isFingered(osc)))) {
-              // Update oscillator
-              fingersById[id] = osc;
-              handleTouchForOscillator(id, v, event);
-            }
-          } else if (mode == Modes.PLAY_MULTI) {
-
-            // Determine which synth this finger corresponds to
-            ComplexOsc osc = getOrCreateOscillator(id);
-
+            param.set(xScaled, yScaled);
+            view.invalidate();
+          } else if (osc != null && (osc.equals(controlled) || (! fingerDefined && ! isFingered(osc)))) {
+            // Update oscillator
             if (! fingerDefined)
               fingersById[id] = osc;
 
@@ -279,7 +268,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && upIndex == i)
               || actionCode == MotionEvent.ACTION_DOWN) {
 
-            // Add a small buffer here to the right side to make accidental presses less frequent
+            // Add a small margin to the right side to make accidental presses less frequent
             float controllerWidth = maxWidth * SauceView.controllerWidth;
             if (x < controllerWidth - (controllerWidth * .15f)) {
               if (canVibrate)
