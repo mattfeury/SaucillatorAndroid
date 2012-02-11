@@ -91,6 +91,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private final int instrumentMenuId = 9;
     public static final String DATA_FOLDER = "/sdcard/sauce/";
     public static final int MODIFY_ACTION = 1;
+
+    private Object mutex = new Object();
     
     /** Called when the activity is first created. */
     @Override
@@ -117,22 +119,24 @@ public class SauceEngine extends Activity implements OnTouchListener {
         Thread t = new Thread() {
       	  public void run() {
       	    try {
-      	    	dac = new Dac();
-      	    	looper = new Looper();
+      	      synchronized(mutex) {
+                dac = new Dac();
+                looper = new Looper();
 
-      	    	eq = new ParametricEQ();
-      	    	eq.chuck(dac);
-      	    	looper.chuck(eq);
+                eq = new ParametricEQ();
+                eq.chuck(dac);
+                looper.chuck(eq);
 
-      	    	dac.open();
-              init = true;
-              setupParamHandlers();
-              Log.i(TAG, "Sauce ready.");
-
-      	      while (true) {
-        	    	dac.tick();
+                dac.open();
+                init = true;
+                Log.i(TAG, "Sauce ready.");
+                mutex.notify();
       	      }
-      	    }
+              
+              while (true) {
+                dac.tick();
+              }
+            }
       	    catch(Exception ex) {
       	    	ex.printStackTrace();
       	    	Log.e(TAG, "bad time " + ex.toString());
@@ -142,6 +146,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	};
       	
       t.start();
+
+      // We wait until the dac is spun up to create the param handlers since
+      // they require certain DAC elements (e.g. EQ). We can't do it in the DAC thread
+      // because only the thread that spawned the view can redraw it.
+      synchronized(mutex) {
+        try {
+          mutex.wait();
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        Log.i(TAG, "Settingup params");
+        setupParamHandlers();
+      }
     }
 
     protected void onDestroy() {
