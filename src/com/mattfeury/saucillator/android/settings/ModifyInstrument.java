@@ -76,7 +76,19 @@ public class ModifyInstrument extends PreferenceActivity {
         startActivityForResult(intent, fxActivity);
         return true;
       }
-    }); 
+    });
+    
+    // Maintance stuff
+    Preference savePref = (Preference) findPreference("savePref");
+    savePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+      public boolean onPreferenceClick(Preference preference) {
+        boolean saved = InstrumentManager.saveInstrument(modifying);
+        String message = saved ? "Instrument saved to SD card" : "Instrument could not be saved to SD card";
+        Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+        return true;
+      }
+    });
+
   }
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     // resultCode of 0 means save. TODO remove magic number
