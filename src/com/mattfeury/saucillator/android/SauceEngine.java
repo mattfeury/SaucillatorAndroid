@@ -331,6 +331,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             1
           );
 
+      eqParam.setEnabled(false);
       view.addParam(eqParam);
       
       // Below are instrument specific params. If we are not in edit mode,
@@ -392,9 +393,44 @@ public class SauceEngine extends Activity implements OnTouchListener {
             DELAY_MAX,
             1
           );
-      
+
+      // Envelope: attack on x, release on y
+      DrawableParameter envelopeParam = new DrawableParameter(
+            "Envelope",
+            "ENV",
+            "atk",
+            "rls",
+            new ParameterHandler() {
+              public void updateParameter(float x, float y) {
+
+                ComplexOsc osc = getOrCreateOscillator(0);
+
+                // Don't allow 1.0 attack or release because it would be 100%
+                // and never actually go anywhere
+                x = Math.min(x, .99f);
+                y = Math.min(y, .99f);
+
+                // Set the template and the playing oscillator
+                // We do this so we don't have to recreate a new oscillator everytime
+                // a param is changed. Since we used deep copies, that would probably hurt performance.
+                currentOscillator.setAttack(x);
+                currentOscillator.setRelease(y);
+                osc.setAttack(x);
+                osc.setRelease(y);
+              }
+            },
+            osc.getAttack(),
+            osc.getRelease(),
+            .99f,
+            .99f
+          );
+
+      lfoParam.setEnabled(false);
+      delayParam.setEnabled(false);
+      envelopeParam.setEnabled(false);
       view.addParam(lfoParam);
       view.addParam(delayParam);
+      view.addParam(envelopeParam);
     }
 
     /**
