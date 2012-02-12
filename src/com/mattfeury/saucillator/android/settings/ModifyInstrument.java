@@ -49,7 +49,7 @@ public class ModifyInstrument extends PreferenceActivity {
       EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
  
       namePref.setText(modifying.getName());
-      namePref.setSummary(modifying.getName());
+      //namePref.setSummary(modifying.getName());
     }
 
     // Bind FX, timbre handlers
@@ -103,6 +103,10 @@ public class ModifyInstrument extends PreferenceActivity {
 
 
   public void exit() {
+    EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
+    String name = namePref.getText();
+    modifying.setName(name);
+
     Intent intent = new Intent(ModifyInstrument.this, SauceEngine.class);
     setResult(0, intent);
 
