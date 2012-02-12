@@ -6,17 +6,13 @@
     {
       id: 'sine',
       harmonic: 1, //fundamental
-      amplitude: 1.0, //maybe auto calculate
-      //TODO make envelopes work
-      envelope: {
-        attack: 0,
-        release: 0
-      }
+      amplitude: 1.0 //maybe auto calculate
     }
   ],
   fx: {
     delay: {
-      time: 100
+      time: 100,
+      decay: 0.7
     },
     lfo: {
       rate: 0,

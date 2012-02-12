@@ -12,14 +12,16 @@ import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.utilities.Utilities;
 
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 
 public class InstrumentManager {
 
-  private static final String assetPath = "instruments";
-  private static final String extension = ".json";
-  private static final String dataFolder = SauceEngine.DATA_FOLDER + "instruments/";
-  
+  private static final File dataDirectory = Environment.getExternalStorageDirectory();
+  private static final String assetPath = "instruments",
+                              extension = ".json",
+                              dataFolder = SauceEngine.DATA_FOLDER + "instruments/",
+                              instrumentDirPath = dataDirectory.getAbsolutePath() + "/" + dataFolder;
   public static String stripExtension(String file) {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
@@ -40,7 +42,7 @@ public class InstrumentManager {
     }
 
     // Get user created
-    File file =  new File(dataFolder);
+    File file =  new File(instrumentDirPath);
     if (file.exists() && file.isDirectory()) {
       String[] files = file.list();
       for (String fileName : files) {
@@ -89,7 +91,7 @@ public class InstrumentManager {
   }
 
   private static JSONObject getJsonForCustomInstrument(String name) throws Exception {
-    FileInputStream stream = new FileInputStream(new File(dataFolder + name.toLowerCase() + extension));
+    FileInputStream stream = new FileInputStream(new File(instrumentDirPath + name.toLowerCase() + extension));
 
     String jsonString = "";
     try {
@@ -136,10 +138,6 @@ public class InstrumentManager {
     JSONArray timbres = json.getJSONArray("timbre");
     int numHarmonics = timbres.length();
 
-    // TODO FIXME consider, rather than creating multiple sines, squares, etc,
-    // just summing their tables together and creating one instrument.
-    //
-    // this may remove baggage and calculations.
     float totalAmp = 0;
     for (int i = 0; i < numHarmonics; i++) {
       JSONObject timbre = timbres.getJSONObject(i);
@@ -170,26 +168,40 @@ public class InstrumentManager {
       JSONObject fx = json.getJSONObject("fx");
 
       // Lag
-      float lag = (float)fx.optDouble("lag", 0);
-      instrument.setLag(lag);
+      try {      
+        final float lag = (float)fx.optDouble("lag", 0);
+        instrument.setLag(lag);
+      } catch (Exception e) {}
 
       // LFO
       try {
         JSONObject lfo = fx.getJSONObject("lfo");
-        int rate = lfo.optInt("rate", 0);
-        int depth = lfo.optInt("depth", 0);
+        final int rate = lfo.optInt("rate", 0);
+        final int depth = lfo.optInt("depth", 0);
 
         instrument.setModRate(rate);
         instrument.setModDepth(depth);
       } catch (Exception e) {}
 
-      //TODO
-      //
       // Delay
-      //
+      try {
+        JSONObject delay = fx.getJSONObject("delay");
+        final int time = delay.optInt("time", 0);
+        final float decay = (float) delay.optDouble("decay", 0);
+
+        instrument.setDelayRate(time);
+        instrument.setDelayDecay(decay);
+      } catch (Exception e) {}
+
       // Envelope
-      //
-      // ...?
+      try {
+        JSONObject envelope = fx.getJSONObject("envelope");
+        final float  attack = (float)envelope.optDouble("attack", 0.5),
+                     release = (float)envelope.optDouble("release", 0.5);
+
+        instrument.setAttack(attack);
+        instrument.setRelease(release);
+      } catch (Exception e) {}
 
     } catch (Exception e) {}
 
@@ -210,6 +222,88 @@ public class InstrumentManager {
       ComplexOsc osc = getInstrument(man, id);
       return (osc != null) ? osc.resetEffects() : null;
     }
+  }
+  
+  public static boolean saveInstrument(ComplexOsc osc) {
+    boolean success = true;
+    try {
+      File file = new File(instrumentDirPath + osc.getName() + extension);
+      FileWriter writer = new FileWriter(file, false);
+      JSONObject json = decomposeInstrumentToJson(osc);
+      
+      writer.write(json.toString());
+      writer.flush();
+      writer.close();
+    } catch(Exception e) {
+      success = false;
+      e.printStackTrace();
+    }
+    return success;
+  }
+
+  public static JSONObject decomposeInstrumentToJson(ComplexOsc osc) throws JSONException {
+    JSONObject json = new JSONObject();
+
+    String name = osc.getName();
+    json.put("name", name);
+    
+    // Timbre
+    JSONArray timbres = new JSONArray();
+    for (Oscillator timbre : osc.getComponents()) {
+      String timbreName = timbre.getName();
+      if (timbreName != name) {
+        JSONObject timbreJson = new JSONObject();
+        timbreJson.put("id", timbreName);
+        
+        final int harmonic = timbre.getHarmonic(),
+                  phase = timbre.getPhase();
+        final float amplitude = timbre.getAmplitude();
+        timbreJson.put("harmonic", harmonic);
+        timbreJson.put("phase", phase);
+        timbreJson.put("amplitude", amplitude);
+        timbres.put(timbreJson);
+      }
+    }
+    
+    json.put("timbre", timbres);
+      
+    // FX
+    JSONObject fx = new JSONObject();
+
+    // Lag
+    double lag = osc.getLag(); 
+    fx.put("lag", lag);
+
+    // LFO
+    JSONObject lfo = new JSONObject();
+    final int rate = osc.getModRate(),
+              depth = osc.getModDepth();
+    
+    lfo.put("rate", rate);
+    lfo.put("depth", depth);
+    fx.put("lfo", lfo);
+
+    // Delay
+    JSONObject delay = new JSONObject();
+    final int time = osc.getDelayRate();
+    final double decay = osc.getDelayDecay();
+    
+    delay.put("time", time);
+    delay.put("decay", decay);
+    fx.put("delay", delay);
+    
+    // Envelope
+    JSONObject envelope = new JSONObject();
+    final double attack = osc.getAttack(),
+                 release = osc.getRelease();
+    
+    envelope.put("attack", attack);
+    envelope.put("release", release);
+    fx.put("envelope", envelope);
+
+    json.put("fx", fx);
+
+    return json;
   }
 
   public static Oscillator copyInstrument(Oscillator o) {

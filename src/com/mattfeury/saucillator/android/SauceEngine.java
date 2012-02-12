@@ -89,7 +89,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private int VIBRATE_SPEED = 100; //in ms
     private SubMenu instrumentMenu;
     private final int instrumentMenuId = 9;
-    public static final String DATA_FOLDER = "/sdcard/sauce/";
+    public static final String DATA_FOLDER = "sauce/";
     public static final int MODIFY_ACTION = 1;
 
     private Object mutex = new Object();
