@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.android.instruments;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.sound.Delay;
 import com.mattfeury.saucillator.android.sound.Lagger;
 import com.mattfeury.saucillator.android.sound.Limiter;
@@ -31,7 +32,12 @@ public class ComplexOsc extends Oscillator {
   // Delay
   private Delay delay = new Delay(0);
 
-  // Lfo is handled by the children
+  // Lfo + lag are handled by the children
+  // but we keep a copy of their state here so we can update new children
+  // as they come in. They should always be the same.
+  protected int modRate = 0,
+                modDepth = 0;
+  protected float lag = SauceEngine.DEFAULT_LAG;
 
   public ComplexOsc() {
     this(1.0f);
@@ -47,6 +53,11 @@ public class ComplexOsc extends Oscillator {
       components.add(osc);
       osc.chuck(this);
     }
+
+    // LFO + lag are handled in the children, so we need to update the new ones
+    setModRate(modRate);
+    setModDepth(modDepth);
+    setLag(lag);
   }
   public LinkedList<Oscillator> getComponents() {
     return components;
@@ -75,35 +86,31 @@ public class ComplexOsc extends Oscillator {
 
   // LFO methods
   public void setModRate(int rate) {
+    this.modRate = rate;
+
     for(Oscillator osc : components)
       osc.setModRate(rate);
   }
   public void setModDepth(int depth) {
+    this.modDepth = depth;
+
     for(Oscillator osc : components)
       osc.setModDepth(depth);
   }
-
   public int getModRate() {
-    for(Oscillator osc : components)
-      return osc.getModRate();
-
-    return 0;
+    return modRate;    
   }
   public int getModDepth() {
-    for(Oscillator osc : components)
-      return osc.getModDepth();
-
-    return 0;
+    return modDepth;
   }
 
   // Lag
   public float getLag() {
-    for(Oscillator osc : components)
-      return osc.getLag();
-    
-    return 0;
+    return lag;
   }
   public void setLag(float rate) {
+    this.lag = rate;
+
     for(Oscillator osc : components)
       osc.setLag(rate);
   }
