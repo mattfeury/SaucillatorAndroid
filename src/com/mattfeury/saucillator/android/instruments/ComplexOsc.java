@@ -65,6 +65,11 @@ public class ComplexOsc extends Oscillator {
   public Oscillator getComponent(int index) {
     return components.get(index);
   }
+  public void removeComponent(int index) {
+    Oscillator osc = components.remove(index);
+    osc.setPlaying(false);
+    osc.unchuck(this);
+  }
 
   public void setFreq(float freq) {
     for(Oscillator osc : components)

@@ -120,7 +120,8 @@ public class ModifyTimbre extends ListActivity {
         timbres.add(copy);
         break;
       case DELETE_ID:
-        timbres.remove(info.position);
+        ComplexOsc osc = ModifyInstrument.modifying;
+        osc.removeComponent(info.position);
         break;
       default:
     }
