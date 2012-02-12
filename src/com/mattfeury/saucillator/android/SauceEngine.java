@@ -254,7 +254,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             if (! fingerDefined)
               fingersById[id] = osc;
 
-            handleTouchForOscillator(id, v, event);
+            handleTouchForOscillator(oscId, id, v, event);
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
@@ -436,8 +436,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     /**
      * Oscillator handlers
      */
-    public void handleTouchForOscillator(int id, View v, MotionEvent event) {
-      ComplexOsc osc = getOrCreateOscillator(id);
+    public void handleTouchForOscillator(int oscId, int id, View v, MotionEvent event) {
+      ComplexOsc osc = getOrCreateOscillator(oscId);
 
       if (osc == null) return;
 
@@ -462,8 +462,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         else if (osc.isReleasing())
           osc.startAttack();
 
-        updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
-        updateAmplitude(id, xScaled);
+        updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
+        updateAmplitude(oscId, xScaled);
       } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
         //finger up. kill the osc
         view.removeFinger(id);
