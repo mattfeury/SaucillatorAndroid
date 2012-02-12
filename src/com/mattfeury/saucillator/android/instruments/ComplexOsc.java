@@ -49,15 +49,9 @@ public class ComplexOsc extends Oscillator {
 
   public void fill(Oscillator... oscs) {
     for(Oscillator osc : oscs) {
-      osc.setPlaying(true); //we manage playback here, so all the children should always be playing
       components.add(osc);
-      osc.chuck(this);
+      connectComponent(osc);
     }
-
-    // LFO + lag are handled in the children, so we need to update the new ones
-    setModRate(modRate);
-    setModDepth(modDepth);
-    setLag(lag);
   }
   public LinkedList<Oscillator> getComponents() {
     return components;
@@ -69,6 +63,19 @@ public class ComplexOsc extends Oscillator {
     Oscillator osc = components.remove(index);
     osc.setPlaying(false);
     osc.unchuck(this);
+  }
+  public void insertComponent(int index, Oscillator osc) {
+    components.add(index, osc);
+    connectComponent(osc);
+  }
+  private void connectComponent(Oscillator osc) {
+    osc.setPlaying(true); //we manage playback here, so all the children should always be playing
+    osc.chuck(this);
+
+    // LFO + lag are handled in the children, so we need to update the new ones
+    setModRate(modRate);
+    setModDepth(modDepth);
+    setLag(lag);
   }
 
   public void setFreq(float freq) {

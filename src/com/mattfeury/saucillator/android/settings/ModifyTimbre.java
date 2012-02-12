@@ -92,10 +92,16 @@ public class ModifyTimbre extends ListActivity {
         osc.setHarmonic(harmonic);
         osc.setPhase(phase);
 
-        if (! createNew)
-          timbres.remove(position);
+        if (createNew) {
+          // Append to children
+          ModifyInstrument.modifying.fill(osc);
+        } else {
+          // Remove old and insert new into old's position.
+          ComplexOsc modifying = ModifyInstrument.modifying;
+          modifying.removeComponent(position);
 
-        ModifyInstrument.modifying.fill(osc);
+          modifying.insertComponent(position, osc);
+        }
 
         adapter.notifyDataSetChanged();
       }
