@@ -8,6 +8,9 @@ import com.mattfeury.saucillator.android.instruments.*;
 import com.mattfeury.saucillator.android.sound.WavWriter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -30,6 +33,10 @@ public class ModifyInstrument extends PreferenceActivity {
   
   private final static int timbreActivity = 0;
   private final static int fxActivity = 1;
+  private String modifyingOriginalName;
+
+  private static final int deleteConfirmDialog = 0,
+                           deletedInfoDialog = 1;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +47,16 @@ public class ModifyInstrument extends PreferenceActivity {
     // Create or modify?
     Bundle extras = getIntent().getExtras();
     creating = extras.getBoolean("createNew");
+    
+    final EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
 
     // Set default values
     if (creating) {
       modifying = new ComplexOsc();
     } else {
       modifying = SauceEngine.getCurrentOscillator();
-      EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
  
+      modifyingOriginalName = modifying.getName();
       namePref.setText(modifying.getName());
       //namePref.setSummary(modifying.getName());
     }
@@ -80,16 +89,93 @@ public class ModifyInstrument extends PreferenceActivity {
     
     // Maintance stuff
     Preference savePref = (Preference) findPreference("savePref");
+    Preference revertPref = (Preference) findPreference("revertPref");
+    Preference deletePref = (Preference) findPreference("deletePref");
+
     savePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
+        String name = namePref.getText();
+        modifying.setName(name);
+        
         boolean saved = InstrumentManager.saveInstrument(modifying);
-        String message = saved ? "Instrument saved to SD card" : "Instrument could not be saved to SD card";
+        if (saved)
+          modifyingOriginalName = name;
+
+        String message = saved ? "Instrument saved to SD card: " + name : "Instrument could not be saved to SD card";
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
         return true;
       }
     });
 
+    revertPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+      public boolean onPreferenceClick(Preference preference) {
+        // If we were creating, this doesn't exist on disk.
+        // Maybe show an error or something
+        if (! creating) {
+          modifying = InstrumentManager.getInstrument(getAssets(), modifyingOriginalName);
+          namePref.setText(modifying.getName());
+          String message = "Loaded instrument from SD card: " + modifyingOriginalName;
+          Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+        }
+        return true;
+      }
+    });
+
+    deletePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+      public boolean onPreferenceClick(Preference preference) {
+        showDialog(deleteConfirmDialog);
+        return true;
+      }
+    });
   }
+  protected Dialog onCreateDialog(int id) {
+    Dialog dialog = null;
+      
+    switch(id) {
+      case deleteConfirmDialog:
+        dialog =
+          new AlertDialog.Builder(this)
+                .setMessage("Delete saved instrument '" + modifyingOriginalName + "' ? This cannot be undone.")
+                .setCancelable(true)
+                .setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int id) {
+                        deleteInstrument();
+                      }
+                })
+                .setNegativeButton("No",
+                    new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int which) {
+                      }
+                })
+                .create();
+        break;
+      case deletedInfoDialog:
+        dialog =
+          new AlertDialog.Builder(this)
+                .setMessage("Successfully deleted '" + modifyingOriginalName + "' from disk. This instrument will remain in memory until another instrument is chosen. At that point it will be lost unless saved.")
+                .setCancelable(false)
+                .setNeutralButton("OK",
+                    new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int id) {
+                        exit();
+                      }
+                })
+                .create();
+        break;
+    }
+    return dialog;
+  }
+  private void deleteInstrument() {
+    boolean success = InstrumentManager.deleteInstrument(modifyingOriginalName);
+ 
+    if (success) {
+      showDialog(deletedInfoDialog);
+    } else {
+      Toast.makeText(getBaseContext(), "Unable to delete", Toast.LENGTH_SHORT).show();
+    }
+  }
+
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     // resultCode of 0 means save. TODO remove magic number
     if (requestCode == fxActivity && resultCode == 0 && data != null) {

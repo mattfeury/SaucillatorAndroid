@@ -240,6 +240,17 @@ public class InstrumentManager {
     }
     return success;
   }
+  public static boolean deleteInstrument(String name) {
+    boolean success = true;
+    try {
+      File file = new File(instrumentDirPath + name + extension);
+      success = file.delete();
+    } catch(Exception e) {
+      success = false;
+      e.printStackTrace();
+    }
+    return success;
+  }
 
   public static JSONObject decomposeInstrumentToJson(ComplexOsc osc) throws JSONException {
     JSONObject json = new JSONObject();
