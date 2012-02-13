@@ -541,11 +541,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	startActivityForResult(intent, 0);
     	return true;
     }
-    private boolean editInstrument() {
+    private void launchModifyInstrument(boolean create) {
     	Intent intent = new Intent(SauceEngine.this, ModifyInstrument.class);
-    	intent.putExtra("createNew", false);
+    	intent.putExtra("createNew", create);
     	startActivityForResult(intent, SauceEngine.MODIFY_ACTION);
-    	return true;
+    }
+    private void editInstrument() {
+      launchModifyInstrument(false);
+    }
+    private void createInstrument() {
+      launchModifyInstrument(true);
     }
     // Called when settings activity ends. Updates proper params
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -560,7 +565,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
           updateOscSettings();
         }
       } else if (requestCode == SauceEngine.MODIFY_ACTION) {
-        Log.d(TAG,"EDITTED INSTRUMENTES");
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
         setupParamHandlers();
@@ -615,23 +619,26 @@ public class SauceEngine extends Activity implements OnTouchListener {
     		case R.id.scales:
     			return scaleSelection(item);
         case instrumentMenuId:
-          return instrumentSelection(item, 0); //TODO pass in an id for multi mode
-    		default:
-          android.util.Log.d("no group id", ""+item.getGroupId());          
+          return instrumentSelection(item);
     	}
     	switch (item.getItemId()) {
-    		case R.id.quit:
-    			onDestroy();
-    			return true;
+        case R.id.createInstrumentItem:
+          createInstrument();
+          return true;
+        case R.id.editInstrumentItem:
+          editInstrument();
+          return true;
+        case R.id.toggleMode:
+          toggleMode(item);
+          return true;
     		case R.id.settings:
     			return launchSettings();
     		case R.id.record:
     			return record(item);
-        case R.id.toggleMode:
-          toggleMode(item);
+        case R.id.quit:
+          onDestroy();
           return true;
-    		default:
-    	}
+      }
       return false;
     }
 
@@ -706,23 +713,23 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private void disconnectOsc(ComplexOsc osc) {
       osc.unchuck(looper);
     }
-    private boolean instrumentSelection(MenuItem item, int id) {
+    private boolean instrumentSelection(MenuItem item) {
     	if (item.isChecked())
     		return true;
 
       String name = (String) item.getTitle();
       ComplexOsc newOsc = InstrumentManager.getInstrument(getAssets(), name);
-      currentOscillator = newOsc;
 
       if (newOsc == null) {
         Toast.makeText(this, "Bad Instrument.", Toast.LENGTH_SHORT).show();
         return false;
       }
 
+      currentOscillator = newOsc;
       resetOscillators();
 
       connectOsc(newOsc);
-      oscillatorsById[id] = newOsc;
+      oscillatorsById[0] = newOsc;
 
       updateOscSettings();
       setupParamHandlers();

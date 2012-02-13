@@ -36,7 +36,8 @@ public class ModifyInstrument extends PreferenceActivity {
   private String modifyingOriginalName;
 
   private static final int deleteConfirmDialog = 0,
-                           deletedInfoDialog = 1;
+                           deletedInfoDialog = 1,
+                           saveConfirmDialog = 2;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,11 @@ public class ModifyInstrument extends PreferenceActivity {
     if (creating) {
       modifying = new ComplexOsc();
     } else {
-      modifying = SauceEngine.getCurrentOscillator();
- 
-      modifyingOriginalName = modifying.getName();
-      namePref.setText(modifying.getName());
-      //namePref.setSummary(modifying.getName());
+      modifying = SauceEngine.getCurrentOscillator(); 
     }
+    modifyingOriginalName = modifying.getName();
+    namePref.setText(modifying.getName());
+    //namePref.setSummary(modifying.getName());
 
     // Bind FX, timbre handlers
     Preference timbrePref = (Preference) findPreference("timbrePref");
@@ -96,26 +96,22 @@ public class ModifyInstrument extends PreferenceActivity {
       public boolean onPreferenceClick(Preference preference) {
         String name = namePref.getText();
         modifying.setName(name);
-        
-        boolean saved = InstrumentManager.saveInstrument(modifying);
-        if (saved)
-          modifyingOriginalName = name;
 
-        String message = saved ? "Instrument saved to SD card: " + name : "Instrument could not be saved to SD card";
-        Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+        showDialog(saveConfirmDialog);
         return true;
       }
     });
 
     revertPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
-        // If we were creating, this doesn't exist on disk.
-        // Maybe show an error or something
-        if (! creating) {
-          modifying = InstrumentManager.getInstrument(getAssets(), modifyingOriginalName);
+        ComplexOsc reverted = InstrumentManager.getInstrument(getAssets(), modifyingOriginalName);
+        if (! creating && reverted != null) {
+          modifying = reverted;
           namePref.setText(modifying.getName());
           String message = "Loaded instrument from SD card: " + modifyingOriginalName;
           Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+        } else {
+          Toast.makeText(getBaseContext(), "No saved instrument exists with this name.", Toast.LENGTH_LONG).show();          
         }
         return true;
       }
@@ -159,6 +155,33 @@ public class ModifyInstrument extends PreferenceActivity {
                     new DialogInterface.OnClickListener() {
                       public void onClick(DialogInterface dialog, int id) {
                         exit();
+                      }
+                })
+                .create();
+        break;
+      case saveConfirmDialog:
+        dialog =
+          new AlertDialog.Builder(this)
+                .setMessage("Save '"+modifying.getName()+"' to SD card? This will overwrite any existing instrument with this name.")
+                .setCancelable(true)
+                .setPositiveButton("Save",
+                    new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int id) {
+                        boolean saved = InstrumentManager.saveInstrument(modifying);
+                        String latestName = modifying.getName(),
+                                message = "";
+                        if (saved) {
+                          modifyingOriginalName = latestName;
+                          message = "Instrument saved to SD card: " + latestName;
+                        } else {
+                          message = "Instrument could not be saved to SD card";
+                        }
+                        Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+                      }
+                })
+                .setNegativeButton("Don't Save",
+                    new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int id) {
                       }
                 })
                 .create();

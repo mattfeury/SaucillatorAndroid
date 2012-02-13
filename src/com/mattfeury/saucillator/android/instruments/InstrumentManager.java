@@ -63,9 +63,9 @@ public class InstrumentManager {
       man.open(getAssetPath(name));
     } catch(Exception e) {
       isInternal = false;
-    } finally {
-      return isInternal;
     }
+
+    return isInternal;
   }
 
   public static ComplexOsc getInstrument(AssetManager man, String name) {
