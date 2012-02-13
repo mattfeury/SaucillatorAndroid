@@ -317,9 +317,20 @@ public class InstrumentManager {
     return json;
   }
 
-  public static Oscillator copyInstrument(Oscillator o) {
-    //TODO make this not deepCopy. maybe json or something
-    return (Oscillator)Utilities.deepCopy(o);
+  public static ComplexOsc copyInstrument(AssetManager man, ComplexOsc osc) {
+    try {
+      JSONObject json = decomposeInstrumentToJson(osc);
+      ComplexOsc copy = decomposeJsonInstrument(man, json);
+      return copy;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  public static Oscillator copyInstrumentForTimbre(Oscillator osc) {
+    // TODO have this do json like the above. We can't use decomposeInstrument though
+    // because this isn't guaranteed to have any FX
+    return (Oscillator) Utilities.deepCopy(osc);
   }
 
 }

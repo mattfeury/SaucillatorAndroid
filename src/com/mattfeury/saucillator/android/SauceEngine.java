@@ -495,9 +495,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       if (osc != null)
         return osc;
 
-      Oscillator copy = InstrumentManager.copyInstrument(currentOscillator);
+      ComplexOsc copy = InstrumentManager.copyInstrument(getAssets(), currentOscillator);
       if (copy != null)
-        osc = (ComplexOsc) copy;
+        osc = copy;
       else {
         osc = InstrumentManager.getInstrument(getAssets(), "Sine");
         Toast.makeText(this, "Error: Unable to duplicate instrument", Toast.LENGTH_SHORT).show();

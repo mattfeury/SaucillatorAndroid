@@ -122,7 +122,7 @@ public class ModifyTimbre extends ListActivity {
     switch(item.getItemId()) {
       case COPY_ID:
         Oscillator o = timbres.get(info.position);
-        Oscillator copy = InstrumentManager.copyInstrument(o);
+        Oscillator copy = InstrumentManager.copyInstrumentForTimbre(o);
         timbres.add(copy);
         break;
       case DELETE_ID:
