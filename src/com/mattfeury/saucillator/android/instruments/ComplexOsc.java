@@ -16,6 +16,8 @@ public class ComplexOsc extends Oscillator {
   protected LinkedList<Oscillator> components;
 
   public static final float MAX_AMPLITUDE = 1.0f;//what is this for, eh?
+  
+  private boolean isInternal = false;
 
   // TODO break out FX into a common trait
 
@@ -76,6 +78,13 @@ public class ComplexOsc extends Oscillator {
     setModRate(modRate);
     setModDepth(modDepth);
     setLag(lag);
+  }
+
+  public void setInternal(boolean internal) {
+    this.isInternal = internal;
+  }
+  public boolean isInternal() {
+    return isInternal;
   }
 
   public void setFreq(float freq) {

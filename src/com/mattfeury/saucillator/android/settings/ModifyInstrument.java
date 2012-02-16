@@ -2,24 +2,17 @@ package com.mattfeury.saucillator.android.settings;
 
 import com.mattfeury.saucillator.android.R;
 import com.mattfeury.saucillator.android.SauceEngine;
-import com.mattfeury.saucillator.android.R.layout;
-import com.mattfeury.saucillator.android.R.xml;
 import com.mattfeury.saucillator.android.instruments.*;
-import com.mattfeury.saucillator.android.sound.WavWriter;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceManager;
+import android.preference.PreferenceCategory;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -43,7 +36,6 @@ public class ModifyInstrument extends PreferenceActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     addPreferencesFromResource(R.xml.modify_instrument_preferences);
-    //setContentView(R.layout.modify_instrument);
 
     // Create or modify?
     Bundle extras = getIntent().getExtras();
@@ -91,6 +83,14 @@ public class ModifyInstrument extends PreferenceActivity {
     Preference savePref = (Preference) findPreference("savePref");
     Preference revertPref = (Preference) findPreference("revertPref");
     Preference deletePref = (Preference) findPreference("deletePref");
+
+    if (modifying.isInternal()) {
+      savePref.setEnabled(false);
+      savePref.setSummary("Aw naw! Internal instruments cannot be overwritten. Create one instead.");
+
+      deletePref.setEnabled(false);
+      deletePref.setSummary("Egads! Internal instruments cannot be deleted. U mad?");
+    }
 
     savePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {

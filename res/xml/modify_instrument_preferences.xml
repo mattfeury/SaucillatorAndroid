@@ -14,7 +14,7 @@
             android:title="Edit Effects"
             android:key="effectsPref" />
   </PreferenceCategory>
-  <PreferenceCategory android:title="Maintain">
+  <PreferenceCategory android:key="maintainPrefCat" android:title="Maintain">
     <Preference
             android:title="Save to Disk"
             android:summary=""

@@ -105,6 +105,7 @@ public class InstrumentManager {
     }
 
     JSONObject json = new JSONObject(jsonString);
+    json.put("isInternal", false);
     return json;
   }
 
@@ -125,6 +126,7 @@ public class InstrumentManager {
 
     String jsonString = writer.toString();
     JSONObject json = new JSONObject(jsonString);
+    json.put("isInternal", true);
     return json;
   }
 
@@ -135,6 +137,9 @@ public class InstrumentManager {
     String name = json.optString("name", "Unknown");
     instrument.setName(name);
     
+    boolean isInternal = json.optBoolean("isInternal", false);
+    instrument.setInternal(isInternal);
+
     JSONArray timbres = json.getJSONArray("timbre");
     int numHarmonics = timbres.length();
 
