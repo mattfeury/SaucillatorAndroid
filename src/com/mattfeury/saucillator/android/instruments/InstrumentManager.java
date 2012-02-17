@@ -141,29 +141,36 @@ public class InstrumentManager {
     instrument.setInternal(isInternal);
 
     JSONArray timbres = json.getJSONArray("timbre");
-    int numHarmonics = timbres.length();
+    int numHarmonics = timbres.length(),
+        validHarmonics = numHarmonics;
 
     float totalAmp = 0;
     for (int i = 0; i < numHarmonics; i++) {
       JSONObject timbre = timbres.getJSONObject(i);
       String timbreId = timbre.optString("id", "sine");
+
       int harmonic = timbre.optInt("harmonic", 1);
       int phase = timbre.optInt("phase", 0);
       float amplitude = (float)timbre.optDouble("amplitude", 1.0);
 
       totalAmp += amplitude;
 
-      Oscillator osc = getOscillatorForTimbre(man, timbreId);
-      osc.setPhase(phase);
-      osc.setHarmonic(harmonic);
-      osc.setAmplitude(amplitude);
+      // It may have been deleted.
+      try {
+        Oscillator osc = getOscillatorForTimbre(man, timbreId);
+        osc.setPhase(phase);
+        osc.setHarmonic(harmonic);
+        osc.setAmplitude(amplitude);
 
-      instrument.fill(osc);
+        instrument.fill(osc);
+      } catch (Exception e) {
+        validHarmonics--;
+      }
     }
 
     // scale amplitude values so that they sum to MAX_AMPLITUDE.
     float factor = ComplexOsc.MAX_AMPLITUDE / totalAmp;
-    for (int i = 0; i < numHarmonics; i++) {
+    for (int i = 0; i < validHarmonics; i++) {
       Oscillator osc = instrument.getComponent(i);
       osc.factorAmplitude(factor);
     }
