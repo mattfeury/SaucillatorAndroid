@@ -105,10 +105,10 @@ public class ModifyInstrument extends PreferenceActivity {
     revertPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
         ComplexOsc reverted = InstrumentManager.getInstrument(getAssets(), modifyingOriginalName);
-        if (! creating && reverted != null) {
+        if (reverted != null) {
           modifying = reverted;
           namePref.setText(modifying.getName());
-          String message = "Loaded instrument from SD card: " + modifyingOriginalName;
+          String message = "Loaded instrument: " + modifyingOriginalName;
           Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
         } else {
           Toast.makeText(getBaseContext(), "No saved instrument exists with this name.", Toast.LENGTH_LONG).show();          
@@ -195,7 +195,7 @@ public class ModifyInstrument extends PreferenceActivity {
     if (success) {
       showDialog(deletedInfoDialog);
     } else {
-      Toast.makeText(getBaseContext(), "Unable to delete", Toast.LENGTH_SHORT).show();
+      Toast.makeText(getBaseContext(), "Unable to delete. This instrument may not be saved.", Toast.LENGTH_SHORT).show();
     }
   }
 

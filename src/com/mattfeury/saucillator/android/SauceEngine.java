@@ -587,24 +587,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
       // Make sure that instrument selector is first item in menu
       instrumentMenu = menu.getItem(0).getSubMenu();
 
-      // Set defaults
-      MenuItem toggle = menu.findItem(R.id.toggleMode);
-      if (mode == Modes.PLAY_MULTI) {
-        toggle.setTitle(Modes.EDIT.toString());
-      } else {
-        toggle.setTitle(Modes.PLAY_MULTI.toString());
-      }
-
       return true;
     }
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
       boolean result = super.onPrepareOptionsMenu(menu);
 
-      // TODO lookup all instruments
       instrumentMenu.clear();
 
-      // TODO set checked based on current
       ArrayList<String> instruments = InstrumentManager.getAllInstrumentNames(getAssets());
       String[] names = instruments.toArray(new String[0]);
       int i = 0;
@@ -613,7 +603,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         i++;
       }
 
-      instrumentMenu.setGroupCheckable(instrumentMenuId, true, true);
+      instrumentMenu.setGroupCheckable(instrumentMenuId, false, true);
       
       return result;
     }
