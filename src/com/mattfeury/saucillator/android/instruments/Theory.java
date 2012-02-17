@@ -5,6 +5,35 @@ package com.mattfeury.saucillator.android.instruments;
  */
 public class Theory {
 
+  // String keys must match a value in the string resources array
+  public enum Scale {
+    CHROMATIC {
+      public String toString() {
+        return "Chromatic";
+      }
+    },
+    MAJOR {
+      public String toString() {
+        return "Major";
+      }
+    },
+    MINOR {
+      public String toString() {
+        return "Minor";
+      }
+    },
+    MINOR_BLUES {
+      public String toString() {
+        return "Blues";
+      }
+    },
+    PENTATONIC {
+      public String toString() {
+        return "Pentatonic";
+      }
+    }
+  }
+
   //music info
   public static int[] chromaticScale = {0,1,2,3,4,5,6,7,8,9,10,11};
   public static int[] majorScale = {0,2,4,5,7,9,11};

@@ -27,5 +27,14 @@
         <item>5</item>
         <item>6</item>
     </string-array>
-    
+
+    <string name="scale_chooser">Choose a scale</string>
+    <string-array name="scale_array">
+        <item>Pentatonic</item>
+        <item>Major</item>
+        <item>Minor</item>
+        <item>Blues</item>
+        <item>Chromatic</item>
+    </string-array>
+
 </resources>

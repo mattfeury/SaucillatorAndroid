@@ -10,27 +10,15 @@
         </menu>
     </item>
 
-    <item android:title="Create Instrument" android:id="@+id/createInstrumentItem" />
+    <item android:title="Switch Mode" android:id="@+id/toggleMode" />
 
     <item android:title="Edit Instrument" android:id="@+id/editInstrumentItem" />
 
-    <item android:title="Switch Mode" android:id="@+id/toggleMode" />
+    <item android:title="Create Instrument" android:id="@+id/createInstrumentItem" />
             
     <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
     
     <item android:title="Settings" android:id="@+id/settings" android:icon="@drawable/ic_menu_preferences"/>
     
     <item android:id="@+id/quit" android:title="Quit" android:icon="@drawable/ic_lock_power_off"/>
-
-    <item android:title="Scale" android:id="@+id/scale">
-        <menu>
-            <group android:checkableBehavior="single" android:id="@+id/scales">
-                <item android:id="@+id/pentatonic" android:title="Pentatonic" android:checked="true"></item>
-                <item android:id="@+id/major" android:title="Major"></item>
-                <item android:id="@+id/minor" android:title="Minor"></item>
-                <item android:id="@+id/blues" android:title="Blues"></item>
-                <item android:id="@+id/chromatic" android:title="Chromatic"></item>
-            </group>
-        </menu>
-    </item>
 </menu>

@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.android;
 import java.util.ArrayList;
 
 import com.mattfeury.saucillator.android.instruments.*;
+import com.mattfeury.saucillator.android.instruments.Theory.Scale;
 import com.mattfeury.saucillator.android.settings.ModifyInstrument;
 import com.mattfeury.saucillator.android.settings.Settings;
 import com.mattfeury.saucillator.android.sound.*;
@@ -54,8 +55,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     //defaults
     private int note = 0;
     private int octave = 4;
-
-    //music shtuffs
+    private String scaleId = Scale.PENTATONIC.toString();
     public int[] scale = Theory.pentatonicScale;
 
     public final static int DELAY_MAX = UGen.SAMPLE_RATE; //Is this right?
@@ -538,6 +538,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	intent.putExtra("note", note);
     	intent.putExtra("file name", WavWriter.filePrefix);
     	intent.putExtra("visuals", view.getVisuals());
+      intent.putExtra("scale", scaleId);
     	startActivityForResult(intent, 0);
     	return true;
     }
@@ -561,7 +562,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
           WavWriter.filePrefix = extras.getString("file name");
           note = extras.getInt("note");
           octave = extras.getInt("octave");
+          scaleId = extras.getString("scale");
+
           view.setVisuals(extras.getBoolean("visuals"));
+          selectScale(scaleId);
           updateOscSettings();
         }
       } else if (requestCode == SauceEngine.MODIFY_ACTION) {
@@ -616,8 +620,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public boolean onOptionsItemSelected(MenuItem item) {
 
     	switch (item.getGroupId()) {
-    		case R.id.scales:
-    			return scaleSelection(item);
         case instrumentMenuId:
           return instrumentSelection(item);
     	}
@@ -679,32 +681,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return true;
     }
 
-    private boolean scaleSelection(MenuItem item) {
-    	if (item.isChecked()) {
-    		return true;
-    	}
-    	item.setChecked(true);
-      int scaleId = item.getItemId();
+    private void selectScale(String scaleId) {
+      this.scaleId = scaleId;
 
-      switch (scaleId) {
-        case R.id.pentatonic: //pentatonic
-          scale = Theory.pentatonicScale;
-          break;
-        case R.id.major: //major
-          scale = Theory.majorScale;
-          break;
-        case R.id.minor: //minor
-          scale = Theory.minorScale;
-          break;
-        case R.id.blues: //blues
-          scale = Theory.minorBluesScale;
-          break;
-        case R.id.chromatic: //chromatic
-          scale = Theory.chromaticScale;
-          break;
-        default:
+      if (scaleId.equals(Scale.PENTATONIC.toString())) {
+        scale = Theory.pentatonicScale;
+      } else if (scaleId.equals(Scale.MAJOR.toString())) {
+        scale = Theory.majorScale;
+      } else if (scaleId.equals(Scale.MINOR.toString())) {
+        scale = Theory.minorScale;
+      } else if (scaleId.equals(Scale.MINOR_BLUES.toString())) {
+        scale = Theory.minorBluesScale;
+      } else {
+        scale = Theory.chromaticScale;
       }
-    	return false;
     }
 
     private void connectOsc(ComplexOsc osc) {
