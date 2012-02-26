@@ -103,7 +103,14 @@ public class Dac extends UGen {
 
         //Write dat shit into dat wav buffa.
         if (recording) {
-          WavWriter.pushFloat(localBuffer[i]);
+          try {
+            WavWriter.pushFloat(localBuffer[i]);
+          } catch (Exception e) {
+            // Something bad happened. Try to write the wav and bail.
+            // This is often an OutOfMemory error. Will it still write it?
+            WavWriter.writeWav();
+            recording = false;
+          }
         }
 			}
 

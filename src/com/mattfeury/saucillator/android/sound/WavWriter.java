@@ -2,13 +2,15 @@ package com.mattfeury.saucillator.android.sound;
 
 import java.io.*;
 
+import com.mattfeury.saucillator.android.instruments.InstrumentManager;
+
 import android.util.Log;
 
 /**
  * Writes a wave file
  */
 public class WavWriter {
-  static int numWavFiles  = 0;
+  static int numWavFiles = 0;
   //FIXME make this stuff instances. might prevent memory leaks
   static ByteArrayOutputStream data = new ByteArrayOutputStream();
   private static File lastFile = null;
@@ -46,7 +48,7 @@ public class WavWriter {
     File file;
     int i = 0;
     
-    if (!(file = new File("/sdcard/sauce/")).exists()){
+    if (!(file = new File(InstrumentManager.dataPath)).exists()){
     	if(!file.mkdir())
     		throw new IOException("Died trying to make sauce directory");
     }
@@ -54,7 +56,7 @@ public class WavWriter {
     
     do{
     	i++;
-    	file = new File("/sdcard/sauce/" + filePrefix + i + ".wav");
+    	file = new File(InstrumentManager.dataPath + filePrefix + i + ".wav");
     }while(file.exists());
     
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
@@ -79,8 +81,10 @@ public class WavWriter {
 
     // save
     outFile.flush();
-
     outFile.close();
+    
+    clear();
+
     lastFile = file;
     numWavFiles++;
 	}

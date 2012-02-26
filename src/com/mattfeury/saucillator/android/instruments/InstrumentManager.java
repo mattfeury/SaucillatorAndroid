@@ -14,14 +14,16 @@ import com.mattfeury.saucillator.android.utilities.Utilities;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 public class InstrumentManager {
 
-  private static final File dataDirectory = Environment.getExternalStorageDirectory();
-  private static final String assetPath = "instruments",
-                              extension = ".json",
-                              dataFolder = SauceEngine.DATA_FOLDER + "instruments/",
-                              instrumentDirPath = dataDirectory.getAbsolutePath() + "/" + dataFolder;
+  public static final File dataDirectory = Environment.getExternalStorageDirectory();
+  public static final String assetPath = "instruments",
+                             extension = ".json",
+                             dataPath = dataDirectory.getAbsolutePath() + "/" + SauceEngine.DATA_FOLDER,
+                             instrumentFolder = "instruments/",
+                             instrumentDirPath = dataPath + instrumentFolder;
   public static String stripExtension(String file) {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
