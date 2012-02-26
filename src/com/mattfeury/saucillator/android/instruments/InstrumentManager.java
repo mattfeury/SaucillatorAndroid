@@ -54,7 +54,7 @@ public class InstrumentManager {
   }
 
   public static String getAssetPath(String filename) {
-    return assetPath + "/" + filename.toLowerCase() + extension;
+    return assetPath + "/" + filename + extension;
   }
   public static boolean isInternal(AssetManager man, String name) {
     boolean isInternal = true;
@@ -91,7 +91,7 @@ public class InstrumentManager {
   }
 
   private static JSONObject getJsonForCustomInstrument(String name) throws Exception {
-    FileInputStream stream = new FileInputStream(new File(instrumentDirPath + name.toLowerCase() + extension));
+    FileInputStream stream = new FileInputStream(new File(instrumentDirPath + name + extension));
 
     String jsonString = "";
     try {
@@ -221,14 +221,13 @@ public class InstrumentManager {
   }
 
   public static Oscillator getOscillatorForTimbre(AssetManager man, String id) {
-    id = id.toLowerCase();
-    if ("sine".equals(id))
+    if ("Sine".equals(id))
       return new Sine();
-    else if ("saw".equals(id))
+    else if ("Saw".equals(id))
       return new Saw();
-    else if ("square".equals(id))
+    else if ("Square".equals(id))
       return new Square();
-    else if ("noise".equals(id))
+    else if ("Noise".equals(id))
       return new Noise();
     else {
       ComplexOsc osc = getInstrument(man, id);

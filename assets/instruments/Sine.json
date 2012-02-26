@@ -4,23 +4,20 @@
   author: "Matt Feury", //not necessary
   timbre: [
     {
-      id: 'sine',
-      harmonic: 1, //fundamental
-      amplitude: 1.0 //maybe auto calculate
+      id: 'Sine',
+      harmonic: 1,
+      amplitude: 1.0
     }
   ],
   fx: {
     delay: {
-      time: 100,
-      decay: 0.7
+      time: 0,
+      decay: 0.0
     },
     lfo: {
       rate: 0,
       depth: 0
     },
-    lag: 0.0 //percentage
-
-    //maybe these. see if they are programmatically possible:
-    //chorus, 
+    lag: 0.0
   }
 }

@@ -4,7 +4,7 @@
   author: "Matt Feury", //not necessary
   timbre: [
     {
-      id: "saw"
+      id: "Saw"
     }
   ],
   fx: {

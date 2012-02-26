@@ -1,49 +1,37 @@
 {
   id: 5,//perhaps a unique id based on date + millis
-  name: "SingingSaw",
+  name: "Singing Saw",
   author: "Matt Feury", //not necessary
   timbre: [
     {
-      id: 'sine',
+      id: 'Sine',
       harmonic: 1, //fundamental
-      amplitude: 1.0, //maybe auto calculate
-      //TODO make envelopes work?
-      envelope: {
-        data: [
-          [0.0, 0.0],
-          [0.6, 0.8],
-          [0.4, 1.0],
-          [1.0, 0.0],
-        ], /*OR*/
-        attack: [0.6, 0.8],
-        release: [1.0, 0.0],
-        loop: true
-      }
+      amplitude: 1.0 //maybe auto calculate
     },
     {
-      id: 'sine', //used to be noise
+      id: 'Sine', //used to be noise
       harmonic: 4, //fundamental
       amplitude: 0.5
     },
     {
-      id: 'sine',
+      id: 'Sine',
       harmonic: 2,
       phase: 0,
       amplitude: 1.0 //maybe auto calculate
     },
     {
-      id: 'sine',
+      id: 'Sine',
       harmonic: 3,
       amplitude: 1.0
     },
     {
-      id: 'sine',
+      id: 'Sine',
       harmonic: 4,
       amplitude: 1.0,
       phase: 180
     },
     {
-      id: 'square',
+      id: 'Square',
       harmonic: 2,
       amplitude: 1.0,
       phase: 180

@@ -4,7 +4,7 @@
   author: "Matt Feury", //not necessary
   timbre: [
     {
-      id: "square"
+      id: "Square"
     }
   ],
   fx: {
@@ -15,9 +15,6 @@
       rate: 0,
       depth: 0
     },
-    lag: 0.0 //percentage
-
-    //maybe these. see if they are programmatically possible:
-    //chorus, 
+    lag: 0.0
   }
 }
