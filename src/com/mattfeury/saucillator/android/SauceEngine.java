@@ -346,9 +346,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             "depth",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
-                //FIXME yuck
-                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
-
                 ComplexOsc osc = getOrCreateOscillator(0);
 
                 // Set the template and the playing oscillator
@@ -376,7 +373,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             "decay",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
-
                 ComplexOsc osc = getOrCreateOscillator(0);
 
                 // Set the template and the playing oscillator
@@ -402,7 +398,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             "rls",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
-
                 ComplexOsc osc = getOrCreateOscillator(0);
 
                 // Don't allow 1.0 attack or release because it would be 100%
@@ -635,7 +630,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     private Modes toggleMode(MenuItem item) {
-      Modes other = mode;
       if (mode == Modes.PLAY_MULTI) {
         mode = Modes.EDIT;
       } else {
@@ -644,7 +638,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       resetOscillators();
       setupParamHandlers();
-      item.setTitle(other.toString());
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;
     }
