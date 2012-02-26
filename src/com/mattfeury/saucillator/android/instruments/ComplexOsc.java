@@ -232,7 +232,6 @@ public class ComplexOsc extends Oscillator {
   public synchronized boolean render(final float[] buffer) {
     boolean didWork = false;
     if(isPlaying()) {
-      Limiter.limit(buffer);
       final float[] kidsBuffer = new float[CHUNK_SIZE];
       didWork = renderKids(kidsBuffer);
       for(int i = 0; i < CHUNK_SIZE; i++) {
@@ -244,6 +243,8 @@ public class ComplexOsc extends Oscillator {
     }
 
     delay.render(buffer);
+
+    Limiter.limit(buffer);
 
     rendered();
 
