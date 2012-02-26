@@ -107,6 +107,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         setContentView(R.layout.main);
         view = (SauceView)findViewById(R.id.sauceview);
         view.setOnTouchListener(this);
+        view.setEngine(this);
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         
@@ -426,6 +427,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       view.addParam(lfoParam);
       view.addParam(delayParam);
       view.addParam(envelopeParam);
+    }
+    public final float[] getRecentSamples() {
+      return dac.getBuffer();
     }
 
     /**

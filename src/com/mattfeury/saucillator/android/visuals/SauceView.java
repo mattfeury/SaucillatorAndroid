@@ -4,12 +4,17 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.android.SauceEngine;
+import com.mattfeury.saucillator.android.sound.UGen;
+import com.mattfeury.saucillator.android.utilities.Utilities;
+
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
@@ -22,6 +27,8 @@ public class SauceView extends View {
     public static final float padWidth = 1.0f - controllerWidth;
     public static final int numButtons = 3;
     
+    private SauceEngine engine;
+    
     private boolean init = false;
 
     //graphics elements
@@ -32,7 +39,7 @@ public class SauceView extends View {
 
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
-    Paint backColor;
+    Paint backColor, foregroundColor;
     private boolean visuals = false;
 
     public SauceView(Context context) {
@@ -47,7 +54,10 @@ public class SauceView extends View {
     	 super(context, attrs, defStyle);
     	 init(context);
     }
-    
+
+    public void setEngine(SauceEngine engine){
+      this.engine = engine;
+    }
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
       super.onLayout(changed, left, top, right, bottom);
@@ -55,7 +65,12 @@ public class SauceView extends View {
     }
 
     public void init(Context context) {
-      backColor = new Paint(Color.GREEN);
+      backColor = new Paint();
+      foregroundColor = new Paint();
+      foregroundColor.setColor(Color.GREEN);
+      foregroundColor.setStrokeWidth(3);
+      foregroundColor.setStyle(Paint.Style.STROKE);
+
       loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       undo = new RectButton("Undo", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
@@ -183,7 +198,7 @@ public class SauceView extends View {
     }
  
     @Override
-    public void onDraw(Canvas canvas) {    	
+    public void onDraw(Canvas canvas) {
     	//draw pad
       if (fractGen == null)
         fractGen = new FractalGen(canvas);
@@ -209,6 +224,31 @@ public class SauceView extends View {
 
       if(visuals)		
         fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
+
+      // Spectrum view
+      if (engine != null) {
+        final float[] samples = engine.getRecentSamples();
+        Path path = new Path();
+        int i = 0;
+
+        for (float sample : samples) { //samples are floats from -1 to 1
+          int scaledY = (int) ((1f - (sample + 1) / 2f) * getHeight());
+          int scaledX = (int) (i / (float)UGen.CHUNK_SIZE * getWidth());
+
+          if (i == 0)
+            path.moveTo(scaledX, scaledY);
+          else
+            path.lineTo(scaledX, scaledY);
+
+          android.util.Log.d("HUH", "( " + scaledX + ", " + scaledY + ")");
+
+          i++;
+        }
+        
+        //path.close();
+
+        canvas.drawPath(path, foregroundColor);
+      }
 
       for(Finger f : fingers.values())
         f.draw(canvas);

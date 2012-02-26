@@ -79,9 +79,12 @@ public class Dac extends UGen {
 		playing = !playing;
 	}
 	
-	public void setPan(float l, float r)
-	{
+	public void setPan(float l, float r) {
 		track.setStereoVolume(l, r);
+	}
+
+	public float[] getBuffer() {
+	  return localBuffer;
 	}
 	
 	public void tick() {
