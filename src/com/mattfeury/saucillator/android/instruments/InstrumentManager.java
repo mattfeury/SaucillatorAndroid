@@ -170,6 +170,9 @@ public class InstrumentManager {
       }
     }
 
+    // TODO show warning message that not all timbres were deserializable
+    //if (validHarmonics != numHarmonics)
+
     // scale amplitude values so that they sum to MAX_AMPLITUDE.
     float factor = ComplexOsc.MAX_AMPLITUDE / totalAmp;
     for (int i = 0; i < validHarmonics; i++) {
