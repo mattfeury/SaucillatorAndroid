@@ -561,13 +561,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           view.setVisuals(extras.getBoolean("visuals"));
           selectScale(scaleId);
-          updateOscSettings();
         }
       } else if (requestCode == SauceEngine.MODIFY_ACTION) {
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
         setupParamHandlers();
       }
+      updateOscSettings();
     }
 
     /**
