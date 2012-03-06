@@ -55,6 +55,10 @@ public class ComplexOsc extends Oscillator {
       connectComponent(osc);
     }
   }
+  public void fill() {
+    for(Oscillator osc : components)
+      osc.fill();    
+  }
   public LinkedList<Oscillator> getComponents() {
     return components;
   }

@@ -45,8 +45,6 @@ public abstract class BasicOsc extends Oscillator {
     fill();   
   }
 
-  public abstract void fill();
-
   public synchronized void updateFrequency(float freq) {
     frequency = freq;
     cyclesPerSample = frequency/SAMPLE_RATE;
