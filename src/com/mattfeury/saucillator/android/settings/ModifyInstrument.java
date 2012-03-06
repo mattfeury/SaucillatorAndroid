@@ -3,6 +3,8 @@ package com.mattfeury.saucillator.android.settings;
 import com.mattfeury.saucillator.android.R;
 import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.*;
+import com.mattfeury.saucillator.android.utilities.Box;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -167,12 +169,14 @@ public class ModifyInstrument extends PreferenceActivity {
                 .setPositiveButton("Save",
                     new DialogInterface.OnClickListener() {
                       public void onClick(DialogInterface dialog, int id) {
-                        boolean saved = InstrumentManager.saveInstrument(modifying);
+                        Box<ComplexOsc> savedBox = InstrumentManager.saveInstrument(getAssets(), modifying);
                         String latestName = modifying.getName(),
                                 message = "";
-                        if (saved) {
+                        if (savedBox.isDefined()) {
                           modifyingOriginalName = latestName;
-                          message = "Instrument saved to SD card: " + latestName;
+                          message = "Disco! Instrument saved to SD card: " + latestName;
+                        } else if (savedBox.isFailure()) {
+                          message = savedBox.getFailure();
                         } else {
                           message = "Instrument could not be saved to SD card";
                         }
@@ -190,10 +194,12 @@ public class ModifyInstrument extends PreferenceActivity {
     return dialog;
   }
   private void deleteInstrument() {
-    boolean success = InstrumentManager.deleteInstrument(modifyingOriginalName);
+    Box<Boolean> savedBox = InstrumentManager.deleteInstrument(getAssets(), modifyingOriginalName);
  
-    if (success) {
+    if (savedBox.isDefined()) {
       showDialog(deletedInfoDialog);
+    } else if (savedBox.isFailure()) {
+      Toast.makeText(getBaseContext(), savedBox.getFailure(), Toast.LENGTH_SHORT).show();
     } else {
       Toast.makeText(getBaseContext(), "Unable to delete. This instrument may not be saved.", Toast.LENGTH_SHORT).show();
     }

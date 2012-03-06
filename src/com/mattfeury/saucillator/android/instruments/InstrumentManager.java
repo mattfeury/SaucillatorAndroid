@@ -9,12 +9,11 @@ import java.util.ArrayList;
 import org.json.*;
 
 import com.mattfeury.saucillator.android.SauceEngine;
-import com.mattfeury.saucillator.android.utilities.Utilities;
+import com.mattfeury.saucillator.android.utilities.*;
 
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 public class InstrumentManager {
 
@@ -240,10 +239,15 @@ public class InstrumentManager {
     }
   }
   
-  public static boolean saveInstrument(ComplexOsc osc) {
+  public static Box<ComplexOsc> saveInstrument(AssetManager man, ComplexOsc osc) {
     boolean success = true;
+    String name = osc.getName();
+    
+    if (isInternal(man, name))
+      return new Failure<ComplexOsc>("Invalid name. You cannot save over a built-in instrument.");
+
     try {
-      File file = new File(instrumentDirPath + osc.getName() + extension);
+      File file = new File(instrumentDirPath + name + extension);
       FileWriter writer = new FileWriter(file, false);
       JSONObject json = decomposeInstrumentToJson(osc);
       
@@ -254,10 +258,17 @@ public class InstrumentManager {
       success = false;
       e.printStackTrace();
     }
-    return success;
+    if (success)
+      return new Full<ComplexOsc>(osc);
+    else
+      return new Empty<ComplexOsc>();
   }
-  public static boolean deleteInstrument(String name) {
+  public static Box<Boolean> deleteInstrument(AssetManager man, String name) {
     boolean success = true;
+    
+    if (isInternal(man, name))
+      return new Failure<Boolean>("Invalid name. You cannot delete a built-in instrument.");
+
     try {
       File file = new File(instrumentDirPath + name + extension);
       success = file.delete();
@@ -265,7 +276,10 @@ public class InstrumentManager {
       success = false;
       e.printStackTrace();
     }
-    return success;
+    if (success)
+      return new Full<Boolean>(true);
+    else
+      return new Empty<Boolean>();
   }
 
   public static JSONObject decomposeInstrumentToJson(ComplexOsc osc) throws JSONException {
