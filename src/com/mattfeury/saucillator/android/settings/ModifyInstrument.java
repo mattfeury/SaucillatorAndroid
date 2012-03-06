@@ -16,6 +16,7 @@ import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceCategory;
 import android.view.KeyEvent;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class ModifyInstrument extends PreferenceActivity {
@@ -28,7 +29,6 @@ public class ModifyInstrument extends PreferenceActivity {
   
   private final static int timbreActivity = 0;
   private final static int fxActivity = 1;
-  private String modifyingOriginalName;
 
   private static final int deleteConfirmDialog = 0,
                            deletedInfoDialog = 1,
@@ -42,18 +42,14 @@ public class ModifyInstrument extends PreferenceActivity {
     // Create or modify?
     Bundle extras = getIntent().getExtras();
     creating = extras.getBoolean("createNew");
-    
-    final EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
 
     // Set default values
     if (creating) {
       modifying = new ComplexOsc();
+      requestName();
     } else {
       modifying = SauceEngine.getCurrentOscillator(); 
     }
-    modifyingOriginalName = modifying.getName();
-    namePref.setText(modifying.getName());
-    //namePref.setSummary(modifying.getName());
 
     // Bind FX, timbre handlers
     Preference timbrePref = (Preference) findPreference("timbrePref");
@@ -96,9 +92,6 @@ public class ModifyInstrument extends PreferenceActivity {
 
     savePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
-        String name = namePref.getText();
-        modifying.setName(name);
-
         showDialog(saveConfirmDialog);
         return true;
       }
@@ -106,11 +99,10 @@ public class ModifyInstrument extends PreferenceActivity {
 
     revertPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
-        ComplexOsc reverted = InstrumentManager.getInstrument(getAssets(), modifyingOriginalName);
+        ComplexOsc reverted = InstrumentManager.getInstrument(getAssets(), modifying.getName());
         if (reverted != null) {
           modifying = reverted;
-          namePref.setText(modifying.getName());
-          String message = "Loaded instrument: " + modifyingOriginalName;
+          String message = "Loaded instrument: " + modifying.getName();
           Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
         } else {
           Toast.makeText(getBaseContext(), "No saved instrument exists with this name.", Toast.LENGTH_LONG).show();          
@@ -133,7 +125,7 @@ public class ModifyInstrument extends PreferenceActivity {
       case deleteConfirmDialog:
         dialog =
           new AlertDialog.Builder(this)
-                .setMessage("Delete saved instrument '" + modifyingOriginalName + "' ? This cannot be undone.")
+                .setMessage("Delete saved instrument '" + modifying.getName() + "' ? This cannot be undone.")
                 .setCancelable(true)
                 .setPositiveButton("Yes",
                     new DialogInterface.OnClickListener() {
@@ -151,7 +143,7 @@ public class ModifyInstrument extends PreferenceActivity {
       case deletedInfoDialog:
         dialog =
           new AlertDialog.Builder(this)
-                .setMessage("Successfully deleted '" + modifyingOriginalName + "' from disk. This instrument will remain in memory until another instrument is chosen. At that point it will be lost unless saved.")
+                .setMessage("Successfully deleted '" + modifying.getName() + "' from disk. This instrument will remain in memory until another instrument is chosen. At that point it will be lost unless saved. Yathzee!")
                 .setCancelable(false)
                 .setNeutralButton("OK",
                     new DialogInterface.OnClickListener() {
@@ -173,7 +165,6 @@ public class ModifyInstrument extends PreferenceActivity {
                         String latestName = modifying.getName(),
                                 message = "";
                         if (savedBox.isDefined()) {
-                          modifyingOriginalName = latestName;
                           message = "Disco! Instrument saved to SD card: " + latestName;
                         } else if (savedBox.isFailure()) {
                           message = savedBox.getFailure();
@@ -193,8 +184,51 @@ public class ModifyInstrument extends PreferenceActivity {
     }
     return dialog;
   }
+
+  private void requestName() {
+    AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+    alert.setTitle("Name Your Instrument");
+
+    // Set an EditText view to get user input 
+    final EditText input = new EditText(this);
+    alert.setView(input);
+
+    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int whichButton) {
+        String value = input.getText().toString();
+
+        if (InstrumentManager.isInternal(getAssets(), value)) {
+          Toast.makeText(getBaseContext(), "Invalid name. You cannot use a name that is an internal instrument.", Toast.LENGTH_SHORT).show();
+          requestName();
+          return;
+        }
+          
+
+        modifying.setName(value);
+        android.util.Log.d("INS NAME", value);
+      }
+    });
+
+    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int whichButton) {
+        exit();
+        modifying = null;
+      }
+    });
+    
+    alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+      public void onCancel(DialogInterface dialog) {
+        exit();
+        modifying = null;
+      }
+    });
+
+    alert.show();
+  }
+
   private void deleteInstrument() {
-    Box<Boolean> savedBox = InstrumentManager.deleteInstrument(getAssets(), modifyingOriginalName);
+    Box<Boolean> savedBox = InstrumentManager.deleteInstrument(getAssets(), modifying.getName());
  
     if (savedBox.isDefined()) {
       showDialog(deletedInfoDialog);
@@ -230,9 +264,6 @@ public class ModifyInstrument extends PreferenceActivity {
 
 
   public void exit() {
-    EditTextPreference namePref = (EditTextPreference) findPreference("namePref");
-    String name = namePref.getText();
-    modifying.setName(name);
 
     Intent intent = new Intent(ModifyInstrument.this, SauceEngine.class);
     setResult(0, intent);

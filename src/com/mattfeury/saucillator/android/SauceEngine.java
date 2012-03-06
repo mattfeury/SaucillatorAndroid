@@ -563,6 +563,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
           selectScale(scaleId);
         }
       } else if (requestCode == SauceEngine.MODIFY_ACTION) {
+        if (ModifyInstrument.modifying == null)
+          return;
+
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
         setupParamHandlers();

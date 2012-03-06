@@ -43,7 +43,7 @@ public class TimbrePreferences extends Activity {
     Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
     ArrayList<String> timbres = InstrumentManager.getAllInstrumentNames(getAssets());
 
-    if (! creating) { //don't allow recursive timbre
+    if (! creating && ! osc.isInternal()) { //don't allow recursive timbre
       int index = timbres.lastIndexOf(osc.getName());
 
       if (index > -1)

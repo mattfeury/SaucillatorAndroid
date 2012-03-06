@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
   <PreferenceCategory android:title="Edit Instrument">
-    <EditTextPreference
-            android:name="Instrument Name"
-            android:summary="Name this instrument"
-            android:defaultValue=""
-            android:title="Instrument Name"
-            android:key="namePref" />
     <Preference
             android:title="Edit Timbre"
             android:key="timbrePref" />
