@@ -39,12 +39,17 @@
   ],
   fx: {
     delay: {
-      time: 100
+      time: 5355,
+      decay: 0.22
     },
     lfo: {
-      rate: 5,
-      depth: 30
+      rate: 7,
+      depth: 21
     },
-    lag: 0.9
+    lag: 0.96,
+    envelope: {
+      attack: 0.9,
+      release: 0.97
+    }
   }
 }
