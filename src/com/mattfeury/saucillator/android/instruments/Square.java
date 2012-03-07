@@ -19,8 +19,11 @@ public class Square extends BasicOsc {
   }
 
   public void fill() {
-		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = i<ENTRIES/2?amplitude:-1f*amplitude;
-		}
+    int phaseOffset = (int)((float)(oscPhase / (float)360) * ENTRIES);
+    int phaseCursor = phaseOffset;
+    for(int i = 0; i < ENTRIES; i++) {
+      table[i] = ((phaseCursor % ENTRIES) < ENTRIES / 2) ? amplitude : -1f * amplitude;
+      phaseCursor++;
+    }
   }
 }

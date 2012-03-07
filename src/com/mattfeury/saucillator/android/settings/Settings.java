@@ -4,6 +4,7 @@ import com.mattfeury.saucillator.android.R;
 import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.Theory;
 import com.mattfeury.saucillator.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.android.utilities.ViewBinders;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +13,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -39,6 +42,10 @@ public class Settings extends Activity {
 
       fileTextBox = (EditText) findViewById(R.id.fileName);
       fileTextBox.setText(fileName);
+
+      SeekBar slider = (SeekBar) findViewById(R.id.padSizeSlider);
+      slider.setMax(SauceEngine.TRACKPAD_SIZE_MAX);
+      ViewBinders.bindSliderToVariable(this, R.id.padSizeSlider, R.id.padSizeValue, SauceEngine.TRACKPAD_GRID_SIZE, 1);
 
       noteSpinner = (Spinner) findViewById(R.id.noteChooser);
       ArrayAdapter<CharSequence> noteAdapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
@@ -71,6 +78,10 @@ public class Settings extends Activity {
     String fileName = fileTextBox.getText().toString();
     boolean visuals = visualsToggle.isChecked();
     String scale = (String) scaleSpinner.getSelectedItem();
+    
+    TextView padSizeText = (TextView) findViewById(R.id.padSizeValue);
+    int padSize = Integer.parseInt((String)padSizeText.getText());
+    SauceEngine.TRACKPAD_GRID_SIZE = padSize;
 
     intent.putExtra("octave", octave);
     intent.putExtra("note", note);

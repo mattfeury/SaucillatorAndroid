@@ -64,6 +64,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     public final static float DEFAULT_LAG = 0.5f;
     public static int TRACKPAD_GRID_SIZE = 12;
+    public final static int TRACKPAD_SIZE_MAX = 16;
 
     private boolean init = false;
     
@@ -158,7 +159,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
-        Log.i(TAG, "Settingup params");
         setupParamHandlers();
       }
     }
@@ -565,13 +565,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           view.setVisuals(extras.getBoolean("visuals"));
           selectScale(scaleId);
-          updateOscSettings();
         }
       } else if (requestCode == SauceEngine.MODIFY_ACTION) {
+        if (ModifyInstrument.modifying == null)
+          return;
+
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
         setupParamHandlers();
       }
+      updateOscSettings();
     }
 
     /**

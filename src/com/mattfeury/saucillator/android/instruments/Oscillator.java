@@ -66,8 +66,9 @@ public abstract class Oscillator extends UGen {
   }
   public void setPhase(int phase) {
     this.oscPhase = phase;
-    // We need to recalc the tables here
-    // FIXME
-    //fill();
+    fill();
   }
+  // This [re]fills our table for BasicOsc.
+  // For ComplexOscs, it refills the children.
+  public abstract void fill();  
 }

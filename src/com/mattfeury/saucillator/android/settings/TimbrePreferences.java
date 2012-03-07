@@ -43,8 +43,8 @@ public class TimbrePreferences extends Activity {
     Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
     ArrayList<String> timbres = InstrumentManager.getAllInstrumentNames(getAssets());
 
-    if (! creating) { //don't allow recursive timbre
-      int index = timbres.lastIndexOf(osc.getName().toLowerCase());
+    if (! creating && ! osc.isInternal()) { //don't allow recursive timbre
+      int index = timbres.lastIndexOf(osc.getName());
 
       if (index > -1)
         timbres.remove(index);
@@ -56,7 +56,7 @@ public class TimbrePreferences extends Activity {
     timbreSpinner.setAdapter(adapter);
     
     if (! createNew) {
-      int index = timbres.lastIndexOf(type.toLowerCase());
+      int index = timbres.lastIndexOf(type);
       if (index > -1)
         timbreSpinner.setSelection(index);
     }
