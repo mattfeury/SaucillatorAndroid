@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Saucillator for Android</string>
+    <string name="app_name">Saucillator (DEV) for Android</string>
     
     <string name="note_chooser">Choose a note</string>
     <string-array name="notes_array">
