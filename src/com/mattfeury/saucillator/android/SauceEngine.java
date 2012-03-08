@@ -1,5 +1,6 @@
 package com.mattfeury.saucillator.android;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.mattfeury.saucillator.android.instruments.*;
@@ -155,7 +156,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         try {
           mutex.wait();
         } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         setupParamHandlers();
@@ -166,19 +166,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	android.os.Process.killProcess(android.os.Process.myPid());
     }
     
-    // Maintains landscape mode
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
-    public boolean isFingered(Object obj) {
-      for (int i = 0; i < fingersById.length; i++)
-        if (obj.equals(fingersById[i]))
-          return true;
-
-      return false;
     }
 
     /**
@@ -318,9 +309,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
             "Q",
             new ParameterHandler() {
               public void updateParameter(float x, float y) {
-                //FIXME yuck
-                //x = Utilities.unscale(x, SauceView.controllerWidth, 1);
-
                 eq.setFrequency(x * x);
                 eq.setQ(y * y);
               }
@@ -516,6 +504,15 @@ public class SauceEngine extends Activity implements OnTouchListener {
         osc.setFreqByOffset(scale, offset);
     }
 
+    public boolean isFingered(Object obj) {
+      for (int i = 0; i < fingersById.length; i++)
+        if (obj.equals(fingersById[i]))
+          return true;
+
+      return false;
+    }
+
+
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
       float newFreq = Theory.getFrequencyForNote(note + 1, octave);
@@ -633,6 +630,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     private Modes toggleMode(MenuItem item) {
+      Modes other = mode;
       if (mode == Modes.PLAY_MULTI) {
         mode = Modes.EDIT;
       } else {
@@ -641,6 +639,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       resetOscillators();
       setupParamHandlers();
+      item.setTitle("Switch Pad Mode to: " + other + ".");
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;
     }
@@ -655,13 +654,17 @@ public class SauceEngine extends Activity implements OnTouchListener {
     	else {
         item.setTitle("Record");
         item.setIcon(R.drawable.ic_rec);
-        Toast.makeText(this, "Stopped Recording.", Toast.LENGTH_SHORT).show();
 
-        if(WavWriter.getLastFile() == null)
+        File saved = WavWriter.getLastFile();
+        if(saved == null) {
+          Toast.makeText(this, "Stopped Recording. File could not be saved. I blew it.", Toast.LENGTH_SHORT).show();
           return false;
+        } else {
+          Toast.makeText(this, "Stopped Recording. File saved at: " + saved.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        }
 		    	
         Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(WavWriter.getLastFile()));
+	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
 	    	startActivity(Intent.createChooser(intent, "Share to"));
     	}
       return true;

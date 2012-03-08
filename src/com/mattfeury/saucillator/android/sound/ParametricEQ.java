@@ -4,15 +4,18 @@ import com.mattfeury.saucillator.android.utilities.Utilities;
 
 public class ParametricEQ extends UGen {
 
-  private float frequency = 440, //20hz - half the sample rate
-                gain = -10f, // -12 to 12db
-                q = 6f; // 0.33 - 12
-
   public static final float minFreq = 20,
                             maxFreq = (SAMPLE_RATE - 2f) / 2f,
                             minQ = .33f,
                             maxQ = 12f;
 
+  private float frequency = maxFreq,
+                gain = -10f, // -12 to 12db
+                q = minQ;
+
+  // Internal variables used for calculating IIF
+  // Sorry these are named so C-style (i.e. shittily),
+  // but they are derived from an equation (a0 = "a sub 0")
   private float a0, a1, a2, b0, b1, b2;
   private float xm1 = 0, xm2 = 0, ym1 = 0, ym2 = 0;
 
@@ -69,27 +72,27 @@ public class ParametricEQ extends UGen {
 
   public boolean render(final float[] buffer) {
     synchronized(this) {
-    boolean didWork = renderKids(buffer);
+      boolean didWork = renderKids(buffer);
 
-    if (! enabled)
-      return didWork;
+      if (! enabled)
+        return didWork;
 
-    int length = buffer.length;
+      int length = buffer.length;
 
-    float xn, yn;
-    for(int i = 0; i < length; i++) {
-      xn = buffer[i];
-      yn = (b0 * xn + b1 * xm1 + b2 * xm2 - a1 * ym1 - a2 * ym2) / a0;
+      float xn, yn;
+      for(int i = 0; i < length; i++) {
+        xn = buffer[i];
+        yn = (b0 * xn + b1 * xm1 + b2 * xm2 - a1 * ym1 - a2 * ym2) / a0;
 
-      xm2 = xm1;
-      xm1 = xn;
-      ym2 = ym1;
-      ym1 = yn;
+        xm2 = xm1;
+        xm1 = xn;
+        ym2 = ym1;
+        ym1 = yn;
 
-      buffer[i] = yn;
-    }
+        buffer[i] = yn;
+      }
 
-    return true;
+      return true;
     }
   }
 
