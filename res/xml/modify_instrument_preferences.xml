@@ -14,6 +14,10 @@
             android:summary=""
             android:key="savePref" />
     <Preference
+            android:title="Duplicate"
+            android:summary=""
+            android:key="duplicatePref" />
+    <Preference
             android:title="Revert to Saved"
             android:summary=""
             android:key="revertPref" />

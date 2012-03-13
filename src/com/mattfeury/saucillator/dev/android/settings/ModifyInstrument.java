@@ -10,11 +10,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceCategory;
 import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,11 +22,11 @@ public class ModifyInstrument extends PreferenceActivity {
   // Static so we don't have to pass it serialized to
   // the edit timbre / fx views
   public static ComplexOsc modifying;
-  //private ComplexOsc loaded;
   public static boolean creating = true;
   
-  private final static int timbreActivity = 0;
-  private final static int fxActivity = 1;
+  private final static int timbreActivity = 0,
+                           fxActivity = 1,
+                           duplicateActivity = 2;
 
   private static final int deleteConfirmDialog = 0,
                            deletedInfoDialog = 1,
@@ -42,10 +40,15 @@ public class ModifyInstrument extends PreferenceActivity {
     // Create or modify?
     Bundle extras = getIntent().getExtras();
     creating = extras.getBoolean("createNew");
+    boolean isDuplicating = extras.getBoolean("duplicate");
 
     // Set default values
     if (creating) {
-      modifying = new ComplexOsc();
+      if (isDuplicating)
+        modifying = SauceEngine.getCurrentOscillator();
+      else
+        modifying = new ComplexOsc();
+
       requestName();
     } else {
       modifying = SauceEngine.getCurrentOscillator(); 
@@ -80,9 +83,10 @@ public class ModifyInstrument extends PreferenceActivity {
     // Maintance stuff
     Preference savePref = (Preference) findPreference("savePref");
     Preference revertPref = (Preference) findPreference("revertPref");
+    Preference duplicatePref = (Preference) findPreference("duplicatePref");
     Preference deletePref = (Preference) findPreference("deletePref");
 
-    if (modifying.isInternal()) {
+    if (modifying.isInternal() && ! isDuplicating) {
       savePref.setEnabled(false);
       savePref.setSummary("Aw naw! Internal instruments cannot be overwritten. Create one instead.");
 
@@ -93,6 +97,17 @@ public class ModifyInstrument extends PreferenceActivity {
     savePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
         showDialog(saveConfirmDialog);
+        return true;
+      }
+    });
+    
+    duplicatePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+      public boolean onPreferenceClick(Preference preference) {
+        Intent intent = new Intent(ModifyInstrument.this, ModifyInstrument.class);
+        intent.putExtra("createNew", true);
+        intent.putExtra("duplicate", true);
+        startActivityForResult(intent, duplicateActivity);
+
         return true;
       }
     });
@@ -203,10 +218,8 @@ public class ModifyInstrument extends PreferenceActivity {
           requestName();
           return;
         }
-          
 
         modifying.setName(value);
-        android.util.Log.d("INS NAME", value);
       }
     });
 
