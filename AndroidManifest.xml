@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       android:installLocation="auto"
-      android:versionName="1.0 Alfredo" android:versionCode="4" package="com.mattfeury.saucillator.android">
+      android:versionName="1.0.1 Alfredo" android:versionCode="5" package="com.mattfeury.saucillator.android">
 
 	<uses-sdk android:targetSdkVersion="10" android:minSdkVersion="8"></uses-sdk><supports-screens
       android:smallScreens="true"
