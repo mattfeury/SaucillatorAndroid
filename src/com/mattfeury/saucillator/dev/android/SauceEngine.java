@@ -658,7 +658,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           Toast.makeText(this, "Stopped Recording. File could not be saved. I blew it.", Toast.LENGTH_SHORT).show();
           return false;
         } else {
-          Toast.makeText(this, "Stopped Recording. File saved at: " + saved.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(this, "Stopped Recording. File saved at: " + saved.getAbsolutePath(), Toast.LENGTH_LONG).show();
         }
 		    	
         Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
