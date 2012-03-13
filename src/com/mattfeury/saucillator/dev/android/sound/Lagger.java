@@ -1,7 +1,8 @@
 package com.mattfeury.saucillator.dev.android.sound;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
+
+import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 
 /**
  * Output approaches Input exponentially by rate.
@@ -11,10 +12,6 @@ import java.text.DecimalFormat;
  */
 public class Lagger implements Serializable {
   protected float in, out, rate = .025f;
-
-  // When approaching 0, the lagger will never reach it as it will keep constantly dividing.
-  // To fix this, we round to 5 decimal places so we can achieve a "zero" inevitably.
-  protected static final DecimalFormat df = new DecimalFormat("#.00000");
   
   public Lagger(float f, float approaches, float rate) {
     this.in = approaches;
@@ -27,7 +24,7 @@ public class Lagger implements Serializable {
     // Internally, in = out when rate is 1. This doesn't make sense logically though,
     // so we expose the inverse to functionality.
     out += (1f - rate) * (in - out);
-    out = Float.valueOf(df.format(out));
+    out = Utilities.roundFloat(out, 5);
     return out;
   }
   public void setRate(float rate) {

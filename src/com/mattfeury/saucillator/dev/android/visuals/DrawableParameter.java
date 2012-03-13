@@ -1,7 +1,5 @@
 package com.mattfeury.saucillator.dev.android.visuals;
 
-import java.text.DecimalFormat;
-
 import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 
 import android.graphics.*;
@@ -65,12 +63,6 @@ public class DrawableParameter {
     return fullName;
   }
 
-  private float formatFloat(float f) {
-    f = f * 100;
-    int rounded = Math.round(f);
-    return rounded / 100f;
-  }
-
   public void draw(Canvas canvas) {
     if (enabled) {
       lastX = (int) (this.x * canvas.getWidth());
@@ -79,8 +71,8 @@ public class DrawableParameter {
       canvas.drawText(smallName, lastX, lastY + (radius / 4f), textPaint);
 
       if (showCoords) {
-        float xVal = formatFloat(Utilities.unscale(x, SauceView.controllerWidth, 1) * maxX);
-        float yVal = formatFloat(Utilities.unscale(y, 1f - SauceView.padHeight, 1) * maxY);
+        float xVal = Utilities.roundFloat(Utilities.unscale(x, SauceView.controllerWidth, 1) * maxX, 2);
+        float yVal = Utilities.roundFloat(Utilities.unscale(y, 1f - SauceView.padHeight, 1) * maxY, 2);
         String text = "(" + xParam + ": " + xVal + ", " + yParam + ": " + yVal + ")";
         
         int textWidth = text.length() * (characterWidth+1),
