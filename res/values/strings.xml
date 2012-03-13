@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Saucillator (DEV) for Android</string>
+    <string name="app_name">Saucillator for Android</string>
     
     <string name="tutorial_text">
       Welcome to the latest and greatest Saucillator. Some changes have been made:\n
