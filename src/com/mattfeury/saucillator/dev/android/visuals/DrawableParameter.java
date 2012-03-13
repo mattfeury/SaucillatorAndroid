@@ -28,7 +28,6 @@ public class DrawableParameter {
   protected boolean enabled = true;
   protected boolean showCoords = true;
 
-  private static final DecimalFormat df = new DecimalFormat("#.00");
   private static final int characterWidth = 4;
   private int textOffset = 40;
  
@@ -65,9 +64,11 @@ public class DrawableParameter {
   public String getFullName() {
     return fullName;
   }
-  
+
   private float formatFloat(float f) {
-    return Float.valueOf(df.format(f));
+    f = f * 100;
+    int rounded = Math.round(f);
+    return rounded / 100f;
   }
 
   public void draw(Canvas canvas) {
