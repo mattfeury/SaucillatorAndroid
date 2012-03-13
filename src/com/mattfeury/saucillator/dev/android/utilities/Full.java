@@ -23,4 +23,8 @@ public class Full<K> implements Box<K> {
     return "";
   }
 
+  public <R> Box<R> map(MapFunc<K, R> funcHolder) {
+    return funcHolder.func(value);
+  }
+
 }

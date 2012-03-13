@@ -23,4 +23,8 @@ public class Failure<K> implements Box<K> {
     return error;
   }
 
+  public <R> Box<R> map(MapFunc<K, R> funcHolder) {
+    return new Failure<R>(error);
+  }
+
 }

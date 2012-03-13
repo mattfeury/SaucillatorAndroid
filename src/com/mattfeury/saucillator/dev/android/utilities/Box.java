@@ -7,4 +7,6 @@ public interface Box<K> {
   public boolean isEmpty();
   public boolean isFailure();
   public String getFailure();
+  
+  public <R> Box<R> map(MapFunc<K, R> funcHolder);
 }
