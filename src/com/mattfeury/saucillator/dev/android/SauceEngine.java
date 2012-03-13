@@ -13,15 +13,20 @@ import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -95,14 +100,26 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public static final String DATA_FOLDER = "sauce/";
     public static final int MODIFY_ACTION = 1;
 
+    private static final String tutorialName = "showAlfredoTutorial";
+
     private Object mutex = new Object();
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "Brewing sauce...");
-
         super.onCreate(savedInstanceState);
+
+        // Show tutorial on first load
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        boolean shouldShowTutorial = prefs.getBoolean("showAlfredoTutorial", true);
+        if (shouldShowTutorial) {
+          SharedPreferences.Editor editor = prefs.edit();
+          editor.putBoolean("showAlfredoTutorial", false);
+          editor.commit();
+
+          showDialog(0);
+        }
 
         secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
@@ -162,6 +179,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
         setupParamHandlers();
       }
     }
+
+    protected Dialog onCreateDialog(int id){
+      // Show tutorial
+      AlertDialog.Builder builder = new AlertDialog.Builder(this);
+      builder.setTitle("Saucillator 1.0 Alfredo")
+             .setView(LayoutInflater.from(this).inflate(R.layout.tutorial_dialog,null))
+             .setCancelable(false)
+             .setNeutralButton("Good Juice. Let's Sauce.", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                 }
+             });
+      AlertDialog alert = builder.create();
+      return alert;
+    }    
 
     protected void onDestroy() {
     	android.os.Process.killProcess(android.os.Process.myPid());

@@ -2,6 +2,25 @@
 <resources>
     <string name="app_name">Saucillator (DEV) for Android</string>
     
+    <string name="tutorial_text">
+      Welcome to the latest and greatest Saucillator. Some changes have been made:\n
+      \n
+      Create &amp; Edit Instruments!\n
+      -You can now create your own instruments and save them for later use. An instrument is comprised of a timbre (how it sounds) and
+      effects on that timbre.\n
+      \n
+      New Effects!\n
+      -There is now an EQ effect that runs on top of ALL playing sounds. It is not specific to the current instrument. There are also
+      new instrument effects available: envelope (attack, decay) and delay decay. The other effects have been polished up nicely.\n
+      \n
+      Two Pad Modes!\n
+      -There are two ways to use the pad: to Edit an instrument or to Play multiple instruments. The Edit Pad is default. In this mode,
+      you can assign FX to the pad and manipulate them with your finger. In the Play mode, each finger creates a new version of the
+      current instrument. Save your instruments and edit the timbre from the menu.\n
+      \n
+      Happy Saucing! Bug fixes, improvements, and upgrades to come sooner than this one did.
+    </string>
+    
     <string name="note_chooser">Choose a note</string>
     <string-array name="notes_array">
         <item>A</item>
