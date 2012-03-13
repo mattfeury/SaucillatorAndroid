@@ -579,12 +579,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
       MenuInflater inflater = getMenuInflater();
       inflater.inflate(R.menu.menu, menu);
 
-      // FIXME this is vomit-inducing
-      // Make sure that instrument selector is first item in menu
-      instrumentMenu = menu.getItem(0).getSubMenu();
+      instrumentMenu = menu.findItem(R.id.selectInstrument).getSubMenu();
 
       return true;
     }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
       boolean result = super.onPrepareOptionsMenu(menu);
@@ -603,8 +602,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       
       return result;
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
 
+    public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getGroupId()) {
         case instrumentMenuId:
           return instrumentSelection(item);
@@ -631,7 +630,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     private Modes toggleMode(MenuItem item) {
-      Modes other = mode;
       if (mode == Modes.PLAY_MULTI) {
         mode = Modes.EDIT;
       } else {
@@ -640,7 +638,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       resetOscillators();
       setupParamHandlers();
-      item.setTitle("Switch Pad Mode to: " + other + ".");
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;
     }
