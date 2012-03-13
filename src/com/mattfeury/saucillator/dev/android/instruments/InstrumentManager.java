@@ -5,6 +5,10 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.json.*;
 
@@ -27,16 +31,26 @@ public class InstrumentManager {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
   }
+  
+  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Noise", "Singing Saw"};
 
   public static ArrayList<String> getAllInstrumentNames(AssetManager man) {
     ArrayList<String> instruments = new ArrayList<String>();
 
     // Get built-in asset instruments
-    String[] assets;
+    // Sort them based on our preferredOrder defined above
     try {
-      assets = man.list(assetPath);
+      String[] assets = man.list(assetPath);
+      String[] ordered = new String[assets.length];
+      List<String> preferredOrdered = Arrays.asList(preferredOrder);
       for (String asset : assets) {
-        instruments.add(stripExtension(asset));
+        String stripped = stripExtension(asset);
+        int order = preferredOrdered.indexOf(stripped);
+        if (order > -1 && order < assets.length)
+          ordered[order] = stripped;
+      }
+      for (String assetName : ordered) {
+        instruments.add(assetName);
       }
     } catch (IOException e) {
       e.printStackTrace();
