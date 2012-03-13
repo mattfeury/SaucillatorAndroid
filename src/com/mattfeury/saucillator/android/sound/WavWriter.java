@@ -48,11 +48,8 @@ public class WavWriter {
     File file;
     int i = 0;
     
-    if (!(file = new File(InstrumentManager.dataPath)).exists()){
-    	if(!file.mkdir())
-    		throw new IOException("Died trying to make sauce directory");
-    }
-    	
+    if (! InstrumentManager.ensureProperDirectoryStructure())
+      return;
     
     do{
     	i++;

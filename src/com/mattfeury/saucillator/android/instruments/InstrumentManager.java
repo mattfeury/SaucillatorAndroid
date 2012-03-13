@@ -31,9 +31,22 @@ public class InstrumentManager {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
   }
-  
+
   private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Noise", "Singing Saw"};
 
+  public static boolean ensureProperDirectoryStructure() {
+    File file;
+    if (!(file = new File(InstrumentManager.dataPath)).exists()){
+      if(!file.mkdir())
+        return false;
+    }
+    if (!(file = new File(InstrumentManager.instrumentDirPath)).exists()){
+      if(!file.mkdir())
+        return false;
+    }
+
+    return true;
+  }
   public static ArrayList<String> getAllInstrumentNames(AssetManager man) {
     ArrayList<String> instruments = new ArrayList<String>();
 
@@ -265,6 +278,9 @@ public class InstrumentManager {
   }
 
   public static Box<ComplexOsc> saveInstrument(AssetManager man, ComplexOsc osc) {
+    if (! ensureProperDirectoryStructure())
+      return new Failure<ComplexOsc>("Unable to create SD directories: SDcard/sauce/instruments");
+
     boolean success = true;
     String name = osc.getName();
 
