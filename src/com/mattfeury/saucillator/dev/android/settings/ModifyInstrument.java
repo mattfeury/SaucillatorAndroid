@@ -196,17 +196,16 @@ public class ModifyInstrument extends PreferenceActivity {
 
     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
       public void onClick(DialogInterface dialog, int whichButton) {
-        String value = input.getText().toString();
+        String value = input.getText().toString().trim();
 
-        if (InstrumentManager.isInternal(getAssets(), value)) {
-          Toast.makeText(getBaseContext(), "Invalid name. You cannot use a name that is an internal instrument.", Toast.LENGTH_SHORT).show();
+        Box<Boolean> isValidName = InstrumentManager.isValidInstrumentName(getAssets(), value);
+        if (isValidName.isFailure()) {
+          Toast.makeText(getBaseContext(), "Invalid name. " + isValidName.getFailure(), Toast.LENGTH_SHORT).show();
           requestName();
           return;
         }
-          
 
         modifying.setName(value);
-        android.util.Log.d("INS NAME", value);
       }
     });
 

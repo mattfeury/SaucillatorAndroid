@@ -252,13 +252,25 @@ public class InstrumentManager {
       return (osc != null) ? osc.resetEffects() : null;
     }
   }
-  
+
+  public static Box<Boolean> isValidInstrumentName(AssetManager man, String name) {
+    if (isInternal(man, name))
+      return new Failure<Boolean>("The name is already in use internally.");
+    else if (name.indexOf("*") != -1)
+      return new Failure<Boolean>("Invalid character: *");
+    else if (name.trim().equals(""))
+      return new Failure<Boolean>("Name cannot be blank/spaces.");
+    else
+      return new Full<Boolean>(true);
+  }
+
   public static Box<ComplexOsc> saveInstrument(AssetManager man, ComplexOsc osc) {
     boolean success = true;
     String name = osc.getName();
-    
-    if (isInternal(man, name))
-      return new Failure<ComplexOsc>("Invalid name. You cannot save over a built-in instrument.");
+
+    Box<Boolean> validName = isValidInstrumentName(man, name);
+    if (validName.isFailure())
+      return new Failure<ComplexOsc>("Invalid name. " + validName.getFailure());
 
     try {
       File file = new File(instrumentDirPath + name + extension);
