@@ -44,7 +44,7 @@ public class Utilities {
     float truncated = rounded;
     for(int i=0; i < numDecimalPoints; i++) truncated /= 10f;
 
-    return f;
+    return truncated;
   }
 
   /**
