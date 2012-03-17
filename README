@@ -1,36 +1,30 @@
-Inspired by the Kaossilator (by Korg) and the general ideas of circuit-bending, the Saucillator is an attempt at transforming mobile devices into a digital synthesizer. It uses the touchscreen to manipulate two oscillators and an LFO.
+Inspired by the Kaossilator (by Korg) and the idea of circuit-bending, the Saucillator is an attempt at transforming mobile devices into a platform for digital synthesizers. It uses the touchscreen to manipulate oscillators and effects, and it allows for live-looping and recording.
 
-A small variety of timbres are currently available: Sine, Square, Saw, and "Singing Saw". In addition, there are a few effects / parameters that the user can control: delay, note lag, scale, etc. There is also a built-in looper and recorder. Recorded files are saved as wavve files to the SD card.
+Users are able to create their own instruments, which consist of user-defined timbre and user-defined effects. A small variety of timbres are included: Sine, Square, Saw, Noise (white)* and "Singing Saw".
 
-This project is in beta, and is my first Android project. There may be some slight hiccups. I am using a newer, rooted phone so I recommend something powerful. Older phones may not be able to handle all this sauce. Big ups to the people that have contributed to this project (listed at the bottom). There is a similar project made for the Macbook Pro (check my other repos).
+Built-in effect parameters are: Envelope (attack & release), LFO (rate & depth), Delay (rate & decay), Note Lag, and a Parametric EQ (Frequency, Q). The initial four are specific according to the current instrument, while the EQ goes over the top of everything.
 
----
+For the engineeringly-inclined or Belmont students, here is the signal flow:
+Oscillator(s) -> Looper -> Parametric EQ -> Speakers / Recorder.
 
-How to Play:
-The property each finger manipulates depend on the order the fingers are pressed. The first finger pressed manipulates the first oscillator, and the second finger pressed manipulates the second oscillator. The third finger pressed manipulates an LFO (remember this in case you wonder why it suddenly sounds like PacMan).
+There are two available modes to use the "pad" in: Edit or MultiPlay. In Edit mode, one finger controls the oscillator while the other fingers manipulate the effects. The timbre must be edited via the menu. In MultiPlay mode, each finger controls a unique oscillator.
 
-For oscillators:
-  X-AXIS: controls amplitude. (0.0 to 1.0, left to right)
-  Y-AXIS: controls pitch corresponding to scale. (0-12, bottom to top)
+Other abilities:
+-Choose scale: Pentatonic, Major, Minor, Blues, or Chromatic
+-Choose the base note for the pad. 
+-Control the grid size.
+-Record to the SD card.
+-Toggle visualizations. More to come here.
 
-For the LFO:
-  X-AXIS: controls mod rate, i.e. the frequency at which it wobbles. (left to right)
-  Y-AXIS: controls mod depth, i.e. the amplitude at which it wobbles. (bottom to top)
-  (protip: drag the third finger to the bottom left to reset both to 0 and make the LFO disabled)
+Notes:
+-*I fully intend to make noise scale with frequency and actually become useful (e.g. "Red" Noise).
+-This is my first Android project and continues on as a playground for new ideas. There are some parts that are still a simple proof of concept and other parts where I invested more time. Many changes to come.
 
-Bugs?:
--Too many loop layers (3+) cause clipping.
+Permissions Needed:
+- SD card access: for saving instruments and recordings
+- Vibration: For haptic feedback. What could I really do with this, anyway? (Don't answer that)
 
-Future Plans
--More instruments
--More inputs mapped to parameters (accelerometer, etc)
--Better envelopes (ASDR)
-
-Contributors:
-Matt Feury
-Gaurav Mathur
-Henry Dooley
-Mudit Manu Paliwal
-
-Thanks to:
-Adam Smith, and his Ethereal Dialpad project for helping me get my feet wet in audio synthesis for Android.
+Things to come:
+-Add a pad manipulator for Note Lag.
+-More meaningful visualizer.
+-More goodies.
