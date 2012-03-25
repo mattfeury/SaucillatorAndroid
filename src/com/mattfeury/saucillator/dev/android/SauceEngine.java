@@ -161,6 +161,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	      ex.printStackTrace();
       	      Log.e(TAG, "bad time " + ex.toString());
       	      dac.close();
+              mutex.notify();
       	    }
       	  }
       	};
@@ -172,7 +173,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       // because only the thread that spawned the view can redraw it.
       synchronized(mutex) {
         try {
-          mutex.wait();
+          if (! init)
+            mutex.wait();
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
