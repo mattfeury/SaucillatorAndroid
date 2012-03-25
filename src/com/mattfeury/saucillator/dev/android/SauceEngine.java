@@ -115,10 +115,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
         // Show tutorial on first load
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        boolean shouldShowTutorial = prefs.getBoolean("showAlfredoTutorial", true);
+        boolean shouldShowTutorial = prefs.getBoolean(tutorialName, true);
         if (shouldShowTutorial) {
           SharedPreferences.Editor editor = prefs.edit();
-          editor.putBoolean("showAlfredoTutorial", false);
+          editor.putBoolean(tutorialName, false);
           editor.commit();
 
           showDialog(TUTORIAL_DIALOG);
