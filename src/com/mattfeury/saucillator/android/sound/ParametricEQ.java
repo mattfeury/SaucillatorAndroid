@@ -5,7 +5,7 @@ import com.mattfeury.saucillator.android.utilities.Utilities;
 public class ParametricEQ extends UGen {
 
   public static final float minFreq = 20,
-                            maxFreq = (SAMPLE_RATE - 2f) / 2f,
+                            maxFreq = (SAMPLE_RATE - 50f) / 2f, //if we go much higher, we get strAnGe fx (e.g. ringing)
                             minQ = .33f,
                             maxQ = 12f;
 

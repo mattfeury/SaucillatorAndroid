@@ -129,13 +129,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
         view.setOnTouchListener(this);
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        
+
         //Default
         currentOscillator = InstrumentManager.getInstrument(getAssets(), "Sine");
-        
+
         if (vibrator != null)
           canVibrate = true;
-        
+
         Thread t = new Thread() {
       	  public void run() {
       	    try {
@@ -152,15 +152,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 Log.i(TAG, "Sauce ready.");
                 mutex.notify();
       	      }
-              
+
               while (true) {
                 dac.tick();
               }
             }
       	    catch(Exception ex) {
-      	    	ex.printStackTrace();
-      	    	Log.e(TAG, "bad time " + ex.toString());
-      	    	dac.close();
+      	      ex.printStackTrace();
+      	      Log.e(TAG, "bad time " + ex.toString());
+      	      dac.close();
+              mutex.notify();
       	    }
       	  }
       	};
@@ -172,7 +173,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       // because only the thread that spawned the view can redraw it.
       synchronized(mutex) {
         try {
-          mutex.wait();
+          if (! init)
+            mutex.wait();
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
