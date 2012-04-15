@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.mattfeury.saucillator.android.instruments.*;
 import com.mattfeury.saucillator.android.instruments.Theory.Scale;
@@ -81,13 +82,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
-    private HashMap<Integer, Object> fingersById = new HashMap<Integer, Object>();
+    private ConcurrentHashMap<Integer, Object> fingersById = new ConcurrentHashMap<Integer, Object>();
 
     //synth elements
     private Dac dac;
     private Looper looper;
     private ParametricEQ eq;
-    private HashMap<Integer, ComplexOsc> oscillatorsById = new HashMap<Integer, ComplexOsc>();
+    private ConcurrentHashMap<Integer, ComplexOsc> oscillatorsById = new ConcurrentHashMap<Integer, ComplexOsc>();
     
     // The currentOscillator is never actually heard
     // It is kept as a template and updated anytime an instrument is edited/created
@@ -248,14 +249,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        Set<Entry<Integer, Object>> fingers = fingersById.entrySet();
-        for (Entry<Integer, Object> finger : fingers) {
-          int id = finger.getKey();
-          ComplexOsc osc = oscillatorsById.get(id);
+        fingersById.clear();
+
+        Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();
+        for (Entry<Integer, ComplexOsc> oscEntry : oscs) {
+          ComplexOsc osc = oscEntry.getValue();
           if (osc != null && osc.isPlaying() && ! osc.isReleasing())
             osc.togglePlayback();
-
-          fingersById.remove(id);
         }
 
         view.clearFingers();
@@ -412,8 +412,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 currentOscillator.setModDepth((int)(y * MOD_DEPTH_MAX));
                 osc.setModRate((int)(x * MOD_RATE_MAX));
                 osc.setModDepth((int)(y * MOD_DEPTH_MAX));
-                
-                Log.i(TAG, "LFO rate : " + x + " / depth: " + y);
               }
             },
             osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
