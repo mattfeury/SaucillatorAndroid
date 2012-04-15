@@ -296,12 +296,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
           int oscId = mode == Modes.EDIT ? 0 : id;
           ComplexOsc osc = getOrCreateOscillator(oscId);
 
-          // If this is on a parameter AND
-          // this finger isn't controlling something or it's controlling this param)
-          if (param != null && (! fingerDefined || param.equals(controlled))) {
-            // Modify the parameter
-            if (! fingerDefined)
+          // If this is on a parameter AND this finger isn't controlling something, OR
+          // it's controlling this param
+          if ((param != null && ! fingerDefined) || (controlled instanceof DrawableParameter)) {
+            if (param != null && ! fingerDefined)
               fingersById[id] = param;
+            else
+              param = (DrawableParameter) controlled;
 
             param.set(xScaled, yScaled);
             view.invalidate();
