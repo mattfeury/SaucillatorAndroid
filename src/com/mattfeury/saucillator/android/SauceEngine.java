@@ -78,8 +78,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public final static int TRACKPAD_SIZE_MAX = 16;
 
     private boolean init = false;
-    
-    private final int maxFingers = 8;
+
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
     private HashMap<Integer, Object> fingersById = new HashMap<Integer, Object>();
@@ -278,8 +277,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         int id = event.getPointerId(i);
 
         if (id < 0)
-          continue;
-        else if (id >= maxFingers)
           continue;
 
         float y = event.getY(i);
