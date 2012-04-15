@@ -249,14 +249,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        Set<Entry<Integer, Object>> fingers = fingersById.entrySet();
-        for (Entry<Integer, Object> finger : fingers) {
-          int id = finger.getKey();
-          ComplexOsc osc = oscillatorsById.get(id);
+        fingersById.clear();
+
+        Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();
+        for (Entry<Integer, ComplexOsc> oscEntry : oscs) {
+          ComplexOsc osc = oscEntry.getValue();
           if (osc != null && osc.isPlaying() && ! osc.isReleasing())
             osc.togglePlayback();
-
-          fingersById.remove(id);
         }
 
         view.clearFingers();
