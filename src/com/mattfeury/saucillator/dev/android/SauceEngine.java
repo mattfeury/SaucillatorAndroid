@@ -413,8 +413,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 currentOscillator.setModDepth((int)(y * MOD_DEPTH_MAX));
                 osc.setModRate((int)(x * MOD_RATE_MAX));
                 osc.setModDepth((int)(y * MOD_DEPTH_MAX));
-                
-                Log.i(TAG, "LFO rate : " + x + " / depth: " + y);
               }
             },
             osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
