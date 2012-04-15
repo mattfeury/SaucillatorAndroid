@@ -75,7 +75,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private boolean init = false;
     
-    private final int maxFingers = 5;
+    private final int maxFingers = 8;
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
     private Object[] fingersById = new Object[maxFingers];
@@ -270,6 +270,12 @@ public class SauceEngine extends Activity implements OnTouchListener {
        */
       for (int i = pointerCount - 1; i > -1; i--) {
         int id = event.getPointerId(i);
+
+        if (id < 0)
+          continue;
+        else if (id >= maxFingers)
+          continue;
+
         float y = event.getY(i);
         float x = event.getX(i);
 
