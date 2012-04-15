@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.*;
@@ -81,13 +82,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
-    private HashMap<Integer, Object> fingersById = new HashMap<Integer, Object>();
+    private ConcurrentHashMap<Integer, Object> fingersById = new ConcurrentHashMap<Integer, Object>();
 
     //synth elements
     private Dac dac;
     private Looper looper;
     private ParametricEQ eq;
-    private HashMap<Integer, ComplexOsc> oscillatorsById = new HashMap<Integer, ComplexOsc>();
+    private ConcurrentHashMap<Integer, ComplexOsc> oscillatorsById = new ConcurrentHashMap<Integer, ComplexOsc>();
     
     // The currentOscillator is never actually heard
     // It is kept as a template and updated anytime an instrument is edited/created
