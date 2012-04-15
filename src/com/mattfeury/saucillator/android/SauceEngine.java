@@ -75,7 +75,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private boolean init = false;
     
-    private final int maxFingers = 5;
+    private final int maxFingers = 8;
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
     private Object[] fingersById = new Object[maxFingers];
@@ -101,6 +101,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public static final int MODIFY_ACTION = 1;
 
     private static final String tutorialName = "showAlfredoTutorial";
+    
+    private static final int BACKPRESS_DIALOG = 0,
+                             TUTORIAL_DIALOG = 1;
 
     private Object mutex = new Object();
     
@@ -112,13 +115,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
         // Show tutorial on first load
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        boolean shouldShowTutorial = prefs.getBoolean("showAlfredoTutorial", true);
+        boolean shouldShowTutorial = prefs.getBoolean(tutorialName, true);
         if (shouldShowTutorial) {
           SharedPreferences.Editor editor = prefs.edit();
-          editor.putBoolean("showAlfredoTutorial", false);
+          editor.putBoolean(tutorialName, false);
           editor.commit();
 
-          showDialog(0);
+          showDialog(TUTORIAL_DIALOG);
         }
 
         secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
@@ -183,15 +186,37 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     protected Dialog onCreateDialog(int id){
-      // Show tutorial
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder.setTitle("Saucillator 1.0 Alfredo")
-             .setView(LayoutInflater.from(this).inflate(R.layout.tutorial_dialog,null))
-             .setCancelable(false)
-             .setNeutralButton("Good Juice. Let's Sauce.", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int id) {
-                 }
-             });
+      switch(id) {
+        case BACKPRESS_DIALOG:
+          builder
+            .setTitle("Exit or hide?")
+            .setMessage("Should the app stay awake and keep playing music? Keeping the app playing in the background may cause popping.")
+            .setCancelable(true)
+            .setPositiveButton("Quit",
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int id) {
+                    SauceEngine.this.finish();
+                  }
+            })
+            .setNegativeButton("Hide",
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    moveTaskToBack(true);
+                  }
+            });
+          break;
+        case TUTORIAL_DIALOG:
+          builder
+            .setTitle("Saucillator 1.0 Alfredo")
+            .setView(LayoutInflater.from(this).inflate(R.layout.tutorial_dialog,null))
+            .setCancelable(false)
+            .setNeutralButton("Good Juice. Let's Sauce.", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int id) {
+            }});
+          break;
+        default:
+      }
       AlertDialog alert = builder.create();
       return alert;
     }    
@@ -245,6 +270,12 @@ public class SauceEngine extends Activity implements OnTouchListener {
        */
       for (int i = pointerCount - 1; i > -1; i--) {
         int id = event.getPointerId(i);
+
+        if (id < 0)
+          continue;
+        else if (id >= maxFingers)
+          continue;
+
         float y = event.getY(i);
         float x = event.getX(i);
 
@@ -265,12 +296,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
           int oscId = mode == Modes.EDIT ? 0 : id;
           ComplexOsc osc = getOrCreateOscillator(oscId);
 
-          // If this is on a parameter AND
-          // this finger isn't controlling something or it's controlling this param)
-          if (param != null && (! fingerDefined || param.equals(controlled))) {
-            // Modify the parameter
-            if (! fingerDefined)
+          // If this is on a parameter AND this finger isn't controlling something, OR
+          // it's controlling this param
+          if ((param != null && ! fingerDefined) || (controlled instanceof DrawableParameter)) {
+            if (param != null && ! fingerDefined)
               fingersById[id] = param;
+            else
+              param = (DrawableParameter) controlled;
 
             param.set(xScaled, yScaled);
             view.invalidate();
@@ -660,6 +692,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
           return true;
       }
       return false;
+    }
+    
+    @Override
+    public void onBackPressed() {
+      showDialog(BACKPRESS_DIALOG);
     }
 
     private Modes toggleMode(MenuItem item) {
