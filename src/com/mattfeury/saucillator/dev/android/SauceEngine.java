@@ -2,6 +2,10 @@ package com.mattfeury.saucillator.dev.android;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.*;
@@ -78,13 +82,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
     private final int maxFingers = 8;
     // which finger ID corresponds to which instrument
     // maybe make "Fingerable" interface... lolol
-    private Object[] fingersById = new Object[maxFingers];
+    private HashMap<Integer, Object> fingersById = new HashMap<Integer, Object>();
 
     //synth elements
     private Dac dac;
     private Looper looper;
     private ParametricEQ eq;
-    private ComplexOsc[] oscillatorsById = new ComplexOsc[maxFingers];
+    private HashMap<Integer, ComplexOsc> oscillatorsById = new HashMap<Integer, ComplexOsc>();
     
     // The currentOscillator is never actually heard
     // It is kept as a template and updated anytime an instrument is edited/created
@@ -245,12 +249,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int actionCode = action & MotionEvent.ACTION_MASK;
       
       if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
-        for (int i = 0; i < fingersById.length; i++) {
-          ComplexOsc osc = oscillatorsById[i];
+        Set<Entry<Integer, Object>> fingers = fingersById.entrySet();
+        for (Entry<Integer, Object> finger : fingers) {
+          int id = finger.getKey();
+          ComplexOsc osc = oscillatorsById.get(id);
           if (osc != null && osc.isPlaying() && ! osc.isReleasing())
             osc.togglePlayback();
 
-          fingersById[i] = null;
+          fingersById.remove(id);
         }
 
         view.clearFingers();
@@ -288,7 +294,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           float xScaled = scaledCoords[0];
           float yScaled = scaledCoords[1];
 
-          Object controlled = fingersById[id];
+          Object controlled = fingersById.get(id);
           boolean fingerDefined = controlled != null;
 
           // Determine if this edits a parameter. Otherwise, edit an osc, depending on mode.
@@ -300,7 +306,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           // it's controlling this param
           if ((param != null && ! fingerDefined) || (controlled instanceof DrawableParameter)) {
             if (param != null && ! fingerDefined)
-              fingersById[id] = param;
+              fingersById.put(id, param);
             else
               param = (DrawableParameter) controlled;
 
@@ -309,13 +315,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
           } else if (osc != null && (osc.equals(controlled) || (! fingerDefined && ! isFingered(osc)))) {
             // Update oscillator
             if (! fingerDefined)
-              fingersById[id] = osc;
+              fingersById.put(id, osc);
 
             handleTouchForOscillator(oscId, id, v, event);
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
-            fingersById[actionId] = null;
+            fingersById.remove(actionId);
           }
         } else {
           // Buttons!
@@ -527,20 +533,21 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return currentOscillator;
     }
     public void resetOscillators() {
-      for (int i = 0; i < oscillatorsById.length; i++) {
-        ComplexOsc osc = oscillatorsById[i];
+      Set<Integer> oscIds = oscillatorsById.keySet();
+      for (Integer oscId : oscIds) {
+        ComplexOsc osc = oscillatorsById.get(oscId);
         if (osc != null)
           disconnectOsc(osc);
 
-        oscillatorsById[i] = null;
+        oscillatorsById.remove(oscId);
       }
 
     }
     public ComplexOsc optOscillator(int id) {
-      return oscillatorsById[id];
+      return oscillatorsById.get(id);
     }
     public ComplexOsc getOrCreateOscillator(int id) {
-      ComplexOsc osc = oscillatorsById[id];
+      ComplexOsc osc = oscillatorsById.get(id);
       if (osc != null)
         return osc;
 
@@ -553,8 +560,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
 
       connectOsc(osc);
-      oscillatorsById[id] = osc;
-      
+      oscillatorsById.put(id, osc);
+
       return osc;
     }
     public void updateAmplitude(int id, float amp) {
@@ -571,18 +578,15 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
     public boolean isFingered(Object obj) {
-      for (int i = 0; i < fingersById.length; i++)
-        if (obj.equals(fingersById[i]))
-          return true;
-
-      return false;
+      return (obj != null && fingersById.containsValue(obj));
     }
 
 
     // Update oscillators based on the settings parameters.
     private void updateOscSettings() {
       float newFreq = Theory.getFrequencyForNote(note + 1, octave);
-      for (ComplexOsc osc : oscillatorsById)
+      Collection<ComplexOsc> oscs = oscillatorsById.values();
+      for (ComplexOsc osc : oscs)
         if (osc != null)
           osc.setBaseFreq(newFreq);
     }
@@ -776,7 +780,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       resetOscillators();
 
       connectOsc(newOsc);
-      oscillatorsById[0] = newOsc;
+      oscillatorsById.put(0, newOsc);
 
       updateOscSettings();
       setupParamHandlers();
