@@ -557,6 +557,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       connectOsc(osc);
       oscillatorsById.put(id, osc);
 
+      // Ensure new oscillator has up-to-date settings
+      updateOscSettings();
+
       return osc;
     }
     public void updateAmplitude(int id, float amp) {
