@@ -99,12 +99,13 @@ public class Dac extends UGen {
     } else {
       Limiter.limit(localBuffer);
       for(int i = 0; i < CHUNK_SIZE; i++) {
-        target[i] = (short)(Short.MAX_VALUE * (localBuffer[i] + 1.0) / 2.0);
+        float sample = localBuffer[i];
+        target[i] = (short)(Short.MAX_VALUE * (sample + 1.0) / 2.0);
 
-        //Write dat shit into dat wav buffa.
         if (recording) {
           try {
-            WavWriter.pushFloat(localBuffer[i]);
+            //Write dat shit into dat wav buffa.
+            WavWriter.pushFloat(sample);
           } catch (Exception e) {
             // Something bad happened. Try to write the wav and bail.
             // This is often an OutOfMemory error. Will it still write it?
