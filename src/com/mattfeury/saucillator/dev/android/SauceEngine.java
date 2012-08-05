@@ -596,7 +596,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         if (osc != null)
           osc.setBaseFreq(newFreq);
     }
-    
+
     /**
      * Settings handlers
      */
