@@ -158,6 +158,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 init = true;
                 Log.i(TAG, "Sauce ready.");
                 mutex.notify();
+
+                // This may not do anything, but it seems like a good idea in theory.
+                try {
+                  android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+                } catch (Exception e) {}
       	      }
 
               while (true) {
@@ -174,6 +179,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       	};
       	
       t.start();
+      try {
+        t.setPriority(Thread.MAX_PRIORITY);
+      } catch(Exception e) {}
 
       // We wait until the dac is spun up to create the param handlers since
       // they require certain DAC elements (e.g. EQ). We can't do it in the DAC thread
