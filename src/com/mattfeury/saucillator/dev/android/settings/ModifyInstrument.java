@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.dev.android.settings;
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.*;
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 
 import android.app.AlertDialog;
@@ -48,7 +49,7 @@ public class ModifyInstrument extends PreferenceActivity {
       modifying = new ComplexOsc();
       requestName();
     } else {
-      modifying = SauceEngine.getCurrentOscillator(); 
+      modifying = AudioEngine.getCurrentOscillator(); 
     }
 
     // Bind FX, timbre handlers

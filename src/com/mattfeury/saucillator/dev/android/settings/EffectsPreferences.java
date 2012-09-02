@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.dev.android.settings;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.utilities.ViewBinders;
 
 import android.app.*;
@@ -31,13 +32,13 @@ public class EffectsPreferences extends Activity {
 
     // Set defaults on view elements
     SeekBar seek = (SeekBar) findViewById(R.id.modRateSlider);
-    seek.setMax(SauceEngine.MOD_RATE_MAX);
+    seek.setMax(AudioEngine.MOD_RATE_MAX);
 
     seek = (SeekBar) findViewById(R.id.modDepthSlider);
-    seek.setMax(SauceEngine.MOD_DEPTH_MAX);
+    seek.setMax(AudioEngine.MOD_DEPTH_MAX);
 
     seek = (SeekBar) findViewById(R.id.delayRateSlider);
-    seek.setMax(SauceEngine.DELAY_MAX);
+    seek.setMax(AudioEngine.DELAY_MAX);
 
     // Bind Sliders to Values
     ViewBinders.bindSliderToVariable(this, R.id.modRateSlider, R.id.modRateValue, modRate);

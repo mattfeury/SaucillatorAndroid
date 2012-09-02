@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.dev.android.instruments;
 import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.SauceEngine;
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.sound.Delay;
 import com.mattfeury.saucillator.dev.android.sound.Lagger;
 import com.mattfeury.saucillator.dev.android.sound.Limiter;
@@ -39,7 +40,7 @@ public class ComplexOsc extends Oscillator {
   // as they come in. They should always be the same.
   protected int modRate = 0,
                 modDepth = 0;
-  protected float lag = SauceEngine.DEFAULT_LAG;
+  protected float lag = AudioEngine.DEFAULT_LAG;
 
   public ComplexOsc() {
     this(1.0f);

@@ -47,7 +47,7 @@ import android.widget.Toast;
  * The audio engine gets its own thread.
  */
 public class SauceEngine extends Activity implements OnTouchListener {
-    private static final String TAG = "Sauce";
+    public static final String TAG = "Sauce";
     private SauceView view;
 
     public enum Modes {
@@ -62,19 +62,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
         }
       }
     }
-    private Modes mode = Modes.EDIT;
+    private Modes mode = Modes.PLAY_MULTI;
 
     //defaults
-    private int note = 0;
-    private int octave = 4;
-    private String scaleId = Scale.PENTATONIC.toString();
-    public int[] scale = Theory.pentatonicScale;
-
-    public final static int DELAY_MAX = UGen.SAMPLE_RATE; //Is this right?
-    public final static int MOD_RATE_MAX = 20;
-    public final static int MOD_DEPTH_MAX = 1000;
-
-    public final static float DEFAULT_LAG = 0.5f;
     public static int TRACKPAD_GRID_SIZE = 12;
     public final static int TRACKPAD_SIZE_MAX = 16;
 
@@ -84,18 +74,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     // maybe make "Fingerable" interface... lolol
     private ConcurrentHashMap<Integer, Object> fingersById = new ConcurrentHashMap<Integer, Object>();
 
-    //synth elements
-    private Dac dac;
-    private Looper looper;
-    private ParametricEQ eq;
-    private ConcurrentHashMap<Integer, ComplexOsc> oscillatorsById = new ConcurrentHashMap<Integer, ComplexOsc>();
-    
-    // The currentOscillator is never actually heard
-    // It is kept as a template and updated anytime an instrument is edited/created
-    // We create a deepCopy of it for actually playing.
-    private static ComplexOsc currentOscillator;
-
-    MediaPlayer secretSauce;
     private Vibrator vibrator;
     private boolean canVibrate = false;
     private int VIBRATE_SPEED = 100; //in ms
@@ -110,78 +88,37 @@ public class SauceEngine extends Activity implements OnTouchListener {
                              TUTORIAL_DIALOG = 1;
 
     private Object mutex = new Object();
+
+    private AudioEngine audioEngine;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "Brewing sauce...");
-        super.onCreate(savedInstanceState);
+      Log.i(TAG, "Brewing sauce...");
+      super.onCreate(savedInstanceState);
 
-        // Show tutorial on first load
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        boolean shouldShowTutorial = prefs.getBoolean(tutorialName, true);
-        if (shouldShowTutorial) {
-          SharedPreferences.Editor editor = prefs.edit();
-          editor.putBoolean(tutorialName, false);
-          editor.commit();
+      // Show tutorial on first load
+      SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+      boolean shouldShowTutorial = prefs.getBoolean(tutorialName, true);
+      if (shouldShowTutorial) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(tutorialName, false);
+        editor.commit();
 
-          showDialog(TUTORIAL_DIALOG);
-        }
+        showDialog(TUTORIAL_DIALOG);
+      }
 
-        secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
+      requestWindowFeature(Window.FEATURE_NO_TITLE);
+      setContentView(R.layout.main);
+      view = (SauceView)findViewById(R.id.sauceview);
+      view.setOnTouchListener(this);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.main);
-        view = (SauceView)findViewById(R.id.sauceview);
-        view.setOnTouchListener(this);
+      vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        //Default
-        currentOscillator = InstrumentManager.getInstrument(getAssets(), "Sine");
-
-        if (vibrator != null)
-          canVibrate = true;
-
-        Thread t = new Thread() {
-      	  public void run() {
-      	    try {
-      	      synchronized(mutex) {
-                dac = new Dac();
-                looper = new Looper();
-
-                eq = new ParametricEQ();
-                eq.chuck(dac);
-                looper.chuck(eq);
-
-                dac.open();
-                init = true;
-                Log.i(TAG, "Sauce ready.");
-                mutex.notify();
-
-                // This may not do anything, but it seems like a good idea in theory.
-                try {
-                  android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-                } catch (Exception e) {}
-      	      }
-
-              while (true) {
-                dac.tick();
-              }
-            }
-      	    catch(Exception ex) {
-      	      ex.printStackTrace();
-      	      Log.e(TAG, "bad time " + ex.toString());
-      	      dac.close();
-              mutex.notify();
-      	    }
-      	  }
-      	};
-      	
-      t.start();
-      try {
-        t.setPriority(Thread.MAX_PRIORITY);
-      } catch(Exception e) {}
+      if (vibrator != null)
+        canVibrate = true;
+      
+      this.audioEngine = new AudioEngine(this, mutex);
 
       // We wait until the dac is spun up to create the param handlers since
       // they require certain DAC elements (e.g. EQ). We can't do it in the DAC thread
@@ -193,7 +130,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-        setupParamHandlers();
+
+        init = true;
+
+        // TODO setup visual layout that depends on audio shtuff
       }
     }
 
@@ -256,26 +196,16 @@ public class SauceEngine extends Activity implements OnTouchListener {
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
       
-      if (actionCode == MotionEvent.ACTION_UP && dac.isPlaying()) { //last finger lifted. stop playback
+      if (actionCode == MotionEvent.ACTION_UP && audioEngine.isPlaying()) { //last finger lifted. stop playback
         fingersById.clear();
 
-        Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();
-        for (Entry<Integer, ComplexOsc> oscEntry : oscs) {
-          ComplexOsc osc = oscEntry.getValue();
-          if (osc != null && osc.isPlaying() && ! osc.isReleasing())
-            osc.togglePlayback();
-        }
-
+        audioEngine.stopAllOscillators();
         view.clearFingers();
         return true;
       }
 
       int pointerCount = event.getPointerCount();
-      if (pointerCount == 5) {
-        secretSauce.start(); //the secret sauce
-        return true;
-      }
-    
+
       /*
        * Loop through each finger.
        * We go backwards because of the buttons. If a button is pressed and held, the next finger call
@@ -305,7 +235,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           // Determine if this edits a parameter. Otherwise, edit an osc, depending on mode.
           DrawableParameter param = view.optParameter(x, y, controlled);
           int oscId = mode == Modes.EDIT ? 0 : id;
-          ComplexOsc osc = getOrCreateOscillator(oscId);
+          ComplexOsc osc = audioEngine.getOrCreateOscillator(oscId);
 
           // If this is on a parameter AND this finger isn't controlling something, OR
           // it's controlling this param
@@ -346,18 +276,18 @@ public class SauceEngine extends Activity implements OnTouchListener {
               // Looper buttons
               if (y <= buttonHeight) {
                 //Toggle Looper Button
-                boolean isRecording = looper.toggleRecording();
-                if (isRecording)
+                //boolean isRecording = looper.toggleRecording();
+                /*if (isRecording)
                   view.focusLooper();
                 else
-                  view.unfocusLooper();
+                  view.unfocusLooper();*/
               } else if (y <= buttonHeight * 2) {
                 //Undo Looper Button
-                looper.undo();
+                //looper.undo();
                 view.unfocusLooper();
               } else {
                 //Reset Looper Button
-                looper.reset();
+                //looper.reset();
                 view.unfocusLooper();
               }
             } else if (x > maxWidth * SauceView.controllerWidth) {
@@ -374,128 +304,11 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return true; // indicate event was handled
     }
 
-    private void setupParamHandlers() {
-      ComplexOsc osc = getOrCreateOscillator(0);
-
-      view.resetParams();
-      
-      DrawableParameter eqParam = new DrawableParameter(
-            "EQ",
-            "EQ",
-            "freq",
-            "Q",
-            new ParameterHandler() {
-              public void updateParameter(float x, float y) {
-                eq.setFrequency(x * x);
-                eq.setQ(y * y);
-              }
-            },
-            (float) Math.sqrt(eq.getFrequency()), //frequency on x
-            (float) Math.sqrt(eq.getQ()), // q on y
-            (int)ParametricEQ.maxFreq,
-            1
-          );
-
-      eqParam.setEnabled(false);
-      view.addParam(eqParam);
-      
-      // Below are instrument specific params. If we are not in edit mode,
-      // don't show them.
-      if (mode != Modes.EDIT)
-        return;
-
-      DrawableParameter lfoParam = new DrawableParameter(
-            "LFO",
-            "LFO",
-            "rate",
-            "depth",
-            new ParameterHandler() {
-              public void updateParameter(float x, float y) {
-                ComplexOsc osc = getOrCreateOscillator(0);
-
-                // Set the template and the playing oscillator
-                // We do this so we don't have to recreate a new oscillator everytime
-                // a param is changed. Since we used deep copies, that would probably hurt performance.
-                currentOscillator.setModRate((int)(x * MOD_RATE_MAX));
-                currentOscillator.setModDepth((int)(y * MOD_DEPTH_MAX));
-                osc.setModRate((int)(x * MOD_RATE_MAX));
-                osc.setModDepth((int)(y * MOD_DEPTH_MAX));
-              }
-            },
-            osc.getModRate() / (float)MOD_RATE_MAX, // mod rate on x
-            osc.getModDepth() / (float)MOD_DEPTH_MAX, // mod depth on y
-            MOD_RATE_MAX,
-            MOD_DEPTH_MAX
-          );
-
-      // Delay: rate on x, decay on y
-      DrawableParameter delayParam = new DrawableParameter(
-            "Delay",
-            "DLY",
-            "rate",
-            "decay",
-            new ParameterHandler() {
-              public void updateParameter(float x, float y) {
-                ComplexOsc osc = getOrCreateOscillator(0);
-
-                // Set the template and the playing oscillator
-                // We do this so we don't have to recreate a new oscillator everytime
-                // a param is changed. Since we used deep copies, that would probably hurt performance.
-                currentOscillator.setDelayRate((int)(x * DELAY_MAX));
-                currentOscillator.setDelayDecay(y);
-                osc.setDelayRate((int)(x * DELAY_MAX));
-                osc.setDelayDecay(y);
-              }
-            },
-            osc.getDelayRate() / (float)DELAY_MAX,
-            osc.getDelayDecay(),
-            DELAY_MAX,
-            1
-          );
-
-      // Envelope: attack on x, release on y
-      DrawableParameter envelopeParam = new DrawableParameter(
-            "Envelope",
-            "ENV",
-            "atk",
-            "rls",
-            new ParameterHandler() {
-              public void updateParameter(float x, float y) {
-                ComplexOsc osc = getOrCreateOscillator(0);
-
-                // Don't allow 1.0 attack or release because it would be 100%
-                // and never actually go anywhere
-                x = Math.min(x, .99f);
-                y = Math.min(y, .99f);
-
-                // Set the template and the playing oscillator
-                // We do this so we don't have to recreate a new oscillator everytime
-                // a param is changed. Since we used deep copies, that would probably hurt performance.
-                currentOscillator.setAttack(x);
-                currentOscillator.setRelease(y);
-                osc.setAttack(x);
-                osc.setRelease(y);
-              }
-            },
-            osc.getAttack(),
-            osc.getRelease(),
-            .99f,
-            .99f
-          );
-
-      lfoParam.setEnabled(false);
-      delayParam.setEnabled(false);
-      envelopeParam.setEnabled(false);
-      view.addParam(lfoParam);
-      view.addParam(delayParam);
-      view.addParam(envelopeParam);
-    }
-
     /**
      * Oscillator handlers
      */
     public void handleTouchForOscillator(int oscId, int id, View v, MotionEvent event) {
-      ComplexOsc osc = getOrCreateOscillator(oscId);
+      ComplexOsc osc = audioEngine.getOrCreateOscillator(oscId);
 
       if (osc == null) return;
 
@@ -520,8 +333,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         else if (osc.isReleasing())
           osc.startAttack();
 
-        updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
-        updateAmplitude(oscId, xScaled);
+        audioEngine.updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
+        audioEngine.updateAmplitude(oscId, xScaled);
       } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
         //finger up. kill the osc
         view.removeFinger(id);
@@ -532,82 +345,22 @@ public class SauceEngine extends Activity implements OnTouchListener {
       
     }
 
-    public static ComplexOsc getCurrentOscillator() {
-      return currentOscillator;
-    }
-    public void resetOscillators() {
-      Set<Integer> oscIds = oscillatorsById.keySet();
-      for (Integer oscId : oscIds) {
-        ComplexOsc osc = oscillatorsById.get(oscId);
-        if (osc != null)
-          disconnectOsc(osc);
-
-        oscillatorsById.remove(oscId);
-      }
-
-    }
-    public ComplexOsc optOscillator(int id) {
-      return oscillatorsById.get(id);
-    }
-    public ComplexOsc getOrCreateOscillator(int id) {
-      ComplexOsc osc = oscillatorsById.get(id);
-      if (osc != null)
-        return osc;
-
-      ComplexOsc copy = InstrumentManager.copyInstrument(getAssets(), currentOscillator);
-      if (copy != null)
-        osc = copy;
-      else {
-        osc = InstrumentManager.getInstrument(getAssets(), "Sine");
-        Toast.makeText(this, "Error: Unable to duplicate instrument", Toast.LENGTH_SHORT).show();
-      }
-
-      connectOsc(osc);
-      oscillatorsById.put(id, osc);
-
-      // Ensure new oscillator has up-to-date settings
-      updateOscSettings();
-
-      return osc;
-    }
-    public void updateAmplitude(int id, float amp) {
-      ComplexOsc osc = optOscillator(id);
-
-      if (osc != null)
-        osc.setAmplitude(amp);
-    }      
-    public void updateFrequency(int id, int offset) {
-      ComplexOsc osc = optOscillator(id);
-
-      if (osc != null)
-        osc.setFreqByOffset(scale, offset);
-    }
-
     public boolean isFingered(Object obj) {
       return (obj != null && fingersById.containsValue(obj));
     }
 
-
-    // Update oscillators based on the settings parameters.
-    private void updateOscSettings() {
-      float newFreq = Theory.getFrequencyForNote(note + 1, octave);
-      Collection<ComplexOsc> oscs = oscillatorsById.values();
-      for (ComplexOsc osc : oscs)
-        if (osc != null)
-          osc.setBaseFreq(newFreq);
-    }
 
     /**
      * Settings handlers
      */
     private boolean launchSettings() {
     	Intent intent = new Intent(SauceEngine.this, Settings.class);
-    	intent.putExtra("octave", octave);
-    	intent.putExtra("note", note);
-    	intent.putExtra("file name", WavWriter.filePrefix);
-    	intent.putExtra("visuals", view.getVisuals());
-      intent.putExtra("scale", scaleId);
-    	startActivityForResult(intent, 0);
+    	//intent.putExtra("octave", octave);
+    	//intent.putExtra("note", note);
+    	//intent.putExtra("file name", WavWriter.filePrefix);
+    	//intent.putExtra("visuals", view.getVisuals());
+      //intent.putExtra("scale", scaleId);
+    	//startActivityForResult(intent, 0);
     	return true;
     }
     private void launchModifyInstrument(boolean create) {
@@ -623,7 +376,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
     // Called when settings activity ends. Updates proper params
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (requestCode == 0 && data != null) {
+      /*if (requestCode == 0 && data != null) {
         Bundle extras = data.getExtras();
 
         if (extras != null) {
@@ -642,8 +395,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         currentOscillator = ModifyInstrument.modifying;
         resetOscillators();
         setupParamHandlers();
-      }
-      updateOscSettings();
+      }*/
+      //updateOscSettings();
     }
 
     /**
@@ -716,60 +469,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
         mode = Modes.PLAY_MULTI;
       }
 
-      resetOscillators();
-      setupParamHandlers();
+      audioEngine.resetOscillators();
       Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
       return mode;
     }
 
     private boolean record(MenuItem item) {
-      boolean isRecording = dac.toggleRecording();
-    	if (isRecording) {
-        item.setTitle("Stop Recording");
-        item.setIcon(R.drawable.ic_grey_rec);
-        Toast.makeText(this, "Recording.", Toast.LENGTH_SHORT).show();
-    	}
-    	else {
-        item.setTitle("Record");
-        item.setIcon(R.drawable.ic_rec);
-
-        File saved = WavWriter.getLastFile();
-        if(saved == null) {
-          Toast.makeText(this, "Stopped Recording. File could not be saved. I blew it.", Toast.LENGTH_SHORT).show();
-          return false;
-        } else {
-          Toast.makeText(this, "Stopped Recording. File saved at: " + saved.getAbsolutePath(), Toast.LENGTH_LONG).show();
-        }
-		    	
-        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-	    	intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
-	    	startActivity(Intent.createChooser(intent, "Share to"));
-    	}
+      audioEngine.record();
       return true;
     }
 
     private void selectScale(String scaleId) {
-      this.scaleId = scaleId;
-
-      if (scaleId.equals(Scale.PENTATONIC.toString())) {
-        scale = Theory.pentatonicScale;
-      } else if (scaleId.equals(Scale.MAJOR.toString())) {
-        scale = Theory.majorScale;
-      } else if (scaleId.equals(Scale.MINOR.toString())) {
-        scale = Theory.minorScale;
-      } else if (scaleId.equals(Scale.MINOR_BLUES.toString())) {
-        scale = Theory.minorBluesScale;
-      } else {
-        scale = Theory.chromaticScale;
-      }
+      audioEngine.setScaleById(scaleId);
     }
 
-    private void connectOsc(ComplexOsc osc) {
-      osc.chuck(looper);
-    }
-    private void disconnectOsc(ComplexOsc osc) {
-      osc.unchuck(looper);
-    }
     private boolean instrumentSelection(MenuItem item) {
     	if (item.isChecked())
     		return true;
@@ -780,17 +493,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       if (newOsc == null) {
         Toast.makeText(this, "Bad Instrument.", Toast.LENGTH_SHORT).show();
         return false;
+      } else {
+        audioEngine.setOscillator(newOsc);
+        return true;
       }
-
-      currentOscillator = newOsc;
-      resetOscillators();
-
-      connectOsc(newOsc);
-      oscillatorsById.put(0, newOsc);
-
-      updateOscSettings();
-      setupParamHandlers();
-
-      return true;
     }
 }
