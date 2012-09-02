@@ -3,9 +3,7 @@ package com.mattfeury.saucillator.dev.android.instruments;
 import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.SauceEngine;
-import com.mattfeury.saucillator.dev.android.sound.Delay;
-import com.mattfeury.saucillator.dev.android.sound.Lagger;
-import com.mattfeury.saucillator.dev.android.sound.Limiter;
+import com.mattfeury.saucillator.dev.android.sound.*;
 
 /**
  * A complex oscillator.
@@ -25,10 +23,10 @@ public class ComplexOsc extends Oscillator {
   private float maxInternalAmp = 1.0f, // internalAmp always ranges from 0-maxInternalAmp
                 internalAmp = 0f; // used to calculate attack and release to/from maxInternalAmp
 
-  protected float attack = 0.85f,  // these are really just a percentage
-                  release = 0.85f; // can we translate them to something more meaningful?
-  protected Lagger attackLagger = new Lagger(0f, 1f, attack),
-                   releaseLagger = new Lagger(1f, 0f, release);
+  protected float attack = 2f,  // these are really just a percentage
+                  release = 2f; // can we translate them to something more meaningful?
+  protected LinearLagger attackLagger = new LinearLagger(0f, 1f, attack),
+                   releaseLagger = new LinearLagger(1f, 0f, release);
   protected boolean attacking = false, releasing = false, envelopeEnabled = true;
 
   // Delay
@@ -207,8 +205,8 @@ public class ComplexOsc extends Oscillator {
     releasing = true;
   }
   public void resetLaggers() {
-    attackLagger = new Lagger(internalAmp, maxInternalAmp, attack);
-    releaseLagger = new Lagger(internalAmp, 0f, release);
+    attackLagger = new LinearLagger(internalAmp, maxInternalAmp, attack);
+    releaseLagger = new LinearLagger(internalAmp, 0f, release);
   }
   public void updateEnvelope() {
     float previousAmp = internalAmp;
@@ -231,6 +229,9 @@ public class ComplexOsc extends Oscillator {
   public void rendered() {
     if (envelopeEnabled)
       updateEnvelope();
+
+    android.util.Log.d("ATK", "" + attackLagger.getOutput());
+    android.util.Log.d("RLS", "" + releaseLagger.getOutput());
   }  
 
   public synchronized boolean render(final float[] buffer) {

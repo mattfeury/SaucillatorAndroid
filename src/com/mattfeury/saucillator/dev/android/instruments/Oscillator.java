@@ -1,6 +1,5 @@
 package com.mattfeury.saucillator.dev.android.instruments;
 
-import com.mattfeury.saucillator.dev.android.sound.Lagger;
 import com.mattfeury.saucillator.dev.android.sound.UGen;
 
 /**

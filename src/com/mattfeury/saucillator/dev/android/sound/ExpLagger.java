@@ -10,16 +10,15 @@ import com.mattfeury.saucillator.dev.android.utilities.Utilities;
  *
  * Output = Output + Rate * (Input - Output)
  */
-public class Lagger implements Serializable {
+public class ExpLagger implements Serializable {
   protected float in, out, rate = .025f;
   
-  public Lagger(float f, float approaches, float rate) {
+  public ExpLagger(float f, float approaches, float rate) {
     this.in = approaches;
     this.out = f;
     setRate(rate);
   }
 
-  // TODO figure out a way to do this linearly
   public float update() {
     // Internally, in = out when rate is 1. This doesn't make sense logically though,
     // so we expose the inverse to functionality.

@@ -465,8 +465,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
                 // Don't allow 1.0 attack or release because it would be 100%
                 // and never actually go anywhere
-                x = Math.min(x, .99f);
-                y = Math.min(y, .99f);
+                x *= 5;
+                y *= 5;
 
                 // Set the template and the playing oscillator
                 // We do this so we don't have to recreate a new oscillator everytime
@@ -477,10 +477,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
                 osc.setRelease(y);
               }
             },
-            osc.getAttack(),
-            osc.getRelease(),
-            .99f,
-            .99f
+            osc.getAttack() / 5f,
+            osc.getRelease() / 5f,
+            1f,
+            1f
           );
 
       lfoParam.setEnabled(false);
