@@ -50,20 +50,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public static final String TAG = "Sauce";
     private SauceView view;
 
-    public enum Modes {
-      EDIT {
-        public String toString() {
-          return "Edit Instrument";
-        }
-      },
-      PLAY_MULTI {
-        public String toString() {
-          return "Multi Instrument";
-        }
-      }
-    }
-    private Modes mode = Modes.PLAY_MULTI;
-
     //defaults
     public static int TRACKPAD_GRID_SIZE = 12;
     public final static int TRACKPAD_SIZE_MAX = 16;
@@ -234,8 +220,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           // Determine if this edits a parameter. Otherwise, edit an osc, depending on mode.
           DrawableParameter param = view.optParameter(x, y, controlled);
-          int oscId = mode == Modes.EDIT ? 0 : id;
-          ComplexOsc osc = audioEngine.getOrCreateOscillator(oscId);
+          ComplexOsc osc = audioEngine.getOrCreateOscillator(id);
 
           // If this is on a parameter AND this finger isn't controlling something, OR
           // it's controlling this param
@@ -252,7 +237,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
             if (! fingerDefined)
               fingersById.put(id, osc);
 
-            handleTouchForOscillator(oscId, id, v, event);
+            handleTouchForOscillator(id, v, event);
           }
 
           if (actionCode == MotionEvent.ACTION_POINTER_UP) {
@@ -307,8 +292,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     /**
      * Oscillator handlers
      */
-    public void handleTouchForOscillator(int oscId, int id, View v, MotionEvent event) {
-      ComplexOsc osc = audioEngine.getOrCreateOscillator(oscId);
+    public void handleTouchForOscillator(int id, View v, MotionEvent event) {
+      ComplexOsc osc = audioEngine.getOrCreateOscillator(id);
 
       if (osc == null) return;
 
@@ -333,8 +318,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
         else if (osc.isReleasing())
           osc.startAttack();
 
-        audioEngine.updateFrequency(oscId, (int)(yScaled * TRACKPAD_GRID_SIZE));
-        audioEngine.updateAmplitude(oscId, xScaled);
+        audioEngine.updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
+        audioEngine.updateAmplitude(id, xScaled);
       } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
         //finger up. kill the osc
         view.removeFinger(id);
@@ -443,9 +428,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         case R.id.editInstrumentItem:
           editInstrument();
           return true;
-        case R.id.toggleMode:
-          toggleMode(item);
-          return true;
     		case R.id.settings:
     			return launchSettings();
     		case R.id.record:
@@ -460,18 +442,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     @Override
     public void onBackPressed() {
       showDialog(BACKPRESS_DIALOG);
-    }
-
-    private Modes toggleMode(MenuItem item) {
-      if (mode == Modes.PLAY_MULTI) {
-        mode = Modes.EDIT;
-      } else {
-        mode = Modes.PLAY_MULTI;
-      }
-
-      audioEngine.resetOscillators();
-      Toast.makeText(this, "Switched to " + mode + " Mode.", Toast.LENGTH_SHORT).show();
-      return mode;
     }
 
     private boolean record(MenuItem item) {

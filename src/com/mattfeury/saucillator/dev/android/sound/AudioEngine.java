@@ -102,7 +102,7 @@ public class AudioEngine {
   public static ComplexOsc getCurrentOscillator() {
     return currentOscillator;
   }
-  public void resetOscillators() {
+  public void removeAllOscillators() {
     Set<Integer> oscIds = oscillatorsById.keySet();
     for (Integer oscId : oscIds) {
       ComplexOsc osc = oscillatorsById.get(oscId);
@@ -166,7 +166,7 @@ public class AudioEngine {
 
   public void setOscillator(ComplexOsc newOsc) {
     currentOscillator = newOsc;
-    resetOscillators();
+    removeAllOscillators();
 
     connectOsc(newOsc);
     oscillatorsById.put(0, newOsc);

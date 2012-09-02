@@ -10,8 +10,6 @@
         </menu>
     </item>
 
-    <item android:title="Switch Pad Mode" android:id="@+id/toggleMode" />
-
     <item android:title="Edit Instrument (Menu)" android:id="@+id/editInstrumentItem" />
 
     <item android:title="Create Instrument" android:id="@+id/createInstrumentItem" />
