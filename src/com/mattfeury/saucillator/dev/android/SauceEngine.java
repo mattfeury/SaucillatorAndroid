@@ -1,27 +1,18 @@
 package com.mattfeury.saucillator.dev.android;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.*;
-import com.mattfeury.saucillator.dev.android.instruments.Theory.Scale;
 import com.mattfeury.saucillator.dev.android.settings.ModifyInstrument;
 import com.mattfeury.saucillator.dev.android.settings.Settings;
 import com.mattfeury.saucillator.dev.android.sound.*;
-import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.content.Context;
@@ -43,8 +34,12 @@ import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 /*
- * Main activity for the App. This will spin up the visuals and the audio engine. 
- * The audio engine gets its own thread.
+ * Main activity for the App. This class has two main purposes:
+ * 
+ * 1. Handle user input.
+ * 2. Delegate events (based user inputÊor otherwise) between the AudioEngine and the SauceView.
+ * 
+ * It also currently handles all the Activity necessities: menus, dialogs, etc.
  */
 public class SauceEngine extends Activity implements OnTouchListener {
     public static final String TAG = "Sauce";
@@ -199,103 +194,31 @@ public class SauceEngine extends Activity implements OnTouchListener {
        */
       for (int i = pointerCount - 1; i > -1; i--) {
         int id = event.getPointerId(i);
-
         if (id < 0)
           continue;
 
         float y = event.getY(i);
         float x = event.getX(i);
-
-        final int actionIndex = event.getActionIndex();
-        final int actionId = event.getPointerId(actionIndex);
-
-        // Finger on main pad. This affects an oscillator or parameter (when in edit mode)
+        
         if (view.isInPad(x,y)) {
-          float[] scaledCoords = view.scaleToPad(x,y);
-          float xScaled = scaledCoords[0];
-          float yScaled = scaledCoords[1];
-
-          Object controlled = fingersById.get(id);
-          boolean fingerDefined = controlled != null;
-
-          // Determine if this edits a parameter. Otherwise, edit an osc, depending on mode.
-          DrawableParameter param = view.optParameter(x, y, controlled);
-          ComplexOsc osc = audioEngine.getOrCreateOscillator(id);
-
-          // If this is on a parameter AND this finger isn't controlling something, OR
-          // it's controlling this param
-          if ((param != null && ! fingerDefined) || (controlled instanceof DrawableParameter)) {
-            if (param != null && ! fingerDefined)
-              fingersById.put(id, param);
-            else
-              param = (DrawableParameter) controlled;
-
-            param.set(xScaled, yScaled);
-            view.invalidate();
-          } else if (osc != null && (osc.equals(controlled) || (! fingerDefined && ! isFingered(osc)))) {
-            // Update oscillator
-            if (! fingerDefined)
-              fingersById.put(id, osc);
-
-            handleTouchForOscillator(id, v, event);
-          }
-
-          if (actionCode == MotionEvent.ACTION_POINTER_UP) {
-            fingersById.remove(actionId);
-          }
+          handleTouchForOscillator(id, event);
         } else {
-          // Buttons!
-          // FIXME there needs to be a more abstracted way to do these
-
-          final int upIndex = event.getActionIndex();
-          if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && upIndex == i)
-              || actionCode == MotionEvent.ACTION_DOWN) {
-
-            // Add a small margin to the right side to make accidental presses less frequent
-            float controllerWidth = maxWidth * SauceView.controllerWidth;
-            if (x < controllerWidth - (controllerWidth * .15f)) {
-              if (canVibrate)
-                vibrator.vibrate(VIBRATE_SPEED);
-
-              int buttonHeight = maxHeight / SauceView.numButtons;          
-              // Looper buttons
-              if (y <= buttonHeight) {
-                //Toggle Looper Button
-                //boolean isRecording = looper.toggleRecording();
-                /*if (isRecording)
-                  view.focusLooper();
-                else
-                  view.unfocusLooper();*/
-              } else if (y <= buttonHeight * 2) {
-                //Undo Looper Button
-                //looper.undo();
-                view.unfocusLooper();
-              } else {
-                //Reset Looper Button
-                //looper.reset();
-                view.unfocusLooper();
-              }
-            } else if (x > maxWidth * SauceView.controllerWidth) {
-              if (canVibrate)
-                vibrator.vibrate(VIBRATE_SPEED);
-
-              // Param toggler buttons
-              view.toggleEnablerAt(x, y);
-            }
-          }
+          handleTouchForController(id, event);
         }
       }
 
       return true; // indicate event was handled
     }
 
-    /**
-     * Oscillator handlers
-     */
-    public void handleTouchForOscillator(int id, View v, MotionEvent event) {
+    private void handleTouchForOscillator(int id, MotionEvent event) {
       ComplexOsc osc = audioEngine.getOrCreateOscillator(id);
+      Object controlled = fingersById.get(id);
+      boolean fingerDefined = controlled != null;
 
-      if (osc == null) return;
+      if (osc == null || (! osc.equals(controlled) && (fingerDefined || isFingered(osc)))) return;
+
+      if (! fingerDefined)
+        fingersById.put(id, osc);
 
       final int index = event.findPointerIndex(id);
       final int action = event.getAction();
@@ -327,7 +250,51 @@ public class SauceEngine extends Activity implements OnTouchListener {
         if(osc.isPlaying() && ! osc.isReleasing())
           osc.togglePlayback();
       }
-      
+
+      if (actionCode == MotionEvent.ACTION_POINTER_UP) {
+        fingersById.remove(actionId);
+      }
+
+    }
+    
+    private void handleTouchForController(int id, MotionEvent event) {
+      final int action = event.getAction();
+      final int actionCode = action & MotionEvent.ACTION_MASK;
+      final int actionIndex = event.getActionIndex();
+      final int actionId = event.getPointerId(actionIndex);
+
+      /*if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id)
+          || actionCode == MotionEvent.ACTION_DOWN) {
+
+        // Add a small margin to the right side to make accidental presses less frequent
+        float controllerWidth = maxWidth * SauceView.controllerWidth;
+        if (x < controllerWidth - (controllerWidth * .15f)) {
+          //handleTouchForController(event);
+        }
+      }*/
+
+      // do something better
+      if (canVibrate)
+        vibrator.vibrate(VIBRATE_SPEED);
+
+      /*int buttonHeight = maxHeight / SauceView.numButtons;          
+      // Looper buttons
+      if (y <= buttonHeight) {
+        //Toggle Looper Button
+        boolean isRecording = looper.toggleRecording();
+        if (isRecording)
+          view.focusLooper();
+        else
+          view.unfocusLooper();
+      } else if (y <= buttonHeight * 2) {
+        //Undo Looper Button
+        looper.undo();
+        view.unfocusLooper();
+      } else {
+        //Reset Looper Button
+        looper.reset();
+        view.unfocusLooper();
+      }*/
     }
 
     public boolean isFingered(Object obj) {
