@@ -27,8 +27,6 @@ public class SauceView extends View {
     //graphics elements
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
     private RectButton loop, undo, reset;
-    private LinkedList<DrawableParameter> params = new LinkedList<DrawableParameter>();
-    private LinkedList<RectButton> paramEnablers = new LinkedList<RectButton>();
 
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
@@ -51,7 +49,7 @@ public class SauceView extends View {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
       super.onLayout(changed, left, top, right, bottom);
-      recalculateParamEnablerSize();
+      //recalculateParamEnablerSize();
     }
 
     public void init(Context context) {
@@ -59,74 +57,6 @@ public class SauceView extends View {
       loop = new RectButton("Loop", 0, 0, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       undo = new RectButton("Undo", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
       reset = new RectButton("Reset", 0, getHeight() / numButtons, (int) (getWidth() * controllerWidth), getHeight() / numButtons);
-    }
-
-    public void recalculateParamEnablerSize() {
-      final int numEnablers = paramEnablers.size(),
-                width = getWidth(),
-                height = getHeight(),
-                buttonWidth = (int) (width * padWidth / numEnablers),
-                buttonHeight = (int) (height * (1f - padHeight)),
-                controllerWidth = (int) (width * SauceView.controllerWidth),
-                padHeight = (int) (height * SauceView.padHeight);
-
-      for (int i = 0; i < numEnablers; i++) {
-        RectButton enabler = paramEnablers.get(i);
-        enabler.set(i * buttonWidth + controllerWidth, padHeight, buttonWidth, buttonHeight);
-      }
-    }
-    // Takes in pixel values
-    public void toggleEnablerAt(float x, float y) {
-      for (RectButton enabler : paramEnablers) {
-        if (enabler.contains(x, y)) {
-          boolean isEnabled = enabler.toggleFocus();
-          
-          DrawableParameter corresponding = null;
-          for (DrawableParameter param : params)
-            if (param.getFullName().equals(enabler.getName())) {
-              corresponding = param;
-              break;
-            }
-          
-          if (corresponding != null)
-            corresponding.setEnabled(isEnabled);
-          
-          return;
-        }
-      }
-    }
-    public void addParam(DrawableParameter p) {
-      if (! params.contains(p)) {
-        params.add(p);
-
-        RectButton enabler = new RectButton(p.getFullName());
-        boolean shouldFocus = p.isEnabled();
-        enabler.setFocus(shouldFocus);
-        paramEnablers.add(enabler);
-        recalculateParamEnablerSize();
-      }
-    }
-    public void resetParams() {
-      params.clear();
-      paramEnablers.clear();
-    }
-    public DrawableParameter optParameter(float x, float y, Object preferred) {
-      // A list of all params at this location. If there are multiple, we prefer 'preferred'
-      LinkedList<DrawableParameter> contained = new LinkedList<DrawableParameter>();
-
-      for (DrawableParameter p : params)
-        if (p.contains((int)x, (int)y) && p.isEnabled())
-          contained.add(p);
-
-      int size = contained.size();
-      if (size == 0)
-        return null;
-      else if (size == 1)
-        return contained.getFirst();
-      else if (contained.contains(preferred))
-        return (DrawableParameter) preferred;
-      else
-        return contained.getLast();
     }
 
     public void setVisuals(boolean show) {
@@ -225,12 +155,6 @@ public class SauceView extends View {
       loop.draw(canvas);
       undo.draw(canvas);
       reset.draw(canvas);
-
-      for (DrawableParameter p : params)
-        p.draw(canvas);
-      
-      for (RectButton enabler : paramEnablers)
-        enabler.draw(canvas);
     }
 
     class RectButton extends RectF {
