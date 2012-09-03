@@ -39,23 +39,26 @@ public class TabManager implements Drawable {
   }
 
   public void draw(Canvas canvas) {
-    int i = 0;
-    int tabCount = tabs.size();
-    int width = canvas.getWidth();
-    int height = canvas.getHeight();
-    int selectorHeight = (int) (height / (float)tabCount);
-    int selectorWidth = (int) (width * SauceView.controllerWidth * this.selectorWidth);
-    int tabWidth = (int) (width * SauceView.controllerWidth * this.tabWidth);
-
-    for (final Tab tab : tabs) {
+    for (Tab tab : tabs) {
       boolean isCurrent = currentTab != null && tab.equals(currentTab);
-
-      // FIXME just set this on creation and be done with it
-      tab.drawSelector(canvas, 0, selectorHeight * i, selectorWidth, selectorHeight, isCurrent);
-      i++;
+      tab.drawSelector(canvas, isCurrent);
     }
 
     if (currentTab != null)
-      currentTab.drawTab(canvas, (int) (width * SauceView.controllerWidth * this.selectorWidth), 0, tabWidth, height);
+      currentTab.drawTab(canvas);
+  }
+
+  public void layoutChanged(int width, int height) { 
+    int i = 0;
+    int tabCount = tabs.size();
+    int selectorHeight = (int) (height / (float)tabCount);
+    int selectorWidth = (int) (width * SauceView.controllerWidth * TabManager.selectorWidth);
+    int tabWidth = (int) (width * SauceView.controllerWidth * TabManager.tabWidth);
+
+    for (final Tab tab : tabs) {
+      tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
+      tab.setTab((int) (width * SauceView.controllerWidth * TabManager.selectorWidth), 0, tabWidth, height);
+      i++;
+    }
   }
 }

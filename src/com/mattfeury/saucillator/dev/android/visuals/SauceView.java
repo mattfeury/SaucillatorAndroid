@@ -42,6 +42,9 @@ public class SauceView extends View {
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
       super.onLayout(changed, left, top, right, bottom);
+      
+      for (Drawable drawable : drawables)
+        drawable.layoutChanged(right - left, bottom - top);
     }
 
     public void setVisuals(boolean show) {

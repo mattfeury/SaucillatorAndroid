@@ -13,18 +13,24 @@ public class Tab {
     return selector.contains(x, y);
   }
 
-  public void drawSelector(Canvas canvas, int x, int y, int selectorWidth, int selectorHeight, boolean isCurrent) {
+  public void drawSelector(Canvas canvas, boolean isCurrent) {
     if (isCurrent)
       selector.focus();
     else
       selector.unfocus();
 
-    selector.set(x, y, selectorWidth, selectorHeight);
     selector.draw(canvas);
   }
 
-  public void drawTab(Canvas canvas, int x, int y, int tabWidth, int tabHeight) {
-    tab.set(x, y, tabWidth, tabHeight);
+  public void drawTab(Canvas canvas) {
     tab.draw(canvas);
+  }
+
+  public void setSelector(int x, int y, int selectorWidth, int selectorHeight) {
+    selector.set(x, y, selectorWidth, selectorHeight);
+  }
+
+  public void setTab(int x, int y, int tabWidth, int tabHeight) {
+    tab.set(x, y, tabWidth, tabHeight);
   }
 }
