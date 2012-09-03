@@ -1,7 +1,7 @@
 package com.mattfeury.saucillator.dev.android.utilities;
 
 public interface Box<K> {
-  public K getOrElse(K other);
+  public K openOr(K other);
   
   public boolean isDefined();
   public boolean isEmpty();

@@ -6,7 +6,7 @@ public class Full<K> implements Box<K> {
     this.value = val;
   }
   @Override
-  public K getOrElse(K other) {
+  public K openOr(K other) {
     return value;
   }
 

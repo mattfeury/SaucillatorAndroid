@@ -6,7 +6,7 @@ public class Failure<K> implements Box<K> {
     this.error = val;
   }
   @Override
-  public K getOrElse(K other) {
+  public K openOr(K other) {
     return other;
   }
 
