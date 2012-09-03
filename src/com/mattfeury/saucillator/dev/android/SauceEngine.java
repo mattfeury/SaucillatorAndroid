@@ -11,6 +11,7 @@ import com.mattfeury.saucillator.dev.android.sound.*;
 import com.mattfeury.saucillator.dev.android.tabs.LooperTab;
 import com.mattfeury.saucillator.dev.android.tabs.TabManager;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
+import com.mattfeury.saucillator.dev.android.utilities.EachFunc;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 
@@ -54,9 +55,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private boolean init = false;
 
-    // which finger ID corresponds to which instrument
-    // maybe make "Fingerable" interface... lolol
-    private ConcurrentHashMap<Integer, Object> fingersById = new ConcurrentHashMap<Integer, Object>();
+    // which finger ID corresponds to which fingerable layout element. e.g. buttons, knobs, etc.
+    private ConcurrentHashMap<Integer, Fingerable> fingersById = new ConcurrentHashMap<Integer, Fingerable>();
 
     private Vibrator vibrator;
     private boolean canVibrate = false;
@@ -267,57 +267,21 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
     }
     
-    private void handleTouchForController(int id, MotionEvent event) {
-      final int action = event.getAction();
-      final int actionCode = action & MotionEvent.ACTION_MASK;
-      final int actionIndex = event.getActionIndex();
-      final int actionId = event.getPointerId(actionIndex);
-      final int index = event.findPointerIndex(id);
-      final float y = event.getY(index);
-      final float x = event.getX(index);
+    private void handleTouchForController(final int id, MotionEvent event) {
+      Fingerable controlled = fingersById.get(id);
 
-      Object controlled = fingersById.get(id);
-      boolean fingerDefined = controlled != null;
-
-      if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN) {
-        // Add a small margin to the right side to make accidental presses less frequent
-        float selectorWidth = view.getWidth() * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth;
-        if (x < selectorWidth - (selectorWidth * .15f)) {
-          tabManager.toggleCurrentTabAt((int)x, (int)y);
-          view.invalidate();
-
-          if (canVibrate)
-            vibrator.vibrate(VIBRATE_SPEED);
-        } else {
-          Box<Fingerable> fingered = tabManager.handlePanelTouch(id, event);
-
-          if (! fingerDefined && fingered.isDefined()) {
-            fingersById.put(id, fingered); //FIXME open up the box
-            
-            if (canVibrate)
-              vibrator.vibrate(VIBRATE_SPEED);
-          }
-        }
+      if (controlled == null) {
+        Box<Fingerable> fingered = tabManager.handleTouch(id, event);
+        fingered.foreach(new EachFunc<Fingerable>() {
+          public void func(Fingerable k) {
+            fingersById.put((Integer)id, k);
+          }            
+        });
+      } else {
+        controlled.handleTouch(id, event);
       }
 
-      /*int buttonHeight = maxHeight / SauceView.numButtons;          
-      // Looper buttons
-      if (y <= buttonHeight) {
-        //Toggle Looper Button
-        boolean isRecording = looper.toggleRecording();
-        if (isRecording)
-          view.focusLooper();
-        else
-          view.unfocusLooper();
-      } else if (y <= buttonHeight * 2) {
-        //Undo Looper Button
-        looper.undo();
-        view.unfocusLooper();
-      } else {
-        //Reset Looper Button
-        looper.reset();
-        view.unfocusLooper();
-      }*/
+      view.invalidate();
     }
 
     public boolean isFingered(Object obj) {

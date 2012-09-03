@@ -2,17 +2,20 @@ package com.mattfeury.saucillator.dev.android.instruments;
 
 import java.util.LinkedList;
 
+import android.view.MotionEvent;
+
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.sound.Delay;
 import com.mattfeury.saucillator.dev.android.sound.Lagger;
 import com.mattfeury.saucillator.dev.android.sound.Limiter;
+import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 
 /**
  * A complex oscillator.
  * An oscillator that is made up of BasicOscs and sums them together.
  */
-public class ComplexOsc extends Oscillator {
+public class ComplexOsc extends Oscillator implements Fingerable {
 
   protected LinkedList<Oscillator> components;
 
@@ -254,5 +257,11 @@ public class ComplexOsc extends Oscillator {
     rendered();
 
     return didWork;
+  }
+
+  @Override
+  public void handleTouch(int id, MotionEvent event) {
+    // TODO Auto-generated method stub
+    // FIXME
   }
 }

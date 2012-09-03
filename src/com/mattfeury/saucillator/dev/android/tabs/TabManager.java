@@ -41,14 +41,14 @@ public class TabManager implements Drawable {
     
     LayoutDefinitions.tabClosed();
   }
-  public void toggleCurrentTabAt(int x, int y) {
+  /*public void toggleCurrentTabAt(int x, int y) {
     for (Tab tab : tabs) {
       if (tab.isInSelector(x, y)) {
         tab.getSelector().click();
         return;
       }
     }
-  }
+  }*/
   public boolean isCurrent(Tab tab) {
     return tab.equals(currentTab);
   }
@@ -86,10 +86,21 @@ public class TabManager implements Drawable {
     return x < this.width && y < this.height; 
   }
 
-  public Box<Fingerable> handlePanelTouch(int id, MotionEvent event) {
-    if (currentTab != null) {
+  public Box<Fingerable> handleTouch(int id, MotionEvent event) {
+    final int index = event.findPointerIndex(id);
+    final int y = (int) event.getY(index);
+    final int x = (int) event.getX(index);
+
+    if (currentTab != null && currentTab.getPanel().contains(x, y)) {
       return currentTab.handlePanelTouch(id, event);
     } else {
+      for (Tab tab : tabs) {
+        if (tab.isInSelector(x, y)) {
+          TabSelector selector = tab.getSelector();
+          selector.click();
+          return new Full<Fingerable>(selector);
+        }
+      }
       return new Empty<Fingerable>();
     }
   }

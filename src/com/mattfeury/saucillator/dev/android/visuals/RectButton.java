@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
+import android.view.MotionEvent;
 
 public abstract class RectButton extends SmartRect implements Drawable, Fingerable {
   protected Paint bg, text, focusedBg;
@@ -72,6 +73,16 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
   public void click() {
     for (ClickHandler handler : handlers)
       handler.onClick();
+  }
+  public void handleTouch(int id, MotionEvent event) {
+    final int action = event.getAction();
+    final int actionCode = action & MotionEvent.ACTION_MASK;
+    final int actionIndex = event.getActionIndex();
+    final int actionId = event.getPointerId(actionIndex);
+
+    // TODO add vibrator here
+    if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN)
+      click();
   }
 
   public void setFocus(boolean focus) {
