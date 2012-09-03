@@ -58,7 +58,7 @@ public class TabManager implements Drawable {
     }
 
     if (currentTab != null)
-      currentTab.drawTab(canvas);
+      currentTab.drawPanel(canvas);
   }
 
   public void layoutChanged(int width, int height) { 
@@ -70,7 +70,7 @@ public class TabManager implements Drawable {
 
     for (Tab tab : tabs) {
       tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
-      tab.setTab((int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth), 0, tabWidth, height);
+      tab.setPanel((int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth), 0, tabWidth, height);
       i++;
     }
   }

@@ -1,17 +1,30 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.visuals.RectButton;
-import com.mattfeury.saucillator.dev.android.visuals.TabSelector;
 
 import android.graphics.Canvas;
 
-public class Tab {
+public abstract class Tab {
 
+  // Remove me;
   private java.util.Random gen = new java.util.Random();
-  private int id = gen.nextInt(100000);
-  private TabSelector selector = new TabSelector(""+id);
-  private RectButton tab = new RectButton("HI I'M A TAB BITCH : " + id);
+  private int id = gen.nextInt(1000) * gen.nextInt(10000);
+
+  protected String name;
+  protected TabSelector selector;
+  protected TabPanel panel;
+
+  private AudioEngine engine;
   
+  public Tab(String name, AudioEngine engine) {
+    this.engine = engine;
+    
+    this.name = name;
+    selector = new TabSelector(name);
+    panel = new TabPanel(name);
+  }
+
   public boolean isInSelector(int x, int y) {
     return selector.contains(x, y);
   }
@@ -25,15 +38,19 @@ public class Tab {
     selector.draw(canvas);
   }
 
-  public void drawTab(Canvas canvas) {
-    tab.draw(canvas);
+  public void drawPanel(Canvas canvas) {
+    panel.draw(canvas);
   }
 
   public void setSelector(int x, int y, int selectorWidth, int selectorHeight) {
     selector.set(x, y, selectorWidth, selectorHeight);
   }
 
-  public void setTab(int x, int y, int tabWidth, int tabHeight) {
-    tab.set(x, y, tabWidth, tabHeight);
+  public void setPanel(int x, int y, int tabWidth, int tabHeight) {
+    panel.set(x, y, tabWidth, tabHeight);
+  }
+
+  public TabSelector getSelector() {
+    return selector;
   }
 }
