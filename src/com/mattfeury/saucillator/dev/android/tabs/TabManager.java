@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 import com.mattfeury.saucillator.dev.android.visuals.LayoutDefinitions;
 
@@ -11,15 +12,18 @@ public class TabManager implements Drawable {
   private LinkedList<Tab> tabs = new LinkedList<Tab>();
   private Tab currentTab = null;
 
-  public TabManager() {
-    // Add some tabs
-    addTab(new Tab());
-    addTab(new Tab());
-    addTab(new Tab());
-  }
-
-  private void addTab(Tab tab) {
+  public void addTab(final Tab tab) {
     tabs.add(tab);
+
+    tab.getSelector().addOnClick(new ClickHandler() {
+      public void onClick() {
+        if (isCurrent(tab)) {
+          hideCurrentTab();
+        } else {
+          setCurrentTab(tab);
+        }
+      }
+    });
 
     if (tabs.size() == 1)
       setCurrentTab(tab);
@@ -34,16 +38,11 @@ public class TabManager implements Drawable {
     this.currentTab = null;
     
     LayoutDefinitions.tabClosed();
-}
+  }
   public void toggleCurrentTabAt(int x, int y) {
     for (Tab tab : tabs) {
       if (tab.isInSelector(x, y)) {
-        if (isCurrent(tab)) {
-          hideCurrentTab();
-        } else {
-          setCurrentTab(tab);
-        }
-
+        tab.getSelector().click();
         return;
       }
     }

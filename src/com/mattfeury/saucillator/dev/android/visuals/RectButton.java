@@ -1,16 +1,22 @@
 package com.mattfeury.saucillator.dev.android.visuals;
 
+import java.util.LinkedList;
+
+import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
 
-public class RectButton extends SmartRect {
+public abstract class RectButton extends SmartRect implements Drawable {
   protected Paint bg, text, focusedBg;
   private int borderWidth = 5;
   protected String name;
   protected boolean focused = false;
   public static final int textWidth = -8; //in pixels, i guess? just an estimate.
+
+  private LinkedList<ClickHandler> handlers = new LinkedList<ClickHandler>();
 
   public RectButton(String name) {
     this(name, 0, 0, 0, 0);
@@ -52,6 +58,17 @@ public class RectButton extends SmartRect {
       canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, text);
     }
   }
+  public void layoutChanged(int width, int height) {
+    set(left, top, left + width, top + height); 
+  }
+
+  public void addOnClick(ClickHandler handler) {
+    handlers.add(handler);
+  }
+  public void click() {
+    for (ClickHandler handler : handlers)
+      handler.onClick();
+  }
 
   public void setFocus(boolean focus) {
     focused = focus;
@@ -66,5 +83,4 @@ public class RectButton extends SmartRect {
     focused = ! focused;
     return focused;
   }
-
 }
