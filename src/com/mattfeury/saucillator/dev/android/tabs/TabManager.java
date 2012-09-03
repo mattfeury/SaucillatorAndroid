@@ -1,6 +1,10 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
+
+import com.mattfeury.saucillator.dev.android.visuals.Drawable;
+import com.mattfeury.saucillator.dev.android.visuals.LayoutDefinitions;
+
 import android.graphics.Canvas;
 
 public class TabManager implements Drawable {
@@ -65,7 +69,7 @@ public class TabManager implements Drawable {
     int selectorWidth = (int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth);
     int tabWidth = (int) (width * LayoutDefinitions.controllerWidth * (1f - LayoutDefinitions.tabSelectorWidth));
 
-    for (final Tab tab : tabs) {
+    for (Tab tab : tabs) {
       tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
       tab.setTab((int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth), 0, tabWidth, height);
       i++;

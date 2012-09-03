@@ -8,6 +8,7 @@ import com.mattfeury.saucillator.dev.android.instruments.*;
 import com.mattfeury.saucillator.dev.android.settings.ModifyInstrument;
 import com.mattfeury.saucillator.dev.android.settings.Settings;
 import com.mattfeury.saucillator.dev.android.sound.*;
+import com.mattfeury.saucillator.dev.android.tabs.TabManager;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.app.Activity;
@@ -43,8 +44,6 @@ import android.widget.Toast;
  */
 public class SauceEngine extends Activity implements OnTouchListener {
     public static final String TAG = "Sauce";
-    private SauceView view;
-    private TabManager tabManager;
 
     //defaults
     public static int TRACKPAD_GRID_SIZE = 12;
@@ -71,9 +70,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private Object mutex = new Object();
 
+    private SauceView view;
+    private TabManager tabManager;
     private AudioEngine audioEngine;
-    
-    /** Called when the activity is first created. */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
       Log.i(TAG, "Brewing sauce...");
@@ -175,8 +175,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
       if (! init) return false;
 
-      int maxHeight = v.getMeasuredHeight();
-      int maxWidth = v.getMeasuredWidth();
+      //int maxHeight = v.getMeasuredHeight();
+      //int maxWidth = v.getMeasuredWidth();
 
       int action = event.getAction();
       int actionCode = action & MotionEvent.ACTION_MASK;
