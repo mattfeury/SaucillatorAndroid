@@ -3,13 +3,14 @@ package com.mattfeury.saucillator.dev.android.visuals;
 import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
+import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
 
-public abstract class RectButton extends SmartRect implements Drawable {
+public abstract class RectButton extends SmartRect implements Drawable, Fingerable {
   protected Paint bg, text, focusedBg;
   private int borderWidth = 5;
   protected String name;

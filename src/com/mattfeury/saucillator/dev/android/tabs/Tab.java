@@ -53,4 +53,8 @@ public abstract class Tab {
   public TabSelector getSelector() {
     return selector;
   }
+
+  public Box<Fingerable> handlePanelTouch(int id, MotionEvent event) {
+    return panel.handleTouch(id, event);
+  }
 }

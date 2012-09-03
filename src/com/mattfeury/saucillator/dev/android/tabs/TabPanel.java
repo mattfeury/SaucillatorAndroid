@@ -2,13 +2,12 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.visuals.Drawable;
-import com.mattfeury.saucillator.dev.android.visuals.SmartRect;
+import com.mattfeury.saucillator.dev.android.utilities.*;
+import com.mattfeury.saucillator.dev.android.visuals.*;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.graphics.Paint.Align;
+import android.view.MotionEvent;
 
 public class TabPanel extends SmartRect {
   protected Paint bg, text;
@@ -74,5 +73,23 @@ public class TabPanel extends SmartRect {
     super.set(x, y, width, height);
     
     recalculateChildren();
+  }
+  public Box<Fingerable> handleTouch(int id, MotionEvent event) {
+    /*final int action = event.getAction();
+    final int actionCode = action & MotionEvent.ACTION_MASK;
+    final int actionIndex = event.getActionIndex();
+    final int actionId = event.getPointerId(actionIndex);*/
+    final int index = event.findPointerIndex(id);
+    final int y = (int) event.getY(index);
+    final int x = (int) event.getX(index);
+
+    for (Drawable child : children) {
+      if (child.contains(x, y))
+      if (child instanceof RectButton) {
+        ((RectButton)child).click();
+        return new Full<Fingerable>((Fingerable)child);
+      }
+    }
+    return new Empty<Fingerable>();
   }
 }

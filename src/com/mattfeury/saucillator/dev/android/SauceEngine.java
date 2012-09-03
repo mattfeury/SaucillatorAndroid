@@ -275,6 +275,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       final float y = event.getY(index);
       final float x = event.getX(index);
 
+      Object controlled = fingersById.get(id);
+      boolean fingerDefined = controlled != null;
+
       if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN) {
         // Add a small margin to the right side to make accidental presses less frequent
         float selectorWidth = view.getWidth() * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth;
@@ -284,6 +287,15 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
           if (canVibrate)
             vibrator.vibrate(VIBRATE_SPEED);
+        } else {
+          Box<Fingerable> fingered = tabManager.handlePanelTouch(id, event);
+
+          if (! fingerDefined && fingered.isDefined()) {
+            fingersById.put(id, fingered); //FIXME open up the box
+            
+            if (canVibrate)
+              vibrator.vibrate(VIBRATE_SPEED);
+          }
         }
       }
 

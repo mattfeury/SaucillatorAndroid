@@ -2,15 +2,17 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
+import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 import com.mattfeury.saucillator.dev.android.visuals.LayoutDefinitions;
 
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 public class TabManager implements Drawable {
   private LinkedList<Tab> tabs = new LinkedList<Tab>();
   private Tab currentTab = null;
+  private int width = 0, height = 0;
 
   public void addTab(final Tab tab) {
     tabs.add(tab);
@@ -62,6 +64,12 @@ public class TabManager implements Drawable {
   }
 
   public void layoutChanged(int width, int height) { 
+    set(0, 0, width, height);
+  }
+  public void set(int x, int y, int width, int height) {
+    this.width = width;
+    this.height = height;
+
     int i = 0;
     int tabCount = tabs.size();
     int selectorHeight = (int) (height / (float)tabCount);
@@ -72,6 +80,17 @@ public class TabManager implements Drawable {
       tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
       tab.setPanel((int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth), 0, tabWidth, height);
       i++;
+    }
+  }
+  public boolean contains(int x, int y) {
+    return x < this.width && y < this.height; 
+  }
+
+  public Box<Fingerable> handlePanelTouch(int id, MotionEvent event) {
+    if (currentTab != null) {
+      return currentTab.handlePanelTouch(id, event);
+    } else {
+      return new Empty<Fingerable>();
     }
   }
 }
