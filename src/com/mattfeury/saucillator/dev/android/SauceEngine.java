@@ -44,6 +44,7 @@ import android.widget.Toast;
 public class SauceEngine extends Activity implements OnTouchListener {
     public static final String TAG = "Sauce";
     private SauceView view;
+    private TabManager tabManager;
 
     //defaults
     public static int TRACKPAD_GRID_SIZE = 12;
@@ -113,6 +114,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
         }
 
         init = true;
+
+        this.tabManager = new TabManager();        
+        view.addDrawable(tabManager);
 
         // TODO setup visual layout that depends on audio shtuff
       }
