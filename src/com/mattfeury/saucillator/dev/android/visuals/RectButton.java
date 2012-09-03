@@ -5,11 +5,11 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Align;
 
-public class RectButton extends RectF {
-  private Paint bg,text,focusedBg;
+public class RectButton extends SmartRect {
+  protected Paint bg, text, focusedBg;
   private int borderWidth = 5;
-  private String name;
-  private boolean focused = false;
+  protected String name;
+  protected boolean focused = false;
   public static final int textWidth = -8; //in pixels, i guess? just an estimate.
 
   public RectButton(String name) {
@@ -38,13 +38,6 @@ public class RectButton extends RectF {
   public String getName() {
     return name;
   }
-  public void set(int x, int y, int width, int height) {
-    super.set(x, y, x + width, y + height);       
-  }
-  public boolean contains(int x, int y) {
-    return (x > left && x <= right) &&
-            (y > top && y <= bottom);
-  }
   
   public void draw(Canvas canvas) {
     if (focused) {
@@ -62,19 +55,15 @@ public class RectButton extends RectF {
 
   public void setFocus(boolean focus) {
     focused = focus;
-    //view.invalidate();
   }
   public void focus() {
     focused = true;
-    //view.invalidate();
   }
   public void unfocus() {
     focused = false;
-    //view.invalidate();
   }
   public boolean toggleFocus() {
     focused = ! focused;
-    //view.invalidate();
     return focused;
   }
 

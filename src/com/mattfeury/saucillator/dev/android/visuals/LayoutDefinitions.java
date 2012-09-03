@@ -4,7 +4,7 @@ public class LayoutDefinitions {
 
   // Widths are percentages of the total screen
   public static final float tabSelectorWidthNoTabs = 1f;
-  public static final float tabSelectorWidthWithTabs = 0.25f;
+  public static final float tabSelectorWidthWithTabs = 0.15f;
 
   public static float tabSelectorWidth = tabSelectorWidthWithTabs;
 

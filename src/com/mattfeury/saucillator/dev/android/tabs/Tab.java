@@ -1,4 +1,7 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.tabs;
+
+import com.mattfeury.saucillator.dev.android.visuals.RectButton;
+import com.mattfeury.saucillator.dev.android.visuals.TabSelector;
 
 import android.graphics.Canvas;
 
@@ -6,7 +9,7 @@ public class Tab {
 
   private java.util.Random gen = new java.util.Random();
   private int id = gen.nextInt(100000);
-  private RectButton selector = new RectButton(""+id);
+  private TabSelector selector = new TabSelector(""+id);
   private RectButton tab = new RectButton("HI I'M A TAB BITCH : " + id);
   
   public boolean isInSelector(int x, int y) {
