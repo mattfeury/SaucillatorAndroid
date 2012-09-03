@@ -1,4 +1,6 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.tabs;
+
+import com.mattfeury.saucillator.dev.android.visuals.RectButton;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
