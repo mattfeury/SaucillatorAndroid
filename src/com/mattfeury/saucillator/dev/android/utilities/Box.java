@@ -9,4 +9,6 @@ public interface Box<K> {
   public String getFailure();
   
   public <R> Box<R> map(MapFunc<K, R> funcHolder);
+
+  public void foreach(EachFunc<K> funcHolder);
 }

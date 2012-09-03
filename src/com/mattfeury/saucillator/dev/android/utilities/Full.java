@@ -26,5 +26,7 @@ public class Full<K> implements Box<K> {
   public <R> Box<R> map(MapFunc<K, R> funcHolder) {
     return funcHolder.func(value);
   }
-
+  public void foreach(EachFunc<K> funcHolder) {
+    funcHolder.func(value);
+  }
 }

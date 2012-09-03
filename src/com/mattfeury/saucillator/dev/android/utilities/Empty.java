@@ -23,5 +23,8 @@ public class Empty<K> implements Box<K> {
   public <R> Box<R> map(MapFunc<K, R> funcHolder) {
     return new Empty<R>();
   }
+  public void foreach(EachFunc<K> funcHolder) {
+    // Noop
+  }
 
 }
