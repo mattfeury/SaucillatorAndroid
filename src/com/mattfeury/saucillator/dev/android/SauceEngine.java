@@ -274,7 +274,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         // Add a small margin to the right side to make accidental presses less frequent
         float selectorWidth = view.getWidth() * SauceView.controllerWidth * TabManager.selectorWidth;
         if (x < selectorWidth - (selectorWidth * .15f)) {
-          tabManager.setCurrentTabAt((int)x, (int)y);
+          tabManager.toggleCurrentTabAt((int)x, (int)y);
           view.invalidate();
 
           if (canVibrate)

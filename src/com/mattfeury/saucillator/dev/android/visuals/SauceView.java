@@ -13,12 +13,13 @@ import android.view.View;
 
 public class SauceView extends View {
 
-    //for the controller
-    public static final float controllerWidth = .6f,
-                              padHeight = 1f; //percentage
-    public static final float padWidth = 1.0f - controllerWidth;
+    // Widths are percentages of the total screen
+    public static final float controllerWidthOpenTab = .6f;
+    public static final float controllerWidthNoTab = controllerWidthOpenTab * TabManager.selectorWidthWithTabs;
 
-    //graphics elements
+    public static float controllerWidth = controllerWidthOpenTab,
+                              padHeight = 1f;
+
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
 
     FractalGen fractGen;
@@ -37,6 +38,13 @@ public class SauceView extends View {
     }
     public SauceView(Context context, AttributeSet attrs, int defStyle) {
     	 super(context, attrs, defStyle);
+    }
+    
+    public static void tabOpen() {
+      controllerWidth = controllerWidthOpenTab;
+    }
+    public static void tabClosed() {
+      controllerWidth = controllerWidthNoTab;
     }
 
     @Override
