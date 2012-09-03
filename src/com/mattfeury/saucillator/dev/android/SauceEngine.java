@@ -195,6 +195,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
 
       int pointerCount = event.getPointerCount();
+      final int actionIndex = event.getActionIndex();
+      final int actionId = event.getPointerId(actionIndex);
 
       /*
        * Loop through each finger.
@@ -214,6 +216,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
         } else {
           handleTouchForController(id, event);
         }
+      }
+
+      if (actionCode == MotionEvent.ACTION_POINTER_UP) {
+        fingersById.remove(actionId);
       }
 
       return true; // indicate event was handled
@@ -259,11 +265,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         if(osc.isPlaying() && ! osc.isReleasing())
           osc.togglePlayback();
       }
-
-      if (actionCode == MotionEvent.ACTION_POINTER_UP) {
-        fingersById.remove(actionId);
-      }
-
     }
     
     private void handleTouchForController(int id, MotionEvent event) {
