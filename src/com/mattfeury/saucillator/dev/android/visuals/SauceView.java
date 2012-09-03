@@ -124,5 +124,7 @@ public class SauceView extends View {
 
     public void addDrawable(Drawable drawable) {
       this.drawables.add(drawable);
+      
+      drawable.layoutChanged(getWidth(), getHeight());
     }
 }

@@ -1,15 +1,15 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
+import com.mattfeury.saucillator.dev.android.utilities.Box;
+import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 import com.mattfeury.saucillator.dev.android.visuals.RectButton;
 
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 public abstract class Tab {
-
-  // Remove me;
-  private java.util.Random gen = new java.util.Random();
-  private int id = gen.nextInt(1000) * gen.nextInt(10000);
 
   protected String name;
   protected TabSelector selector;
@@ -19,7 +19,7 @@ public abstract class Tab {
   
   public Tab(String name, AudioEngine engine) {
     this.engine = engine;
-    
+
     this.name = name;
     selector = new TabSelector(name);
     panel = new TabPanel(name);

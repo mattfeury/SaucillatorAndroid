@@ -13,5 +13,5 @@ public abstract class SmartRect extends RectF {
 
   public void set(int x, int y, int width, int height) {
     super.set(x, y, x + width, y + height);       
-  }
+  }  
 }

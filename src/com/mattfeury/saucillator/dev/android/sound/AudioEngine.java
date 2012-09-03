@@ -89,6 +89,11 @@ public class AudioEngine {
   public boolean isPlaying() {
     return dac.isPlaying();
   }
+  
+  // Hmm.... should fx things be here?
+  public boolean toggleLooperRecording() {
+    return looper.toggleRecording();
+  }
 
   public void stopAllOscillators() {
     Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();

@@ -61,6 +61,9 @@ public abstract class RectButton extends SmartRect implements Drawable {
   public void layoutChanged(int width, int height) {
     set(left, top, left + width, top + height); 
   }
+  public boolean contains(int x, int y) {
+    return super.contains(x, y);
+  }
 
   public void addOnClick(ClickHandler handler) {
     handlers.add(handler);
