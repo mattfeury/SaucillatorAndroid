@@ -272,7 +272,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
       if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN) {
         // Add a small margin to the right side to make accidental presses less frequent
-        float selectorWidth = view.getWidth() * SauceView.controllerWidth * TabManager.selectorWidth;
+        float selectorWidth = view.getWidth() * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth;
         if (x < selectorWidth - (selectorWidth * .15f)) {
           tabManager.toggleCurrentTabAt((int)x, (int)y);
           view.invalidate();

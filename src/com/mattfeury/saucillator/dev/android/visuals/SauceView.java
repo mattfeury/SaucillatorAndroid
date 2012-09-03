@@ -13,13 +13,6 @@ import android.view.View;
 
 public class SauceView extends View {
 
-    // Widths are percentages of the total screen
-    public static final float controllerWidthOpenTab = .6f;
-    public static final float controllerWidthNoTab = controllerWidthOpenTab * TabManager.selectorWidthWithTabs;
-
-    public static float controllerWidth = controllerWidthOpenTab,
-                              padHeight = 1f;
-
     private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
 
     FractalGen fractGen;
@@ -39,13 +32,6 @@ public class SauceView extends View {
     public SauceView(Context context, AttributeSet attrs, int defStyle) {
     	 super(context, attrs, defStyle);
     }
-    
-    public static void tabOpen() {
-      controllerWidth = controllerWidthOpenTab;
-    }
-    public static void tabClosed() {
-      controllerWidth = controllerWidthNoTab;
-    }
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -64,8 +50,8 @@ public class SauceView extends View {
     }
 
     public boolean isInPad(float x, float y) {
-      return x > (getMeasuredWidth() * controllerWidth) &&
-              (getMeasuredHeight() * padHeight) > y; 
+      return x > (getMeasuredWidth() * LayoutDefinitions.controllerWidth) &&
+              (getMeasuredHeight() * LayoutDefinitions.padHeight) > y; 
     }
     /**
      * Takes a point x,y on the screen and turns it into
@@ -73,8 +59,8 @@ public class SauceView extends View {
      * location in the pad.
      */
     public float[] scaleToPad(float x, float y) {
-      int controllerWidth = (int) (getWidth() * SauceView.controllerWidth),
-          padHeight = (int) (getHeight() * SauceView.padHeight);
+      int controllerWidth = (int) (getWidth() * LayoutDefinitions.controllerWidth),
+          padHeight = (int) (getHeight() * LayoutDefinitions.padHeight);
       final float padX = (x - controllerWidth) / (getWidth() - controllerWidth),
                   padY = (padHeight - y) / (float)padHeight;
 

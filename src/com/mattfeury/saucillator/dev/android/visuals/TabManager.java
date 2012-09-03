@@ -7,11 +7,6 @@ public class TabManager implements Drawable {
   private LinkedList<Tab> tabs = new LinkedList<Tab>();
   private Tab currentTab = null;
 
-  public static final float selectorWidthNoTabs = 1f;
-  public static final float selectorWidthWithTabs = 0.25f;
-
-  public static float selectorWidth = selectorWidthWithTabs;
-
   public TabManager() {
     // Add some tabs
     addTab(new Tab());
@@ -28,15 +23,13 @@ public class TabManager implements Drawable {
 
   private void setCurrentTab(Tab tab) {
     this.currentTab = tab;
-    
-    selectorWidth = selectorWidthWithTabs;
-    SauceView.tabOpen();
+
+    LayoutDefinitions.tabOpen();
   }
   public void hideCurrentTab() {
     this.currentTab = null;
     
-    selectorWidth = selectorWidthNoTabs;
-    SauceView.tabClosed();
+    LayoutDefinitions.tabClosed();
 }
   public void toggleCurrentTabAt(int x, int y) {
     for (Tab tab : tabs) {
@@ -69,12 +62,12 @@ public class TabManager implements Drawable {
     int i = 0;
     int tabCount = tabs.size();
     int selectorHeight = (int) (height / (float)tabCount);
-    int selectorWidth = (int) (width * SauceView.controllerWidth * TabManager.selectorWidth);
-    int tabWidth = (int) (width * SauceView.controllerWidth * (1f - TabManager.selectorWidth));
+    int selectorWidth = (int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth);
+    int tabWidth = (int) (width * LayoutDefinitions.controllerWidth * (1f - LayoutDefinitions.tabSelectorWidth));
 
     for (final Tab tab : tabs) {
       tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
-      tab.setTab((int) (width * SauceView.controllerWidth * TabManager.selectorWidth), 0, tabWidth, height);
+      tab.setTab((int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth), 0, tabWidth, height);
       i++;
     }
   }
