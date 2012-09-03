@@ -94,6 +94,12 @@ public class AudioEngine {
   public boolean toggleLooperRecording() {
     return looper.toggleRecording();
   }
+  public void resetLooper() {
+    looper.reset();
+  }
+  public void undoLooper() {
+    looper.undo();
+  }
 
   public void stopAllOscillators() {
     Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();

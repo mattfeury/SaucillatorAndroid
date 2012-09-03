@@ -14,5 +14,17 @@ public class LooperTab extends Tab {
         engine.toggleLooperRecording();
       }
     });
+    panel.addChild(new RectButton("Undo") {
+      @Override
+      public void click() {
+        engine.undoLooper();
+      }
+    });
+    panel.addChild(new RectButton("Reset") {
+      @Override
+      public void click() {
+        engine.resetLooper();
+      }
+    });
   }
 }

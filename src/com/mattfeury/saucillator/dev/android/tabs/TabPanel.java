@@ -55,7 +55,7 @@ public class TabPanel extends SmartRect {
     int contentHeight = (int) (height - fontSize*4) / childCount;
 
     for (Drawable child : children) {
-      child.set((int) (left + contentPadding), (int) (top + contentPadding), contentWidth, contentHeight);
+      child.set((int) (left + contentPadding), (int) ((i * contentHeight) + top + contentPadding), contentWidth, contentHeight);
       i++;
     }
   }
