@@ -7,24 +7,35 @@ public class TabManager implements Drawable {
   private LinkedList<Tab> tabs = new LinkedList<Tab>();
   private Tab currentTab = null;
 
-  private final float selectorWidth = 0.25f;
-  private final float tabWidth = 1f - this.selectorWidth;
+  public static final float selectorWidth = 0.25f;
+  public static final float tabWidth = 1f - selectorWidth;
 
   public TabManager() {
     // Add some tabs
     addTab(new Tab());
     addTab(new Tab());
   }
-  
+
   private void addTab(Tab tab) {
     tabs.add(tab);
-    
+
     if (tabs.size() == 1)
       setCurrentTab(tab);
   }
 
   private void setCurrentTab(Tab tab) {
     this.currentTab = tab;
+  }
+  public void setCurrentTabAt(int x, int y) {
+    for (Tab tab : tabs) {
+      if (tab.isInSelector(x, y) && ! isCurrent(tab)) {
+        setCurrentTab(tab);
+        return;
+      }
+    }
+  }
+  public boolean isCurrent(Tab tab) {
+    return tab.equals(currentTab);
   }
 
   public void draw(Canvas canvas) {

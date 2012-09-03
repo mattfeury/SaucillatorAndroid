@@ -4,8 +4,14 @@ import android.graphics.Canvas;
 
 public class Tab {
 
-  private RectButton selector = new RectButton("Testy");
-  private RectButton tab = new RectButton("HI I'M A TAB BITCH");
+  private java.util.Random gen = new java.util.Random();
+  private int id = gen.nextInt(100000);
+  private RectButton selector = new RectButton(""+id);
+  private RectButton tab = new RectButton("HI I'M A TAB BITCH : " + id);
+  
+  public boolean isInSelector(int x, int y) {
+    return selector.contains(x, y);
+  }
 
   public void drawSelector(Canvas canvas, int x, int y, int selectorWidth, int selectorHeight, boolean isCurrent) {
     if (isCurrent)

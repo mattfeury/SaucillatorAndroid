@@ -266,20 +266,21 @@ public class SauceEngine extends Activity implements OnTouchListener {
       final int actionCode = action & MotionEvent.ACTION_MASK;
       final int actionIndex = event.getActionIndex();
       final int actionId = event.getPointerId(actionIndex);
+      final int index = event.findPointerIndex(id);
+      final float y = event.getY(index);
+      final float x = event.getX(index);
 
-      /*if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id)
-          || actionCode == MotionEvent.ACTION_DOWN) {
-
+      if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN) {
         // Add a small margin to the right side to make accidental presses less frequent
-        float controllerWidth = maxWidth * SauceView.controllerWidth;
-        if (x < controllerWidth - (controllerWidth * .15f)) {
-          //handleTouchForController(event);
-        }
-      }*/
+        float selectorWidth = view.getWidth() * SauceView.controllerWidth * TabManager.selectorWidth;
+        if (x < selectorWidth - (selectorWidth * .15f)) {
+          tabManager.setCurrentTabAt((int)x, (int)y);
+          view.invalidate();
 
-      // do something better
-      if (canVibrate)
-        vibrator.vibrate(VIBRATE_SPEED);
+          if (canVibrate)
+            vibrator.vibrate(VIBRATE_SPEED);
+        }
+      }
 
       /*int buttonHeight = maxHeight / SauceView.numButtons;          
       // Looper buttons
