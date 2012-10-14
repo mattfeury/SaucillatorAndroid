@@ -88,6 +88,9 @@ public class TabPanel extends SmartRect {
         if (child instanceof RectButton) {
           ((RectButton)child).click();
           return new Full<Fingerable>((Fingerable)child);
+        } else if (child instanceof Fingerable) {
+          ((Fingerable)child).handleTouch(id, event);
+          return new Full<Fingerable>((Fingerable)child);
         }
       }
     }
