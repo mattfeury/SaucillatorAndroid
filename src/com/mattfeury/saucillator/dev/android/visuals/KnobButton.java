@@ -17,9 +17,7 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
   protected Paint bg, shadow, text, status;
   protected String name;
 
-  // 0 - 1. Represents the current status
-  private float progress, progressSin, progressCos = 0f;
-  private int lastX, lastY = 0;
+  private float progress, progressSin, progressCos, lastR, lastTheta = 0f;
 
   public static final int width = 75,
                           textSize = 14;
@@ -65,6 +63,8 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     double radianAngle = Math.toRadians(progressAngle);
     progressSin = (float) Math.cos(radianAngle);
     progressCos = (float) Math.sin(radianAngle);
+
+    onChange(progress);
   }
 
   public void draw(Canvas canvas) {
@@ -96,17 +96,21 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     final int y = (int) event.getY(index);
     final int x = (int) event.getX(index);
 
-    // This sucks. FIXME
-    // Gimme some good UI
-    if (lastX - x < 0) {
-      changeProgress(progress + .02f);
-    } else {
-      changeProgress(progress - .02f);
+    int centerX = (int) (left + width / 2f);
+    int centerY = (int) (top + width / 2f);
+    int dx = x - centerX;
+    int dy = y - centerY;
+    float r = (float) Math.sqrt(dx * dx + dy * dy);
+    float theta = Utilities.roundFloat((float) Math.atan(dy / (float)dx), 2);
+
+    // Change passed on difference of angles. If angles are the same, compare distance.
+    if (theta > lastTheta || (theta == lastTheta && r > lastR && x > centerX) || (theta == lastTheta && r < lastR && x < centerX)) {
+      changeProgress(progress + .0075f);
+    } else if (theta < lastTheta || (theta == lastTheta && r < lastR && x > centerX) || (theta == lastTheta && r > lastR && x < centerX)) {
+      changeProgress(progress - .0075f);
     }
 
-    lastX = x;
-    lastY = y;
-
-    onChange(progress);
+    lastTheta = theta;
+    lastR = r;
   }
 }
