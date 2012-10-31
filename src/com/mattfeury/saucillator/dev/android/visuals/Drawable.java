@@ -8,4 +8,6 @@ public interface Drawable {
 
   public void set(int x, int y, int width, int height);
   public boolean contains(int x, int y);
+  
+  public boolean shouldClearFloat();
 }

@@ -1,5 +1,6 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.utilities.*;
@@ -43,20 +44,51 @@ public class TabPanel extends SmartRect {
     recalculateChildren();
   }
 
-  // recalculate children locations
+  /**
+   * Recalculate children positioning
+   * 
+   * We use a very simple templating system here, based on tables:
+   * All Drawables have a shouldClearFloat that determines if it should create a new row.
+   * Anything else is assumed to be on the same row. Column widths are distributed evenly
+   * based on the number of columns in a row. 
+   */
   public void recalculateChildren() {
-    int i = 0;
     int width = (int) (right - left);
     int height = (int) (bottom - top);
 
-    int childCount = children.size();
+    HashMap<Integer, Integer> columnCountPerRow = new HashMap<Integer, Integer>();
+    int row = 0;
+    for (Drawable child : children) {
+      Integer columnCount = columnCountPerRow.get(row);
+      if (columnCount == null) columnCount = 0;
+
+      if (child.shouldClearFloat()) {
+        columnCountPerRow.put(++row, 1);
+      } else {
+        columnCountPerRow.put(row, columnCount + 1);
+      }
+    }
+
     int contentPadding = (int) (width * TabPanel.contentPadding);
     int contentWidth = (int) (width - contentPadding * 2);
-    int contentHeight = (int) (height - fontSize*4) / childCount;
+    int rowHeight = (int) (height - fontSize*4) / (row > 0 ? row + 1 : 1); // this is now the total row count, but it was 0-indexed
 
+    int column = 0;
+    row = 0;
     for (Drawable child : children) {
-      child.set((int) (left + contentPadding), (int) ((i * contentHeight) + top + contentPadding), contentWidth, contentHeight);
-      i++;
+      if (child.shouldClearFloat()) {
+        row++;
+        column = 0;
+      }
+
+      Integer columnCount = columnCountPerRow.get(row);
+      int columnWidth = contentWidth / (columnCount == null || columnCount == 0 ? 1 : columnCount);
+
+      int newLeft = (int)(left + contentPadding) + column * columnWidth;
+      int newHeight = (int)(top + contentPadding) + (row * rowHeight);
+      child.set(newLeft, newHeight, columnWidth, rowHeight);
+
+      column++;
     }
   }
 

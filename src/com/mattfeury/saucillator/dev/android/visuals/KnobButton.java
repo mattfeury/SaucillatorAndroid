@@ -113,4 +113,9 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     lastTheta = theta;
     lastR = r;
   }
+
+  @Override
+  public boolean shouldClearFloat() {
+    return false;
+  }
 }

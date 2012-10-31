@@ -98,4 +98,9 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
     focused = ! focused;
     return focused;
   }
+  
+  @Override
+  public boolean shouldClearFloat() {
+    return false;
+  }
 }

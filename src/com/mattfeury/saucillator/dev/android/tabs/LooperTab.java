@@ -13,17 +13,29 @@ public class LooperTab extends Tab {
       public void click() {
         engine.toggleLooperRecording();
       }
+      @Override
+      public boolean shouldClearFloat() {
+        return true;
+      }
     });
     panel.addChild(new RectButton("Undo") {
       @Override
       public void click() {
         engine.undoLooper();
       }
+      @Override
+      public boolean shouldClearFloat() {
+        return true;
+      }
     });
     panel.addChild(new RectButton("Reset") {
       @Override
       public void click() {
         engine.resetLooper();
+      }
+      @Override
+      public boolean shouldClearFloat() {
+        return true;
       }
     });
   }

@@ -104,4 +104,9 @@ public class TabManager implements Drawable {
       return new Empty<Fingerable>();
     }
   }
+
+  @Override
+  public boolean shouldClearFloat() {
+    return true;
+  }
 }
