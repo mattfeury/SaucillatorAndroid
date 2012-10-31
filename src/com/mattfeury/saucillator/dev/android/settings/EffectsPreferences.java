@@ -38,7 +38,7 @@ public class EffectsPreferences extends Activity {
     seek.setMax(AudioEngine.MOD_DEPTH_MAX);
 
     seek = (SeekBar) findViewById(R.id.delayRateSlider);
-    seek.setMax(AudioEngine.DELAY_MAX);
+    seek.setMax(AudioEngine.DELAY_RATE_MAX);
 
     // Bind Sliders to Values
     ViewBinders.bindSliderToVariable(this, R.id.modRateSlider, R.id.modRateValue, modRate);

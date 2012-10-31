@@ -25,7 +25,7 @@ public class AudioEngine {
   private String scaleId = Scale.PENTATONIC.toString();
   public int[] scale = Theory.pentatonicScale;
 
-  public final static int DELAY_MAX = UGen.SAMPLE_RATE; //Is this right?
+  public final static int DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
   public final static int MOD_RATE_MAX = 20;
   public final static int MOD_DEPTH_MAX = 1000;
 
@@ -166,6 +166,15 @@ public class AudioEngine {
     if (osc != null)
       osc.setFreqByOffset(scale, offset);
   }
+  public void updateOscillatorProperty(OscillatorUpdater updater) {
+    updater.update(currentOscillator);
+    Collection<ComplexOsc> oscs = oscillatorsById.values();
+
+    for (ComplexOsc osc : oscs)
+      if (osc != null)
+        updater.update(osc);
+  }
+
   // Update oscillators based on the settings parameters.
   private void updateOscSettings() {
     float newFreq = Theory.getFrequencyForNote(note + 1, octave);

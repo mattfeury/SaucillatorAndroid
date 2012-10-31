@@ -8,6 +8,7 @@ import com.mattfeury.saucillator.dev.android.instruments.*;
 import com.mattfeury.saucillator.dev.android.settings.ModifyInstrument;
 import com.mattfeury.saucillator.dev.android.settings.Settings;
 import com.mattfeury.saucillator.dev.android.sound.*;
+import com.mattfeury.saucillator.dev.android.tabs.FxTab;
 import com.mattfeury.saucillator.dev.android.tabs.LooperTab;
 import com.mattfeury.saucillator.dev.android.tabs.TabManager;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
@@ -121,6 +122,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         this.tabManager = new TabManager();
         
         view.addDrawable(tabManager);
+        tabManager.addTab(new FxTab(audioEngine));
         tabManager.addTab(new LooperTab(audioEngine));
 
         // TODO setup visual layout that depends on audio shtuff
@@ -210,7 +212,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
         float y = event.getY(i);
         float x = event.getX(i);
-        
+
         if (view.isInPad(x,y)) {
           handleTouchForOscillator(id, event);
         } else {

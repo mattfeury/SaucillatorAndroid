@@ -114,11 +114,17 @@ public class ComplexOsc extends Oscillator implements Fingerable {
   }
 
   // LFO methods
+  public void setModRate(float progress) {
+    setModRate((int)(progress * AudioEngine.MOD_RATE_MAX));
+  }
   public void setModRate(int rate) {
     this.modRate = rate;
 
     for(Oscillator osc : components)
       osc.setModRate(rate);
+  }
+  public void setModDepth(float progress) {
+    setModDepth((int)(progress * AudioEngine.MOD_DEPTH_MAX));
   }
   public void setModDepth(int depth) {
     this.modDepth = depth;
@@ -148,6 +154,10 @@ public class ComplexOsc extends Oscillator implements Fingerable {
   public void setDelayRate(int rate) {
     delay.setRate(rate);
   }
+  public void setDelayRate(float percentage) {
+    setDelayRate((int)(percentage * AudioEngine.DELAY_RATE_MAX));
+  }
+
   public int getDelayRate() {
     return delay.getRate();
   }
