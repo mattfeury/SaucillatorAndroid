@@ -78,6 +78,8 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     canvas.drawLine(xCenter + radius * progressCos, yCenter - radius * progressSin, xCenter, yCenter, status);
   }
   public void layoutChanged(int width, int height) {
+    //FIXME what is this i don't even
+    //maybe just uncomment this and see what happens
     //set(left, top, left + width, top + height); 
   }
   public boolean contains(int x, int y) {
@@ -105,9 +107,10 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
 
     // Change passed on difference of angles. If angles are the same, compare distance.
     if (theta > lastTheta || (theta == lastTheta && r > lastR && x > centerX) || (theta == lastTheta && r < lastR && x < centerX)) {
-      changeProgress(progress + .0075f);
+      // FIXME this magic .015f. it should probably not increment progress, but set it directly to the angle of the finger to the center 
+      changeProgress(progress + .015f);
     } else if (theta < lastTheta || (theta == lastTheta && r < lastR && x > centerX) || (theta == lastTheta && r > lastR && x < centerX)) {
-      changeProgress(progress - .0075f);
+      changeProgress(progress - .015f);
     }
 
     lastTheta = theta;
