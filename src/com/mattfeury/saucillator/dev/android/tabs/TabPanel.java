@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.templates.SmartRect;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 

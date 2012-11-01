@@ -1,4 +1,6 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.templates;
+
+import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -26,6 +28,7 @@ public abstract class SmartRect extends RectF implements Drawable {
     canvas.drawRect(this, defaultPaint);
   }
   public void layoutChanged(int width, int height) {
+    // This isn't right but it's not used right now. Width and height are the values for the entire view
     set(left, top, left + width, top + height); 
   }
   public boolean contains(int x, int y) {
