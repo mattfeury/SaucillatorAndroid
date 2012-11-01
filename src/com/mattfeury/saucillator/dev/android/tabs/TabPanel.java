@@ -54,6 +54,7 @@ public class TabPanel extends SmartRect {
     int width = (int) (right - left);
     int height = (int) (bottom - top);
 
+    // Determine table structure
     HashMap<Integer, Integer> columnCountPerRow = new HashMap<Integer, Integer>();
     int row = 0;
     for (Drawable child : children) {
@@ -67,9 +68,11 @@ public class TabPanel extends SmartRect {
       }
     }
 
+    // Do the math and position the table elements appropriately
+    int totalRows = row + 1; // row was 0 indexed
     int contentPadding = (int) (width * TabPanel.contentPadding);
     int contentWidth = (int) (width - contentPadding * 2);
-    int rowHeight = (int) (height - fontSize*4) / (row > 0 ? row + 1 : 1); // this is now the total row count, but it was 0-indexed
+    int rowHeight = (int) (height - fontSize * 4) / totalRows;
 
     int column = 0;
     row = 0;
@@ -101,7 +104,7 @@ public class TabPanel extends SmartRect {
   @Override
   public void set(int x, int y, int width, int height) {
     super.set(x, y, width, height);
-    
+
     recalculateChildren();
   }
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {
