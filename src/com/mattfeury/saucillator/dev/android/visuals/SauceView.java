@@ -13,8 +13,6 @@ import android.view.View;
 
 public class SauceView extends View {
 
-    private HashMap<Integer, Finger> fingers = new HashMap<Integer, Finger>();
-
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
     private Paint backColor = new Paint(Color.BLACK);
@@ -69,34 +67,31 @@ public class SauceView extends View {
  
     @Override
     public void onDraw(Canvas canvas) {    	
-    	//draw pad
       if (fractGen == null)
         fractGen = new FractalGen(canvas);
 
-      fX = (fingers.values().size() > 0 ? 0 : fX);
-      fY = (fingers.values().size() > 0 ? 0 : fY);
-
-      for(Finger f : fingers.values()){
-        if (f.id == 0) {
-          fX += f.x;
-          fY += f.y;
-        } else {
-          //backColor.setColor(Color.HSVToColor(new float[]{(f.x / canvas.getWidth())* 360, f.y / canvas.getHeight(), f.y / canvas.getHeight()}));
-          fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
-        }
-      }
-
-      fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-      fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-
-
       canvas.drawColor(backColor.getColor());
 
-      if(visuals)		
-        fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
+      if(visuals)	{
+        // FIXME we don't got no fingas no mo
+        /*fX = (fingers.values().size() > 0 ? 0 : fX);
+        fY = (fingers.values().size() > 0 ? 0 : fY);
 
-      for(Finger f : fingers.values())
-        f.draw(canvas);
+        for(Finger f : fingers.values()){
+          if (f.id == 0) {
+            fX += f.x;
+            fY += f.y;
+          } else {
+            //backColor.setColor(Color.HSVToColor(new float[]{(f.x / canvas.getWidth())* 360, f.y / canvas.getHeight(), f.y / canvas.getHeight()}));
+            fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
+          }
+        }
+
+        fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
+        fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
+
+        fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);*/
+      }
 
       for (Drawable drawable : drawables)
         drawable.draw(canvas);

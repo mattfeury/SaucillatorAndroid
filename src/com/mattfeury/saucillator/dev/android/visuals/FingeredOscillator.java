@@ -18,12 +18,10 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
   
   protected ComplexOsc osc;
   
-  // We *just* need this to scale our x values appropriately. It kinda sucks to pass it around just for that.
-  // Consider an alternative.
+  // We only need this to scale our x values appropriately. It kinda sucks to pass it around just for that.
+  // TODO Consider an alternative.
   protected SauceView view;
 
-  // From Finger.java
-  //int id;
   float x, y, size, pressure;
   float PRESSURE = 0.2f; //defaults because some screens don't report these and hence they won't be visible
   float SIZE = 0.1f;
@@ -53,7 +51,7 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
     this.size = Math.max(SIZE, size);
     this.pressure = Math.max(PRESSURE, pressure);
 
-    set(x, y, 0, 0); // width and height are calculated internally
+    set(x, y, 0, 0); // width and height are calculated internally via our finger size
   }
 
   @Override
