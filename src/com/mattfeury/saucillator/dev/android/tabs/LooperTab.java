@@ -1,7 +1,7 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
-import com.mattfeury.saucillator.dev.android.visuals.RectButton;
+import com.mattfeury.saucillator.dev.android.templates.RectButton;
 
 public class LooperTab extends Tab {
 

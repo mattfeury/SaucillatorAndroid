@@ -32,15 +32,13 @@ public class TabPanel extends SmartRect {
     bg.setARGB(200, 12, 81, 4);
 
     text = new Paint();
-    text.setARGB(255, 255,255,255);
+    text.setARGB(255, 255, 255, 255);
     text.setTextSize(fontSize);
     text.setTextAlign(Align.CENTER);
   }
   
   public void addChild(Drawable child) {
-    // TODO make different layouts, not just linear ones
     children.add(child);
-
     recalculateChildren();
   }
 

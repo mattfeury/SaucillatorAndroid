@@ -1,11 +1,9 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.dev.android.instruments.Oscillator;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.sound.OscillatorUpdater;
-import com.mattfeury.saucillator.dev.android.visuals.KnobButton;
-import com.mattfeury.saucillator.dev.android.visuals.RectButton;
+import com.mattfeury.saucillator.dev.android.templates.*;
 
 public class FxTab extends Tab {
 

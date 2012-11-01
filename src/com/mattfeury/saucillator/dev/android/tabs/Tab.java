@@ -1,10 +1,10 @@
 package com.mattfeury.saucillator.dev.android.tabs;
 
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
+import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
-import com.mattfeury.saucillator.dev.android.visuals.RectButton;
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;

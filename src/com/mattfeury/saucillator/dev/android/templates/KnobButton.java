@@ -1,15 +1,12 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
-import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
-import com.mattfeury.saucillator.dev.android.utilities.KnobHandler;
-import com.mattfeury.saucillator.dev.android.utilities.Utilities;
+import com.mattfeury.saucillator.dev.android.utilities.*;
+import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
@@ -67,6 +64,7 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     onChange(progress);
   }
 
+  @Override
   public void draw(Canvas canvas) {
     int radius = width / 2,
         xCenter = (int) (left + radius),
@@ -77,13 +75,11 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     // Marker
     canvas.drawLine(xCenter + radius * progressCos, yCenter - radius * progressSin, xCenter, yCenter, status);
   }
+  
+  @Override
   public void layoutChanged(int width, int height) {
     //FIXME what is this i don't even
-    //maybe just uncomment this and see what happens
-    //set(left, top, left + width, top + height); 
-  }
-  public boolean contains(int x, int y) {
-    return super.contains(x, y);
+    // See if we need to recalculate knob dimensions, otherwise just remove this
   }
 
   public void addOnChange(KnobHandler handler) {

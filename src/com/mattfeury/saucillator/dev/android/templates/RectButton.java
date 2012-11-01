@@ -1,9 +1,11 @@
-package com.mattfeury.saucillator.dev.android.visuals;
+package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.visuals.Drawable;
+import com.mattfeury.saucillator.dev.android.visuals.SmartRect;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -46,7 +48,8 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
   public String getName() {
     return name;
   }
-  
+
+  @Override
   public void draw(Canvas canvas) {
     if (focused) {
       canvas.drawRect(left, top, right, top + borderWidth, focusedBg); //top line
@@ -59,12 +62,6 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
       
       canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, text);
     }
-  }
-  public void layoutChanged(int width, int height) {
-    set(left, top, left + width, top + height); 
-  }
-  public boolean contains(int x, int y) {
-    return super.contains(x, y);
   }
 
   public void addOnClick(ClickHandler handler) {
