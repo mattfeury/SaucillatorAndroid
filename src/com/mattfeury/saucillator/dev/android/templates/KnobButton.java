@@ -10,7 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
-public class KnobButton extends SmartRect implements Drawable, Fingerable {
+public class KnobButton extends SmartRect implements Fingerable {
   protected Paint bg, shadow, text, status;
   protected String name;
 
@@ -67,12 +67,13 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
   @Override
   public void draw(Canvas canvas) {
     int radius = width / 2,
-        xCenter = (int) (left + radius),
-        yCenter = (int) (top + radius);
+        rectCenterX = (int) ((right - left) / 2f + left),
+        rectCenterY = (int) ((bottom - top) / 2f + top),
+        xCenter = rectCenterX,
+        yCenter = rectCenterY;
+
     canvas.drawCircle(xCenter, yCenter, radius, bg);
     canvas.drawText(name, xCenter, yCenter + textSize / 2, text);
-
-    // Marker
     canvas.drawLine(xCenter + radius * progressCos, yCenter - radius * progressSin, xCenter, yCenter, status);
   }
   
