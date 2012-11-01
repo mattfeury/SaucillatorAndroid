@@ -117,14 +117,9 @@ public class TabPanel extends SmartRect {
     final int x = (int) event.getX(index);
 
     for (Drawable child : children) {
-      if (child.contains(x, y)) {
-        if (child instanceof RectButton) {
-          ((RectButton)child).click();
-          return new Full<Fingerable>((Fingerable)child);
-        } else if (child instanceof Fingerable) {
-          ((Fingerable)child).handleTouch(id, event);
-          return new Full<Fingerable>((Fingerable)child);
-        }
+      if (child.contains(x, y) && child instanceof Fingerable) {
+        ((Fingerable)child).handleTouch(id, event);
+        return new Full<Fingerable>((Fingerable)child);
       }
     }
     return new Empty<Fingerable>();
