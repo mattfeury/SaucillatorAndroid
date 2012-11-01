@@ -57,8 +57,8 @@ public class ParametricEQ extends UGen {
 
       A = (float) Math.pow(10f, gain / 40.0f);
       omega = (float) ((2f * Math.PI * frequency) / SAMPLE_RATE);
-      sn = (float) Math.sin(omega);
-      cs = (float) Math.cos(omega);
+      sn = (float) android.util.FloatMath.sin(omega);
+      cs = (float) android.util.FloatMath.cos(omega);
       alpha = (float) (sn / (2.0f * q));
 
       b0 = 1f + alpha * A;

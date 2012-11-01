@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
+import android.util.FloatMath;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -57,9 +58,9 @@ public class KnobButton extends SmartRect implements Fingerable {
     this.progress = f;
 
     float progressAngle = (Utilities.scale(f / 1f, 45, 315) + 180) % 360;
-    double radianAngle = Math.toRadians(progressAngle);
-    progressSin = (float) Math.cos(radianAngle);
-    progressCos = (float) Math.sin(radianAngle);
+    float radianAngle = (float)Math.toRadians(progressAngle);
+    progressSin = FloatMath.cos(radianAngle);
+    progressCos = FloatMath.sin(radianAngle);
 
     onChange(progress);
   }
@@ -99,7 +100,7 @@ public class KnobButton extends SmartRect implements Fingerable {
     int centerY = (int) (top + width / 2f);
     int dx = x - centerX;
     int dy = y - centerY;
-    float r = (float) Math.sqrt(dx * dx + dy * dy);
+    float r = FloatMath.sqrt(dx * dx + dy * dy);
     float theta = Utilities.roundFloat((float) Math.atan(dy / (float)dx), 2);
 
     // Change passed on difference of angles. If angles are the same, compare distance.

@@ -4,15 +4,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
+import android.util.FloatMath;
 
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.templates.SmartRect;
-import com.mattfeury.saucillator.dev.android.utilities.Box;
-import com.mattfeury.saucillator.dev.android.utilities.Empty;
-import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
-import com.mattfeury.saucillator.dev.android.utilities.Full;
+import com.mattfeury.saucillator.dev.android.utilities.*;
 
 public class FingeredOscillator extends SmartRect implements Fingerable {
   
@@ -39,7 +37,7 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
   public void draw(Canvas canvas) {
     int width = canvas.getWidth();
     int height = canvas.getHeight();
-    int pitchColor = Color.argb((int)(500 * pressure),(int)Math.floor((x/(float)width)*255), 255 - (int)Math.floor((y/(float)height)*255), 0);
+    int pitchColor = Color.argb((int)(500 * pressure),(int)FloatMath.floor((x/(float)width)*255), 255 - (int)FloatMath.floor((y/(float)height)*255), 0);
     color.setColor(pitchColor);
 
     canvas.drawCircle(x, y, size * BASE_SIZE, color);

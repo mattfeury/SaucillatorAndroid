@@ -9,6 +9,7 @@ import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.graphics.*;
 import android.graphics.Paint.Align;
+import android.util.SparseIntArray;
 import android.view.MotionEvent;
 
 public class TabPanel extends SmartRect {
@@ -56,11 +57,10 @@ public class TabPanel extends SmartRect {
     int height = (int) (bottom - top);
 
     // Determine table structure
-    HashMap<Integer, Integer> columnCountPerRow = new HashMap<Integer, Integer>();
+    SparseIntArray columnCountPerRow = new SparseIntArray();
     int row = 0;
     for (Drawable child : children) {
-      Integer columnCount = columnCountPerRow.get(row);
-      if (columnCount == null) columnCount = 0;
+      int columnCount = columnCountPerRow.get(row, 0);
 
       if (child.shouldClearFloat()) {
         columnCountPerRow.put(++row, 1);
@@ -83,8 +83,8 @@ public class TabPanel extends SmartRect {
         column = 0;
       }
 
-      Integer columnCount = columnCountPerRow.get(row);
-      int columnWidth = contentWidth / (columnCount == null || columnCount == 0 ? 1 : columnCount);
+      int columnCount = columnCountPerRow.get(row, 1);
+      int columnWidth = contentWidth / columnCount;
 
       int newLeft = (int)(left + contentPadding) + column * columnWidth;
       int newHeight = (int)(top + contentPadding) + (row * rowHeight);
