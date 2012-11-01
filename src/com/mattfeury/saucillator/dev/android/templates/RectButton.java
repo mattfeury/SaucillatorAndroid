@@ -2,10 +2,12 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
+import com.mattfeury.saucillator.dev.android.utilities.Empty;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.utilities.Full;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
-import com.mattfeury.saucillator.dev.android.visuals.SmartRect;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -71,7 +73,7 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
     for (ClickHandler handler : handlers)
       handler.onClick();
   }
-  public void handleTouch(int id, MotionEvent event) {
+  public Box<Fingerable> handleTouch(int id, MotionEvent event) {
     final int action = event.getAction();
     final int actionCode = action & MotionEvent.ACTION_MASK;
     final int actionIndex = event.getActionIndex();
@@ -80,6 +82,9 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
     // TODO add vibrator here
     if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN)
       click();
+
+    // We don't want this to keep tracking subsequent touch events, so we handle it and return Empty
+    return new Empty<Fingerable>();
   }
 
   public void setFocus(boolean focus) {

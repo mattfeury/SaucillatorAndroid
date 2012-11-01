@@ -89,7 +89,7 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
     for (KnobHandler handler : handlers)
       handler.onChange(progress);
   }
-  public void handleTouch(int id, MotionEvent event) {
+  public Box<Fingerable> handleTouch(int id, MotionEvent event) {
     final int index = event.findPointerIndex(id);
     final int y = (int) event.getY(index);
     final int x = (int) event.getX(index);
@@ -111,6 +111,8 @@ public class KnobButton extends SmartRect implements Drawable, Fingerable {
 
     lastTheta = theta;
     lastR = r;
+
+    return new Full<Fingerable>(this);
   }
 
   @Override
