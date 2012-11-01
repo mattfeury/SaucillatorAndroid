@@ -190,9 +190,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       
       if (actionCode == MotionEvent.ACTION_UP && audioEngine.isPlaying()) { //last finger lifted. stop playback
         fingersById.clear();
-
         audioEngine.stopAllOscillators();
         view.clearFingers();
+
         return true;
       }
 
@@ -206,18 +206,32 @@ public class SauceEngine extends Activity implements OnTouchListener {
        * will be a POINTER_DOWN call, but the first button will interpret it first since it has a smaller index. That's bad.
        */
       for (int i = pointerCount - 1; i > -1; i--) {
-        int id = event.getPointerId(i);
+        final int id = event.getPointerId(i);
         if (id < 0)
           continue;
 
         float y = event.getY(i);
         float x = event.getX(i);
 
-        if (view.isInPad(x,y)) {
+        Fingerable controlled = fingersById.get(id);
+
+        if (controlled != null) {
+          Box<Fingerable> fingered = controlled.handleTouch(id, event);
+
+          // It may return empty if it no longer wishes to handle touches
+          if (! fingered.isDefined()) {
+            fingersById.remove(id);
+
+            if (controlled instanceof Drawable) {
+              view.removeDrawable(((Drawable)controlled));
+            }
+          }
+        } else if (view.isInPad(x,y)) {
           handleTouchForOscillator(id, event);
         } else {
           handleTouchForController(id, event);
         }
+        view.invalidate();
       }
 
       if (actionCode == MotionEvent.ACTION_POINTER_UP) {
@@ -229,44 +243,20 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private void handleTouchForOscillator(int id, MotionEvent event) {
       ComplexOsc osc = audioEngine.getOrCreateOscillator(id);
-      Object controlled = fingersById.get(id);
+      Fingerable controlled = fingersById.get(id);
       boolean fingerDefined = controlled != null;
 
       if (osc == null || (! osc.equals(controlled) && (fingerDefined || isFingered(osc)))) return;
 
-      if (! fingerDefined)
-        fingersById.put(id, osc);
-
       final int index = event.findPointerIndex(id);
-      final int action = event.getAction();
-      final int actionCode = action & MotionEvent.ACTION_MASK;
-      final int actionIndex = event.getActionIndex();
-      final int actionId = event.getPointerId(actionIndex);
+      final int y = (int) event.getY(index);
+      final int x = (int) event.getX(index);
 
-      final float y = event.getY(index);
-      final float x = event.getX(index);
-      final float[] scaledCoords = view.scaleToPad(x,y);
-      final float xScaled = scaledCoords[0];
-      final float yScaled = scaledCoords[1];
+      FingeredOscillator fingerableOsc = new FingeredOscillator(view, osc, x, y);
+      fingersById.put(id, fingerableOsc);
+      view.addDrawable(fingerableOsc);
 
-      if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
-        view.updateOrCreateFinger(id, event.getX(index), event.getY(index), event.getSize(index), event.getPressure(index));
-
-        //play if we were stopped
-        if(! osc.isPlaying())
-          osc.togglePlayback();
-        else if (osc.isReleasing())
-          osc.startAttack();
-
-        audioEngine.updateFrequency(id, (int)(yScaled * TRACKPAD_GRID_SIZE));
-        audioEngine.updateAmplitude(id, xScaled);
-      } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
-        //finger up. kill the osc
-        view.removeFinger(id);
-
-        if(osc.isPlaying() && ! osc.isReleasing())
-          osc.togglePlayback();
-      }
+      fingerableOsc.handleTouch(id, event);
     }
     
     private void handleTouchForController(final int id, MotionEvent event) {

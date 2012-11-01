@@ -61,30 +61,10 @@ public class SauceView extends View {
     public float[] scaleToPad(float x, float y) {
       int controllerWidth = (int) (getWidth() * LayoutDefinitions.controllerWidth),
           padHeight = (int) (getHeight() * LayoutDefinitions.padHeight);
-      final float padX = (x - controllerWidth) / (getWidth() - controllerWidth),
+      final float padX = Math.max((x - controllerWidth) / (getWidth() - controllerWidth), 0),
                   padY = (padHeight - y) / (float)padHeight;
 
       return new float[]{padX, padY};
-    }
-
-    public void updateOrCreateFinger(int id, float x, float y, float size, float pressure) {
-      Finger maybe = fingers.get((Integer)id);
-      if (maybe != null) {
-        maybe.update(x, y, size, pressure);
-      } else {
-        Finger f = new Finger(id, x, y, size, pressure);
-        fingers.put((Integer)id, f);
-      }
-      invalidate();
-    }
-
-    public void clearFingers() {
-      fingers.clear();
-      invalidate();
-    }
-    public void removeFinger(int id) {
-      fingers.remove((Integer)id);
-      invalidate();    
     }
  
     @Override
@@ -126,5 +106,19 @@ public class SauceView extends View {
       this.drawables.add(drawable);
 
       drawable.layoutChanged(getWidth(), getHeight());
+    }
+    public void removeDrawable(Drawable drawable) {
+      this.drawables.remove(drawable);
+    }
+    public void clearFingers() {
+      LinkedList<Drawable> fingers = new LinkedList<Drawable>();
+      for (Drawable drawable : drawables) {
+        if (drawable instanceof FingeredOscillator)
+          fingers.add(drawable);
+      }
+
+      drawables.removeAll(fingers);
+
+      invalidate();
     }
 }

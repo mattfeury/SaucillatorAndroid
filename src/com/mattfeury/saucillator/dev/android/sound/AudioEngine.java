@@ -23,7 +23,7 @@ public class AudioEngine {
   private int note = 0;
   private int octave = 4;
   private String scaleId = Scale.PENTATONIC.toString();
-  public int[] scale = Theory.pentatonicScale;
+  public static int[] scale = Theory.pentatonicScale; // is this ok to be static?
 
   public final static int DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
   public final static int MOD_RATE_MAX = 20;
