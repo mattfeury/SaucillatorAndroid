@@ -16,7 +16,7 @@ import android.graphics.RectF;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
-public abstract class RectButton extends SmartRect implements Drawable, Fingerable {
+public class RectButton extends SmartRect implements Drawable, Fingerable {
   protected Paint bg, text, focusedBg;
   private int borderWidth = 5;
   protected String name;
@@ -24,6 +24,7 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
   public static final int textWidth = -8; //in pixels, i guess? just an estimate.
 
   private LinkedList<ClickHandler> handlers = new LinkedList<ClickHandler>();
+  protected boolean clearFloat;
 
   public RectButton(String name) {
     this(name, 0, 0, 0, 0);
@@ -101,9 +102,12 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
     focused = ! focused;
     return focused;
   }
-  
+
+  public void setClear(boolean clear) {
+    this.clearFloat = clear;
+  }
   @Override
   public boolean shouldClearFloat() {
-    return false;
+    return clearFloat;
   }
 }
