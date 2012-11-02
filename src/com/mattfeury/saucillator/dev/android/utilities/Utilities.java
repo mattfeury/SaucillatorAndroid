@@ -41,10 +41,10 @@ public class Utilities {
   }
 
   public static float roundFloat(float f, int numDecimalPoints) {
-    for(int i=0; i < numDecimalPoints; i++) f *= 10f;
+    for (int i=0; i < numDecimalPoints; i++) f *= 10f;
     int rounded = Math.round(f);
     float truncated = rounded;
-    for(int i=0; i < numDecimalPoints; i++) truncated /= 10f;
+    for (int i=0; i < numDecimalPoints; i++) truncated /= 10f;
 
     return truncated;
   }

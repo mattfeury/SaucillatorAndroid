@@ -98,6 +98,7 @@ public class TabManager implements Drawable {
         if (tab.isInSelector(x, y) && Utilities.idIsDown(id, event)) {
           TabSelector selector = tab.getSelector();
           selector.click();
+          // TODO this could return Empty since we don't want any more events hitting it for MOVE events
           return new Full<Fingerable>(selector);
         }
       }
