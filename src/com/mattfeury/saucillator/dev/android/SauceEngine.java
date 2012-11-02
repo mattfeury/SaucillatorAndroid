@@ -83,7 +83,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       view.setOnTouchListener(this);
 
       VibratorService.setup((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
-      ToastService.setup(this);
+      ActivityService.setup(this);
       InstrumentService.setup(getAssets());
 
       this.audioEngine = new AudioEngine(this, mutex);
@@ -389,7 +389,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       ComplexOsc newOsc = InstrumentService.getInstrument(name);
 
       if (newOsc == null) {
-        ToastService.makeToast("Bad Instrument.");
+        ActivityService.makeToast("Bad Instrument.");
         return false;
       } else {
         audioEngine.setOscillator(newOsc);

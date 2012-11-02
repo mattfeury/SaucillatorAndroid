@@ -17,7 +17,7 @@ import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.instruments.Theory;
 import com.mattfeury.saucillator.dev.android.instruments.Theory.Scale;
 import com.mattfeury.saucillator.dev.android.services.InstrumentService;
-import com.mattfeury.saucillator.dev.android.services.ToastService;
+import com.mattfeury.saucillator.dev.android.services.ActivityService;
 
 public class AudioEngine {
   private int note = 0;
@@ -137,7 +137,7 @@ public class AudioEngine {
       osc = copy;
     else {
       osc = InstrumentService.getInstrument("Sine");
-      ToastService.makeToast("Error: Unable to duplicate instrument");
+      ActivityService.makeToast("Error: Unable to duplicate instrument");
     }
 
     connectOsc(osc);
@@ -215,7 +215,7 @@ public class AudioEngine {
     if (isRecording) {
       //item.setTitle("Stop Recording");
       //item.setIcon(R.drawable.ic_grey_rec);
-      ToastService.makeToast("Recording.");
+      ActivityService.makeToast("Recording.");
     }
     else {
       //item.setTitle("Record");
@@ -223,10 +223,10 @@ public class AudioEngine {
 
       File saved = WavWriter.getLastFile();
       if(saved == null) {
-        ToastService.makeToast("Stopped Recording. File could not be saved. I blew it.");
+        ActivityService.makeToast("Stopped Recording. File could not be saved. I blew it.");
         return;
       } else {
-        ToastService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
+        ActivityService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
       }
 
       Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");

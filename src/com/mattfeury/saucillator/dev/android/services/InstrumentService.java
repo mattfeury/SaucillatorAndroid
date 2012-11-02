@@ -84,7 +84,7 @@ public class InstrumentService {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      ToastService.makeToast("Unable to load internal instruments. :/");
+      ActivityService.makeToast("Unable to load internal instruments. :/");
     }
 
     // Get user created
