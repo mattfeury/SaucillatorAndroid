@@ -4,8 +4,8 @@ import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.dev.android.instruments.InstrumentManager;
 import com.mattfeury.saucillator.dev.android.instruments.Oscillator;
+import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.utilities.TimbreAdapter;
 
 import android.app.ListActivity;
@@ -87,7 +87,7 @@ public class ModifyTimbre extends ListActivity {
         float amplitude = extras.getFloat("amplitude");
         int phase = extras.getInt("phase");
 
-        Oscillator osc = InstrumentManager.getOscillatorForTimbre(getAssets(), type);
+        Oscillator osc = InstrumentService.getOscillatorForTimbre(type);
         osc.setAmplitude(amplitude);
         osc.setHarmonic(harmonic);
         osc.setPhase(phase);
@@ -122,7 +122,7 @@ public class ModifyTimbre extends ListActivity {
     switch(item.getItemId()) {
       case COPY_ID:
         Oscillator o = timbres.get(info.position);
-        Oscillator copy = InstrumentManager.copyInstrumentForTimbre(o);
+        Oscillator copy = InstrumentService.copyInstrumentForTimbre(o);
         timbres.add(copy);
         break;
       case DELETE_ID:

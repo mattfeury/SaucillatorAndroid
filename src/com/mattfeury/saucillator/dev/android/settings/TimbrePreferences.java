@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.dev.android.instruments.InstrumentManager;
+import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 import com.mattfeury.saucillator.dev.android.utilities.ViewBinders;
 
@@ -41,7 +41,7 @@ public class TimbrePreferences extends Activity {
     ComplexOsc osc = ModifyInstrument.modifying;
 
     Spinner timbreSpinner = (Spinner) findViewById(R.id.timbreSpinner);
-    ArrayList<String> timbres = InstrumentManager.getAllInstrumentNames(getAssets());
+    ArrayList<String> timbres = InstrumentService.getAllInstrumentNames();
 
     if (! creating && ! osc.isInternal()) { //don't allow recursive timbre
       int index = timbres.lastIndexOf(osc.getName());

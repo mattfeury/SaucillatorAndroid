@@ -14,9 +14,9 @@ import android.util.Log;
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.dev.android.instruments.InstrumentManager;
 import com.mattfeury.saucillator.dev.android.instruments.Theory;
 import com.mattfeury.saucillator.dev.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.services.ToastService;
 
 public class AudioEngine {
@@ -52,7 +52,7 @@ public class AudioEngine {
     //secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
     //Default
-    currentOscillator = InstrumentManager.getInstrument(sauceEngine.getAssets(), "Sine");
+    currentOscillator = InstrumentService.getInstrument("Sine");
     
     Thread t = new Thread() {
       public void run() {
@@ -132,11 +132,11 @@ public class AudioEngine {
     if (osc != null)
       return osc;
 
-    ComplexOsc copy = InstrumentManager.copyInstrument(sauceEngine.getAssets(), currentOscillator);
+    ComplexOsc copy = InstrumentService.copyInstrument(currentOscillator);
     if (copy != null)
       osc = copy;
     else {
-      osc = InstrumentManager.getInstrument(sauceEngine.getAssets(), "Sine");
+      osc = InstrumentService.getInstrument("Sine");
       ToastService.makeToast("Error: Unable to duplicate instrument");
     }
 
@@ -231,6 +231,8 @@ public class AudioEngine {
 
       Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
       intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
+
+      // TODO maybe turn this into a Service so we can lose the reference to SauceEngine
       sauceEngine.startActivity(Intent.createChooser(intent, "Share to"));
     }
   }

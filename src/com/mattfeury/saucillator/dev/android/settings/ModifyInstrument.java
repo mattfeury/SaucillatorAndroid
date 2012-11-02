@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.dev.android.settings;
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.*;
+import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 
@@ -100,7 +101,7 @@ public class ModifyInstrument extends PreferenceActivity {
 
     revertPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       public boolean onPreferenceClick(Preference preference) {
-        ComplexOsc reverted = InstrumentManager.getInstrument(getAssets(), modifying.getName());
+        ComplexOsc reverted = InstrumentService.getInstrument(modifying.getName());
         if (reverted != null) {
           modifying = reverted;
           String message = "Loaded instrument: " + modifying.getName();
@@ -162,7 +163,7 @@ public class ModifyInstrument extends PreferenceActivity {
                 .setPositiveButton("Save",
                     new DialogInterface.OnClickListener() {
                       public void onClick(DialogInterface dialog, int id) {
-                        Box<ComplexOsc> savedBox = InstrumentManager.saveInstrument(getAssets(), modifying);
+                        Box<ComplexOsc> savedBox = InstrumentService.saveInstrument(modifying);
                         String latestName = modifying.getName(),
                                 message = "";
                         if (savedBox.isDefined()) {
@@ -199,7 +200,7 @@ public class ModifyInstrument extends PreferenceActivity {
       public void onClick(DialogInterface dialog, int whichButton) {
         String value = input.getText().toString().trim();
 
-        Box<Boolean> isValidName = InstrumentManager.isValidInstrumentName(getAssets(), value);
+        Box<Boolean> isValidName = InstrumentService.isValidInstrumentName(value);
         if (isValidName.isFailure()) {
           Toast.makeText(getBaseContext(), "Invalid name. " + isValidName.getFailure(), Toast.LENGTH_SHORT).show();
           requestName();
@@ -228,7 +229,7 @@ public class ModifyInstrument extends PreferenceActivity {
   }
 
   private void deleteInstrument() {
-    Box<Boolean> savedBox = InstrumentManager.deleteInstrument(getAssets(), modifying.getName());
+    Box<Boolean> savedBox = InstrumentService.deleteInstrument(modifying.getName());
  
     if (savedBox.isDefined()) {
       showDialog(deletedInfoDialog);
