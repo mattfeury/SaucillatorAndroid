@@ -17,8 +17,8 @@ public class TabManager implements Drawable {
   public void addTab(final Tab tab) {
     tabs.add(tab);
 
-    tab.getSelector().addOnClick(new ClickHandler() {
-      public void onClick() {
+    tab.getSelector().addHandler(new ClickHandler() {
+      public void handle(Object o) {
         if (isCurrent(tab)) {
           hideCurrentTab();
         } else {
@@ -97,7 +97,7 @@ public class TabManager implements Drawable {
       for (Tab tab : tabs) {
         if (tab.isInSelector(x, y) && Utilities.idIsDown(id, event)) {
           TabSelector selector = tab.getSelector();
-          selector.click();
+          selector.handle(null);
           // TODO this could return Empty since we don't want any more events hitting it for MOVE events
           return new Full<Fingerable>(selector);
         }

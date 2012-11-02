@@ -40,24 +40,9 @@ public class RectButton extends Button {
     }
   }
 
-  public void addOnClick(ClickHandler handler) {
-    handlers.add(handler);
-  }
-  public void click() {
-    for (ClickHandler handler : handlers)
-      handler.onClick();
-
-    VibratorService.vibrate();
-  }
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {
-    final int action = event.getAction();
-    final int actionCode = action & MotionEvent.ACTION_MASK;
-    final int actionIndex = event.getActionIndex();
-    final int actionId = event.getPointerId(actionIndex);
-
-    // TODO add vibrator here
     if (Utilities.idIsDown(id, event))
-      click();
+      handle(null);
 
     // We don't want this to keep tracking subsequent touch events, so we handle it and return Empty
     return new Empty<Fingerable>();

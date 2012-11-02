@@ -44,7 +44,7 @@ public class KnobButton extends Button {
     progressSin = FloatMath.cos(radianAngle);
     progressCos = FloatMath.sin(radianAngle);
 
-    onChange(progress);
+    handle(progress);
   }
 
   @Override
@@ -66,13 +66,6 @@ public class KnobButton extends Button {
     // See if we need to recalculate knob dimensions, otherwise just remove this
   }
 
-  public void addOnChange(KnobHandler handler) {
-    handlers.add(handler);
-  }
-  public void onChange(float progress) {
-    for (KnobHandler handler : handlers)
-      handler.onChange(progress);
-  }
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {
     final int index = event.findPointerIndex(id);
     final int y = (int) event.getY(index);
