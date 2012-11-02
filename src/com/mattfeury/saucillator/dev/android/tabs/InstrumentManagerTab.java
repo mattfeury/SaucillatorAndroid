@@ -36,16 +36,13 @@ public class InstrumentManagerTab extends Tab {
       }
     });
 
-    Button firstChild = makeButton("Load", new ClickHandler() {
-      public void handle(Button button, Object o) {
-        VibratorService.vibrate();
-        showInstrumentChooser();
-      }
-    });
-    firstChild.setClear(false);
-
     panel.addChild(
-      firstChild,
+      makeButton("Load", new ClickHandler() {
+        public void handle(Button button, Object o) {
+          VibratorService.vibrate();
+          showInstrumentChooser();
+        }
+      }),
       makeButton("Save As", new ClickHandler() {
         public void handle(Button button, Object o) {
           VibratorService.vibrate();
@@ -53,23 +50,29 @@ public class InstrumentManagerTab extends Tab {
           showSaveAsDialog();
         }
       }),
-      makeButton("Revert", new ClickHandler() {
+      makeButton("Revert", true, new ClickHandler() {
         public void handle(Button button, Object o) {
+          VibratorService.vibrate();
           ComplexOsc current = AudioEngine.currentOscillator;
 
           if (current != null)
             loadInstrument(current.getName());
           else
             ActivityService.makeToast("Unable to revert. This synth may not be saved.", true);
-
-          VibratorService.vibrate();
         }
-      })/*,
-      makeButton("Share", new ClickHandler() {
+      }),
+      makeButton("Delete", new ClickHandler() {
+        public void handle(Button button, Object o) {
+          VibratorService.vibrate();
+          
+          showDeleteDialog();
+        }
+      }),
+      makeButton("Share", true, new ClickHandler() {
         public void handle(Button button, Object o) {
           VibratorService.vibrate();
         }
-      })*/
+      })
     );
   }
 
@@ -138,7 +141,58 @@ public class InstrumentManagerTab extends Tab {
     });
   }
 
+  private void deleteInstrument(final String name) {
+    Box<Boolean> savedBox = InstrumentService.deleteInstrument(name);
+
+    if (savedBox.isDefined()) {
+      ActivityService.withActivity(new ActivityHandler() {
+        public void handle(Button button, Activity activity) {
+          new AlertDialog.Builder(activity)
+            .setMessage("Successfully deleted '" + name + "' from disk. This instrument will remain in memory until another instrument is chosen. At that point it will be lost unless saved. Yathzee!")
+            .setCancelable(false)
+            .setNeutralButton("OK",
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int id) {}
+            })
+            .show();
+        }
+      });
+
+    } else if (savedBox.isFailure()) {
+      ActivityService.makeToast(savedBox.getFailure(), true);
+    } else {
+      ActivityService.makeToast("Unable to delete. This instrument may not be saved.", true);
+    }    
+  }
+  private void showDeleteDialog() {
+    ActivityService.withActivity(new ActivityHandler() {
+      public void handle(Button button, Activity activity) {
+        final ComplexOsc osc = AudioEngine.currentOscillator;
+        final String name = osc.getName();
+
+        new AlertDialog.Builder(activity)
+          .setMessage("Delete instrument '" + name + "' from SD card? This cannot be undone.")
+          .setCancelable(true)
+          .setPositiveButton("Yes",
+              new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                  deleteInstrument(name);
+                }
+          })
+          .setNegativeButton("No",
+              new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {}
+          })
+          .show();
+      }
+    });
+
+  }
+
   private Button makeButton(String name, ClickHandler... handlers) {
+    return makeButton(name, false, handlers);
+  }
+  private Button makeButton(String name, boolean clear, ClickHandler... handlers) {
     ButtonBuilder builder = ButtonBuilder.build(ButtonBuilder.Type.RECT, name);
     
     for (ClickHandler handler : handlers)
@@ -148,7 +202,7 @@ public class InstrumentManagerTab extends Tab {
       builder
         .withBorderSize(BORDER_SIZE)
         .withMargin(MARGIN_SIZE)
-        .withClear(true)
+        .withClear(clear)
         .finish();
   }
 }
