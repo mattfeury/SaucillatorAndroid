@@ -1,4 +1,4 @@
-package com.mattfeury.saucillator.dev.android.utilities;
+package com.mattfeury.saucillator.dev.android.services;
 
 import android.os.Vibrator;
 

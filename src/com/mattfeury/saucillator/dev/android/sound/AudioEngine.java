@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
@@ -18,6 +17,7 @@ import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.instruments.InstrumentManager;
 import com.mattfeury.saucillator.dev.android.instruments.Theory;
 import com.mattfeury.saucillator.dev.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.dev.android.services.ToastService;
 
 public class AudioEngine {
   private int note = 0;
@@ -137,7 +137,7 @@ public class AudioEngine {
       osc = copy;
     else {
       osc = InstrumentManager.getInstrument(sauceEngine.getAssets(), "Sine");
-      Toast.makeText(sauceEngine, "Error: Unable to duplicate instrument", Toast.LENGTH_SHORT).show();
+      ToastService.makeToast("Error: Unable to duplicate instrument");
     }
 
     connectOsc(osc);
@@ -215,7 +215,7 @@ public class AudioEngine {
     if (isRecording) {
       //item.setTitle("Stop Recording");
       //item.setIcon(R.drawable.ic_grey_rec);
-      Toast.makeText(sauceEngine, "Recording.", Toast.LENGTH_SHORT).show();
+      ToastService.makeToast("Recording.");
     }
     else {
       //item.setTitle("Record");
@@ -223,10 +223,10 @@ public class AudioEngine {
 
       File saved = WavWriter.getLastFile();
       if(saved == null) {
-        Toast.makeText(sauceEngine, "Stopped Recording. File could not be saved. I blew it.", Toast.LENGTH_SHORT).show();
+        ToastService.makeToast("Stopped Recording. File could not be saved. I blew it.");
         return;
       } else {
-        Toast.makeText(sauceEngine, "Stopped Recording. File saved at: " + saved.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        ToastService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
       }
 
       Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");

@@ -11,6 +11,7 @@ import com.mattfeury.saucillator.dev.android.sound.*;
 import com.mattfeury.saucillator.dev.android.tabs.*;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
+import com.mattfeury.saucillator.dev.android.services.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +24,6 @@ import android.content.res.Configuration;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnTouchListener;
-import android.widget.Toast;
 
 /*
  * Main activity for the App. This class has two main purposes:
@@ -83,7 +83,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       view.setOnTouchListener(this);
 
       VibratorService.setup((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
-      
+      ToastService.setup(this);
+
       this.audioEngine = new AudioEngine(this, mutex);
 
       // We wait until the dac is spun up to create the param handlers since
@@ -387,7 +388,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       ComplexOsc newOsc = InstrumentManager.getInstrument(getAssets(), name);
 
       if (newOsc == null) {
-        Toast.makeText(this, "Bad Instrument.", Toast.LENGTH_SHORT).show();
+        ToastService.makeToast("Bad Instrument.");
         return false;
       } else {
         audioEngine.setOscillator(newOsc);

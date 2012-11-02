@@ -4,7 +4,7 @@ import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.dev.android.templates.ClickHandler;
-import com.mattfeury.saucillator.dev.android.utilities.VibratorService;
+import com.mattfeury.saucillator.dev.android.services.VibratorService;
 
 public class LooperTab extends Tab {
   
