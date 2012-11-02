@@ -1,6 +1,6 @@
 package com.mattfeury.saucillator.dev.android.services;
 
-import com.mattfeury.saucillator.dev.android.templates.ActivityHandler;
+import com.mattfeury.saucillator.dev.android.templates.Handler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,8 +29,8 @@ public class ActivityService {
   public static AlertDialog.Builder getAlertBuilder() {
     return new AlertDialog.Builder(activity);
   }
-  public static void withActivity(ActivityHandler handler) {
+  public static void withActivity(Handler<Activity> handler) {
     // This null is kinda lame. This is not a button handler at all FIXME
-    handler.handle(null, activity);
+    handler.handle(activity);
   }
 }

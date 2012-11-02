@@ -2,8 +2,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.templates.Button;
-import com.mattfeury.saucillator.dev.android.templates.ClickHandler;
+import com.mattfeury.saucillator.dev.android.templates.Handler;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 import com.mattfeury.saucillator.dev.android.visuals.LayoutDefinitions;
@@ -19,8 +18,8 @@ public class TabManager implements Drawable {
   public void addTab(final Tab tab) {
     tabs.add(tab);
 
-    tab.getSelector().addHandler(new ClickHandler() {
-      public void handle(Button button, Object o) {
+    tab.getSelector().addHandler(new Handler<Boolean>() {
+      public void handle(Boolean o) {
         if (isCurrent(tab)) {
           hideCurrentTab();
         } else {

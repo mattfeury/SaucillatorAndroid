@@ -1,5 +1,5 @@
 package com.mattfeury.saucillator.dev.android.templates;
 
-public interface Handler<K> {
-  public void handle(Button button, K data);
+public abstract class Handler<K> {
+  public abstract void handle(K data);
 }

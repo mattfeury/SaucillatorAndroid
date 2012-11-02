@@ -3,7 +3,8 @@ package com.mattfeury.saucillator.dev.android.tabs;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
-import com.mattfeury.saucillator.dev.android.templates.ClickHandler;
+import com.mattfeury.saucillator.dev.android.templates.Handler;
+import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 
 public class LooperTab extends Tab {
@@ -13,26 +14,29 @@ public class LooperTab extends Tab {
   public LooperTab(final AudioEngine engine) {
     super("Looper", engine);
 
-    Button firstChild = makeLooperButton("Toggle Looper", new ClickHandler() {
-      public void handle(Button button, Object o) {
-        engine.toggleLooperRecording();
+    RectButton toggleButton = new RectButton("Toggle Loop Record") {
+      @Override
+      public void handle(Object o) {
         VibratorService.vibrate();
+        engine.toggleLooperRecording();
 
-        button.toggleFocus();
+        toggleFocus();
       }
-    });
-    firstChild.setClear(false);
+    };
+    toggleButton.setBorder(BORDER_SIZE);
+    toggleButton.setMargin(MARGIN_SIZE);
+    toggleButton.setClear(false);
 
     panel.addChild(
-      firstChild,
-      makeLooperButton("Undo", new ClickHandler() {
-        public void handle(Button button, Object o) {
+      toggleButton,
+      makeLooperButton("Undo", new Handler<Boolean>() {
+        public void handle(Boolean o) {
           engine.undoLooper();
           VibratorService.vibrate();
         }
       }),
-      makeLooperButton("Reset", new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeLooperButton("Reset", new Handler<Boolean>() {
+        public void handle(Boolean o) {
           engine.resetLooper();
           VibratorService.vibrate();
         }
@@ -40,10 +44,10 @@ public class LooperTab extends Tab {
     );
   }
   
-  private Button makeLooperButton(String name, ClickHandler... handlers) {
+  private Button makeLooperButton(String name, Handler... handlers) {
     ButtonBuilder builder = ButtonBuilder.build(ButtonBuilder.Type.RECT, name);
     
-    for (ClickHandler handler : handlers)
+    for (Handler handler : handlers)
       builder.withHandler(handler);
 
     return

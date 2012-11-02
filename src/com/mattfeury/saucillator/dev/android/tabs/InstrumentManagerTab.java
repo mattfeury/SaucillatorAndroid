@@ -10,10 +10,9 @@ import android.widget.EditText;
 
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
-import com.mattfeury.saucillator.dev.android.templates.ActivityHandler;
 import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
-import com.mattfeury.saucillator.dev.android.templates.ClickHandler;
+import com.mattfeury.saucillator.dev.android.templates.Handler;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.services.ActivityService;
@@ -29,29 +28,29 @@ public class InstrumentManagerTab extends Tab {
     super("Synths", "Synth Manager", engine);
     
     // Setup some dialogs and cache em
-    ActivityService.withActivity(new ActivityHandler() {
-      public void handle(Button button, Activity activity) {
+    ActivityService.withActivity(new Handler<Activity>() {
+      public void handle(Activity activity) {
         chooserBuilder = new AlertDialog.Builder(activity);
         chooserBuilder.setTitle("Load a Synth");
       }
     });
 
     panel.addChild(
-      makeButton("Load", new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeButton("Load", new Handler<Boolean>() {
+        public void handle(Boolean b) {
           VibratorService.vibrate();
           showInstrumentChooser();
         }
       }),
-      makeButton("Save As", new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeButton("Save As", new Handler<Boolean>() {
+        public void handle(Boolean b) {
           VibratorService.vibrate();
           
           showSaveAsDialog();
         }
       }),
-      makeButton("Revert", true, new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeButton("Revert", true, new Handler<Boolean>() {
+        public void handle(Boolean b) {
           VibratorService.vibrate();
           ComplexOsc current = AudioEngine.currentOscillator;
 
@@ -61,15 +60,15 @@ public class InstrumentManagerTab extends Tab {
             ActivityService.makeToast("Unable to revert. This synth may not be saved.", true);
         }
       }),
-      makeButton("Delete", new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeButton("Delete", new Handler<Boolean>() {
+        public void handle(Boolean b) {
           VibratorService.vibrate();
           
           showDeleteDialog();
         }
       }),
-      makeButton("Share", true, new ClickHandler() {
-        public void handle(Button button, Object o) {
+      makeButton("Share", true, new Handler<Boolean>() {
+        public void handle(Boolean b) {
           VibratorService.vibrate();
         }
       })
@@ -116,8 +115,8 @@ public class InstrumentManagerTab extends Tab {
     ActivityService.makeToast(message, true);
   }
   private void showSaveAsDialog() {
-    ActivityService.withActivity(new ActivityHandler() {
-      public void handle(Button button, Activity activity) {
+    ActivityService.withActivity(new Handler<Activity>() {
+      public void handle(Activity activity) {
         ComplexOsc osc = AudioEngine.currentOscillator;
 
         AlertDialog.Builder saveBuilder = new AlertDialog.Builder(activity);
@@ -145,8 +144,8 @@ public class InstrumentManagerTab extends Tab {
     Box<Boolean> savedBox = InstrumentService.deleteInstrument(name);
 
     if (savedBox.isDefined()) {
-      ActivityService.withActivity(new ActivityHandler() {
-        public void handle(Button button, Activity activity) {
+      ActivityService.withActivity(new Handler<Activity>() {
+        public void handle(Activity activity) {
           new AlertDialog.Builder(activity)
             .setMessage("Successfully deleted '" + name + "' from disk. This instrument will remain in memory until another instrument is chosen. At that point it will be lost unless saved. Yathzee!")
             .setCancelable(false)
@@ -165,8 +164,8 @@ public class InstrumentManagerTab extends Tab {
     }    
   }
   private void showDeleteDialog() {
-    ActivityService.withActivity(new ActivityHandler() {
-      public void handle(Button button, Activity activity) {
+    ActivityService.withActivity(new Handler<Activity>() {
+      public void handle(Activity activity) {
         final ComplexOsc osc = AudioEngine.currentOscillator;
         final String name = osc.getName();
 
@@ -189,13 +188,13 @@ public class InstrumentManagerTab extends Tab {
 
   }
 
-  private Button makeButton(String name, ClickHandler... handlers) {
+  private Button makeButton(String name, Handler... handlers) {
     return makeButton(name, false, handlers);
   }
-  private Button makeButton(String name, boolean clear, ClickHandler... handlers) {
+  private Button makeButton(String name, boolean clear, Handler... handlers) {
     ButtonBuilder builder = ButtonBuilder.build(ButtonBuilder.Type.RECT, name);
     
-    for (ClickHandler handler : handlers)
+    for (Handler handler : handlers)
       builder.withHandler(handler);
 
     return
