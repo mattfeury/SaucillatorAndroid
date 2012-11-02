@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.templates.ClickHandler;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 import com.mattfeury.saucillator.dev.android.visuals.LayoutDefinitions;

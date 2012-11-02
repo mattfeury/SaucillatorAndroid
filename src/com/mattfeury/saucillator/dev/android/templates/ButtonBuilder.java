@@ -1,19 +1,25 @@
 package com.mattfeury.saucillator.dev.android.templates;
 
-import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
 
 public class ButtonBuilder {
-  private RectButton button;
+  public static enum Type { RECT, KNOB };
+  private Button button;
 
-  private ButtonBuilder(String name) {
-    button = new RectButton(name);
+  private ButtonBuilder(Type type, String name) {
+    switch(type) {
+      case KNOB:
+        button = new KnobButton(name);
+        break;
+      default:
+        button = new RectButton(name);
+    }
   }
-  public static ButtonBuilder build(String name) {
-    return new ButtonBuilder(name);
+  public static ButtonBuilder build(Type type, String name) {
+    return new ButtonBuilder(type, name);
   }
 
-  public ButtonBuilder withOnClick(ClickHandler handler) {
-    button.addOnClick(handler);
+  public ButtonBuilder withHandler(Handler handler) {
+    button.addHandler(handler);
     return this;
   }
   public ButtonBuilder withClear(boolean clear) {
@@ -21,7 +27,7 @@ public class ButtonBuilder {
     return this;
   }
 
-  public RectButton finish() {
+  public Button finish() {
     return button;
   }
 }
