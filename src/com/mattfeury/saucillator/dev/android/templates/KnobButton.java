@@ -11,46 +11,28 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
-public class KnobButton extends SmartRect implements Fingerable {
-  protected Paint bg, shadow, text, status;
-  protected String name;
+public class KnobButton extends Button {
+  protected Paint status;
 
   private float progress, progressSin, progressCos, lastR, lastTheta = 0f;
 
+  // TODO should this scale with the button?
   public static final int width = 75,
                           textSize = 14;
-
-  private LinkedList<KnobHandler> handlers = new LinkedList<KnobHandler>();
 
   public KnobButton(String name) {
     this(name, 0, 0);
   }
   public KnobButton(String name, int x, int y) {
-    super(x, y, x + width, y + width);
+    super(name, x, y, x + width, y + width);
 
     changeProgress(0);
-    this.name = name;
 
-    bg = new Paint();
-    shadow = new Paint();
     status = new Paint();
-    text = new Paint();
-
-    bg.setARGB(255, 255,255,255);
-    shadow.setARGB(125, 255,255,255);
     status.setARGB(255, 255, 120, 120);
-    text.setARGB(255, 255,255,255);
-    text.setTextSize(textSize);
-    text.setTextAlign(Align.CENTER);
-
-    bg.setStyle(Paint.Style.STROKE);
-    bg.setStrokeWidth(2);
     status.setStrokeWidth(5);
   }
-  public String getName() {
-    return name;
-  }
-  
+
   private void changeProgress(float f) {
     if (f < 0) f = 0;
     if (f > 1) f = 1;
@@ -115,10 +97,5 @@ public class KnobButton extends SmartRect implements Fingerable {
     lastR = r;
 
     return new Full<Fingerable>(this);
-  }
-
-  @Override
-  public boolean shouldClearFloat() {
-    return false;
   }
 }
