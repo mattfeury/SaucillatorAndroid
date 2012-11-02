@@ -14,7 +14,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "LFO Rate")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -27,7 +27,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "LFO Depth")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -40,7 +40,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Delay Rate")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -54,7 +54,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Delay Decay")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -67,7 +67,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Attack")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -82,7 +82,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {
@@ -96,7 +96,7 @@ public class FxTab extends Tab {
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Glide")
         .withHandler(new KnobHandler() {
-          public void handle(final Float progress) {
+          public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {
               @Override
               public void update(ComplexOsc osc) {

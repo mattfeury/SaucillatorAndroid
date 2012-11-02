@@ -53,7 +53,7 @@ public abstract class Button extends SmartRect implements Fingerable {
   }
   public void handle(Object o) {
     for (Handler handler : handlers)
-      handler.handle(o);
+      handler.handle(this, o);
   }
 
   @Override
