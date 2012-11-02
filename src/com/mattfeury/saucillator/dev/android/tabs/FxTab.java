@@ -80,7 +80,7 @@ public class FxTab extends Tab {
         .withClear(true)
         .finish(),
       ButtonBuilder
-        .build(ButtonBuilder.Type.KNOB, "")
+        .build(ButtonBuilder.Type.KNOB, "Release")
         .withHandler(new KnobHandler() {
           public void handle(Button button, final Float progress) {
             engine.updateOscillatorProperty(new OscillatorUpdater() {

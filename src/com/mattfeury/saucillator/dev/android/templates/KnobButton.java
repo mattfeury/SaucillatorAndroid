@@ -31,6 +31,10 @@ public class KnobButton extends Button {
     status = new Paint();
     status.setARGB(255, 255, 120, 120);
     status.setStrokeWidth(5);
+    
+    bg.setARGB(255, 255,255,255);
+    bg.setStyle(Paint.Style.STROKE);
+    bg.setStrokeWidth(2);
   }
 
   private void changeProgress(float f) {
