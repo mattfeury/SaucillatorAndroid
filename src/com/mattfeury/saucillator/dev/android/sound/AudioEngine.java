@@ -42,7 +42,7 @@ public class AudioEngine {
   // The currentOscillator is never actually heard
   // It is kept as a template and updated anytime an instrument is edited/created
   // We create a deepCopy of it for actually playing.
-  private static ComplexOsc currentOscillator;
+  public static ComplexOsc currentOscillator;
 
   //MediaPlayer secretSauce;
 

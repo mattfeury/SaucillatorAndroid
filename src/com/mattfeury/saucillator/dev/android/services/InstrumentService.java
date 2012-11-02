@@ -289,7 +289,7 @@ public class InstrumentService {
 
   public static Box<Boolean> isValidInstrumentName(String name) {
     if (isInternal(name))
-      return new Failure<Boolean>("The name is already in use internally.");
+      return new Failure<Boolean>("The name is already in use internally. Internal synths may not be modified.");
     else if (name.indexOf("*") != -1)
       return new Failure<Boolean>("Invalid character: *");
     else if (name.trim().equals(""))
@@ -300,7 +300,7 @@ public class InstrumentService {
 
   public static Box<ComplexOsc> saveInstrument(ComplexOsc osc) {
     if (! ensureProperDirectoryStructure())
-      return new Failure<ComplexOsc>("Unable to create SD directories: SDcard/sauce/instruments");
+      return new Failure<ComplexOsc>("Unable to create SD directories: " + instrumentDirPath);
 
     boolean success = true;
     String name = osc.getName();
