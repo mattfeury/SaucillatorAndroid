@@ -11,17 +11,22 @@ import android.view.MotionEvent;
 
 public abstract class Tab {
 
-  protected String name;
+  protected String name, id;
   protected TabSelector selector;
   protected TabPanel panel;
 
   private AudioEngine engine;
-  
-  public Tab(String name, AudioEngine engine) {
+
+  public Tab(String id, AudioEngine engine) {
+    this(id, id, engine);
+  }
+
+  public Tab(String id, String name, AudioEngine engine) {
     this.engine = engine;
 
+    this.id = id;
     this.name = name;
-    selector = new TabSelector(name);
+    selector = new TabSelector(id);
     panel = new TabPanel(name);
   }
 
