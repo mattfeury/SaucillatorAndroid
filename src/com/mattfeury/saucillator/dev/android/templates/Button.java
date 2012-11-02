@@ -56,6 +56,10 @@ public abstract class Button extends SmartRect implements Fingerable {
       handler.handle(o);
   }
 
+  @Override
+  public boolean contains(int x, int y) {
+    return x >= left + margin && x <= right - margin && y >= top + margin && y <= bottom - margin;
+  }
   public abstract void draw(Canvas canvas);
   public abstract Box<Fingerable> handleTouch(int id, MotionEvent event);
 

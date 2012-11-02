@@ -28,13 +28,14 @@ public class RectButton extends Button {
   @Override
   public void draw(Canvas canvas) {
     if (focused) {
-      canvas.drawRect(left, top, right, top + borderSize, focusedBg); //top line
+      canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, focusedBg); //top line
       canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, focusedBg);
     } else {
-      canvas.drawRect(left + borderSize, top, right - borderSize, top + borderSize, bg); //top line
-      canvas.drawRect(left, top, left + borderSize, bottom - borderSize, bg); //left line
-      canvas.drawRect(left, bottom - borderSize, right, bottom, bg); //bottom line
-      canvas.drawRect(right - borderSize, top, right, bottom - borderSize, bg); //right line
+      canvas.drawRect(left + margin, top + margin, left + margin + borderSize, bottom - margin, bg); //left line
+      canvas.drawRect(right - margin - borderSize, top + margin, right - margin, bottom - margin, bg); //right line
+
+      canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, bg); //top line
+      canvas.drawRect(left + margin + borderSize, bottom - margin - borderSize, right - margin - borderSize, bottom - margin, bg); //bottom line
       
       canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, text);
     }

@@ -26,7 +26,14 @@ public class ButtonBuilder {
     button.setClear(clear);
     return this;
   }
-
+  public ButtonBuilder withBorderSize(int size) {
+    button.setBorder(size);
+    return this;
+  }
+  public ButtonBuilder withMargin(int size) {
+    button.setMargin(size);
+    return this;
+  }
   public Button finish() {
     return button;
   }
