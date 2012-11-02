@@ -39,8 +39,11 @@ public class TabPanel extends SmartRect {
     text.setTextAlign(Align.CENTER);
   }
   
-  public void addChild(Drawable child) {
-    children.add(child);
+  public void addChild(Drawable... newChildren) {
+    for (Drawable child : newChildren) {
+      children.add(child);
+    }
+
     recalculateChildren();
   }
 
