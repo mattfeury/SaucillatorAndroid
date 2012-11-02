@@ -313,7 +313,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
       //updateOscSettings();
     }
 
-
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
         case R.id.createInstrumentItem:
@@ -332,7 +331,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
       return false;
     }
-    
+
     @Override
     public void onBackPressed() {
       showDialog(BACKPRESS_DIALOG);
@@ -345,21 +344,5 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private void selectScale(String scaleId) {
       audioEngine.setScaleById(scaleId);
-    }
-
-    private boolean instrumentSelection(MenuItem item) {
-    	if (item.isChecked())
-    		return true;
-
-      String name = (String) item.getTitle();
-      ComplexOsc newOsc = InstrumentService.getInstrument(name);
-
-      if (newOsc == null) {
-        ActivityService.makeToast("Bad Instrument.");
-        return false;
-      } else {
-        audioEngine.setOscillator(newOsc);
-        return true;
-      }
     }
 }
