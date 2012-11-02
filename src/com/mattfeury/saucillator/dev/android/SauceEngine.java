@@ -14,6 +14,7 @@ import com.mattfeury.saucillator.dev.android.tabs.TabManager;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.utilities.EachFunc;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.utilities.VibratorService;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 
 import android.app.Activity;
@@ -59,9 +60,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     // which finger ID corresponds to which fingerable layout element. e.g. buttons, knobs, etc.
     private ConcurrentHashMap<Integer, Fingerable> fingersById = new ConcurrentHashMap<Integer, Fingerable>();
 
-    private Vibrator vibrator;
-    private boolean canVibrate = false;
-    private int VIBRATE_SPEED = 100; //in ms
     private SubMenu instrumentMenu;
     private final int instrumentMenuId = 9;
     public static final String DATA_FOLDER = "sauce/";
@@ -99,10 +97,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
       view = (SauceView)findViewById(R.id.sauceview);
       view.setOnTouchListener(this);
 
-      vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-      if (vibrator != null)
-        canVibrate = true;
+      VibratorService.setup((Vibrator) getSystemService(Context.VIBRATOR_SERVICE));
       
       this.audioEngine = new AudioEngine(this, mutex);
 

@@ -2,17 +2,11 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.utilities.Box;
-import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
-import com.mattfeury.saucillator.dev.android.utilities.Empty;
-import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
-import com.mattfeury.saucillator.dev.android.utilities.Full;
-import com.mattfeury.saucillator.dev.android.utilities.Utilities;
+import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
@@ -74,6 +68,8 @@ public class RectButton extends SmartRect implements Drawable, Fingerable {
   public void click() {
     for (ClickHandler handler : handlers)
       handler.onClick();
+
+    VibratorService.vibrate();
   }
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {
     final int action = event.getAction();
