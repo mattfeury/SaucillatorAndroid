@@ -80,7 +80,7 @@ public class InstrumentManagerTab extends Tab {
     ComplexOsc newOsc = InstrumentService.getInstrument(instrumentName);
 
     if (newOsc == null) {
-      ActivityService.makeToast("Instrument Unable to Load: " + instrumentName);
+      ActivityService.makeToast("Unable to Load Instrument: " + instrumentName);
     } else {
       ActivityService.makeToast("Instrument Loaded: " + instrumentName);
       engine.setOscillator(newOsc);

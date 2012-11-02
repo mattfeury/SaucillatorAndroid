@@ -84,7 +84,7 @@ public class InstrumentService {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      ActivityService.makeToast("Unable to load internal instruments. :/");
+      ActivityService.makeToast("Unable to load internal synths. :/");
     }
 
     // Get user created
@@ -330,7 +330,7 @@ public class InstrumentService {
     boolean success = true;
     
     if (isInternal(name))
-      return new Failure<Boolean>("Invalid name. You cannot delete a built-in instrument.");
+      return new Failure<Boolean>("You cannot delete a built-in synth.");
 
     try {
       File file = new File(instrumentDirPath + name + extension);
