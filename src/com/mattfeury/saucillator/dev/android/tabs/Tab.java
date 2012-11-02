@@ -15,7 +15,7 @@ public abstract class Tab {
   protected TabSelector selector;
   protected TabPanel panel;
 
-  private AudioEngine engine;
+  protected AudioEngine engine;
 
   public Tab(String id, AudioEngine engine) {
     this(id, id, engine);

@@ -104,6 +104,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         this.tabManager = new TabManager();
         
         view.addDrawable(tabManager);
+        tabManager.addTab(new InstrumentManagerTab(audioEngine));
         tabManager.addTab(new FxTab(audioEngine));
         tabManager.addTab(new LooperTab(audioEngine));
 
@@ -312,43 +313,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
       //updateOscSettings();
     }
 
-    /**
-     * Menu handlers
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-      MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.menu, menu);
-
-      instrumentMenu = menu.findItem(R.id.selectInstrument).getSubMenu();
-
-      return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-      boolean result = super.onPrepareOptionsMenu(menu);
-
-      instrumentMenu.clear();
-
-      ArrayList<String> instruments = InstrumentService.getAllInstrumentNames();
-      String[] names = instruments.toArray(new String[0]);
-      int i = 0;
-      for (String name : names) {
-        instrumentMenu.add(instrumentMenuId, i, i, name);
-        i++;
-      }
-
-      instrumentMenu.setGroupCheckable(instrumentMenuId, false, true);
-      
-      return result;
-    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getGroupId()) {
-        case instrumentMenuId:
-          return instrumentSelection(item);
-    	}
     	switch (item.getItemId()) {
         case R.id.createInstrumentItem:
           createInstrument();
