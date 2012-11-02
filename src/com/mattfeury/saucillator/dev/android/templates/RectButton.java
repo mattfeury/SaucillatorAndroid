@@ -7,6 +7,7 @@ import com.mattfeury.saucillator.dev.android.utilities.ClickHandler;
 import com.mattfeury.saucillator.dev.android.utilities.Empty;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 import com.mattfeury.saucillator.dev.android.utilities.Full;
+import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 
 import android.graphics.Canvas;
@@ -80,7 +81,7 @@ public abstract class RectButton extends SmartRect implements Drawable, Fingerab
     final int actionId = event.getPointerId(actionIndex);
 
     // TODO add vibrator here
-    if ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN)
+    if (Utilities.idIsDown(id, event))
       click();
 
     // We don't want this to keep tracking subsequent touch events, so we handle it and return Empty

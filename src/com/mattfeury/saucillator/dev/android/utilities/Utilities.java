@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import android.view.MotionEvent;
+
 public class Utilities {
 
   /**
@@ -46,6 +48,32 @@ public class Utilities {
 
     return truncated;
   }
+
+  /**
+   * Given a MotionEvent, is the finger of id causing a down event?
+   */
+  public static boolean idIsDown(int id, MotionEvent event) {
+    final int action = event.getAction();
+    final int actionCode = action & MotionEvent.ACTION_MASK;
+    final int actionIndex = event.getActionIndex();
+    final int actionId = event.getPointerId(actionIndex);
+
+    return ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN);
+  }
+
+  /**
+   * Given a MotionEvent, is the finger of id causing an up event?
+   */
+  public static boolean idIsUp(int id, MotionEvent event) {
+    final int action = event.getAction();
+    final int actionCode = action & MotionEvent.ACTION_MASK;
+    final int actionIndex = event.getActionIndex();
+    final int actionId = event.getPointerId(actionIndex);
+
+    // Should this include ACTION_UP?
+    return (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id);
+  }
+
 
   /**
    * Returns a deep copy of the object, or null if the object cannot

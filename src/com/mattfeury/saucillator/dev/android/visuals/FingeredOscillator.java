@@ -72,7 +72,7 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
     final float xScaled = scaledCoords[0];
     final float yScaled = scaledCoords[1];
 
-    if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_DOWN || actionCode == MotionEvent.ACTION_MOVE) {
+    if (Utilities.idIsDown(id, event) || actionCode == MotionEvent.ACTION_MOVE) {
       updateFingerProps(event.getX(index), event.getY(index), event.getSize(index), event.getPressure(index));
 
       //play if we were stopped
@@ -85,7 +85,7 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
       osc.setAmplitude(xScaled);
       
       return new Full<Fingerable>(this);
-    } else if (actionCode == MotionEvent.ACTION_POINTER_UP && actionId == id) {
+    } else if (Utilities.idIsUp(id, event)) {
       if(osc.isPlaying() && ! osc.isReleasing())
         osc.togglePlayback();      
     }

@@ -95,7 +95,7 @@ public class TabManager implements Drawable {
       return currentTab.handlePanelTouch(id, event);
     } else {
       for (Tab tab : tabs) {
-        if (tab.isInSelector(x, y)) {
+        if (tab.isInSelector(x, y) && Utilities.idIsDown(id, event)) {
           TabSelector selector = tab.getSelector();
           selector.click();
           return new Full<Fingerable>(selector);
