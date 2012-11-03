@@ -324,8 +324,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
           return true;
     		case R.id.settings:
     			return launchSettings();
-    		case R.id.record:
-    			return record(item);
         case R.id.quit:
           onDestroy();
           return true;
@@ -338,12 +336,4 @@ public class SauceEngine extends Activity implements OnTouchListener {
       showDialog(BACKPRESS_DIALOG);
     }
 
-    private boolean record(MenuItem item) {
-      audioEngine.record();
-      return true;
-    }
-
-    private void selectScale(String scaleId) {
-      audioEngine.setScaleById(scaleId);
-    }
 }

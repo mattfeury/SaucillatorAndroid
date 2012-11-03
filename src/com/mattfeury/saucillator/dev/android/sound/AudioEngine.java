@@ -220,30 +220,26 @@ public class AudioEngine {
     }
   }
 
-  public void record() {
+  public boolean toggleRecording() {
     boolean isRecording = dac.toggleRecording();
     if (isRecording) {
-      //item.setTitle("Stop Recording");
-      //item.setIcon(R.drawable.ic_grey_rec);
       ActivityService.makeToast("Recording.");
     }
     else {
-      //item.setTitle("Record");
-      //item.setIcon(R.drawable.ic_rec);
-
       File saved = WavWriter.getLastFile();
       if(saved == null) {
         ActivityService.makeToast("Stopped Recording. File could not be saved. I blew it.");
-        return;
       } else {
         ActivityService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
+
+        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
+
+        // TODO maybe turn this into a Service so we can lose the reference to SauceEngine
+        sauceEngine.startActivity(Intent.createChooser(intent, "Share to"));
       }
-
-      Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-      intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
-
-      // TODO maybe turn this into a Service so we can lose the reference to SauceEngine
-      sauceEngine.startActivity(Intent.createChooser(intent, "Share to"));
     }
+    
+    return isRecording;
   }
 }

@@ -91,6 +91,9 @@ public abstract class Button extends SmartRect implements Fingerable {
   public void setClear(boolean clear) {
     this.clearFloat = clear;
   }
+  public void setName(String name) {
+    this.name = name;
+  }
 
   @Override
   public boolean shouldClearFloat() {
