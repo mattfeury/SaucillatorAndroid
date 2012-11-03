@@ -96,7 +96,7 @@ public class InstrumentManagerTab extends Tab {
     });
     chooserBuilder.show();
   }
-  
+
   private void saveInstrumentAs(ComplexOsc osc, String name) {
     ComplexOsc copy = InstrumentService.copyInstrument(osc);
     copy.setName(name);
