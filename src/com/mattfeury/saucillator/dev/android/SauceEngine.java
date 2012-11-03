@@ -38,7 +38,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     //defaults
     public static int TRACKPAD_GRID_SIZE = 12;
-    public final static int TRACKPAD_SIZE_MAX = 16;
+    public final static int TRACKPAD_SIZE_MAX = 16, TRACKPAD_SIZE_MIN = 4;
 
     private boolean init = false;
 
@@ -104,9 +104,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
         this.tabManager = new TabManager();
         
         view.addDrawable(tabManager);
-        tabManager.addTab(new InstrumentManagerTab(audioEngine));
+        tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new FxTab(audioEngine));
         tabManager.addTab(new LooperTab(audioEngine));
+        tabManager.addTab(new InstrumentManagerTab(audioEngine));
 
         // TODO setup visual layout that depends on audio shtuff
       }

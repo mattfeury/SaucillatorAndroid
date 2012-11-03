@@ -22,14 +22,14 @@ import com.mattfeury.saucillator.dev.android.services.ActivityService;
 public class AudioEngine {
   private int note = 0;
   private int octave = 4;
-  private String scaleId = Scale.PENTATONIC.toString();
-  public static int[] scale = Theory.pentatonicScale; // is this ok to be static?
+  //private String scaleId = Theory.allScales[0].toString();
+  public static int[] scale = Theory.pentatonicScale;
 
   public final static int DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
   public final static int MOD_RATE_MAX = 20;
   public final static int MOD_DEPTH_MAX = 1000;
 
-  public final static float DEFAULT_LAG = 0.5f;
+  public final static float DEFAULT_LAG = 0.5f; // i don't think this is used...
 
   //synth elements
   private Dac dac;
@@ -48,7 +48,7 @@ public class AudioEngine {
 
   public AudioEngine(SauceEngine sauce, final Object mutex) {
     this.sauceEngine = sauce;
-    
+
     //secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
     //Default
@@ -144,7 +144,7 @@ public class AudioEngine {
     oscillatorsById.put(id, osc);
 
     // Ensure new oscillator has up-to-date settings
-    updateOscSettings();
+    updateBaseFreq();
 
     return osc;
   }
@@ -175,8 +175,20 @@ public class AudioEngine {
         updater.update(osc);
   }
 
-  // Update oscillators based on the settings parameters.
-  private void updateOscSettings() {
+  public void updateBaseNote(int note) {
+    if (note >= 0 && note < Theory.notes.length)
+      updateBaseFreq(note, this.octave);
+  }
+  public void updateBaseOctave(int octave) {
+    updateBaseFreq(this.note, octave);
+  }
+  public void updateBaseFreq(int note, int octave) {
+    this.note = note;
+    this.octave = octave;
+
+    updateBaseFreq();
+  }
+  public void updateBaseFreq() {
     float newFreq = Theory.getFrequencyForNote(note + 1, octave);
     Collection<ComplexOsc> oscs = oscillatorsById.values();
     for (ComplexOsc osc : oscs)
@@ -191,12 +203,10 @@ public class AudioEngine {
     connectOsc(newOsc);
     oscillatorsById.put(0, newOsc);
 
-    updateOscSettings();    
+    updateBaseFreq();
   }
 
   public void setScaleById(String scaleId) {
-    this.scaleId = scaleId;
-
     if (scaleId.equals(Scale.PENTATONIC.toString())) {
       scale = Theory.pentatonicScale;
     } else if (scaleId.equals(Scale.MAJOR.toString())) {
