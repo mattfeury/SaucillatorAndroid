@@ -14,9 +14,11 @@ public class LooperTab extends Tab {
   public LooperTab(final AudioEngine engine) {
     super("Looper", engine);
 
-    RectButton toggleButton = new RectButton("Toggle Loop Record") {
+    final RectButton toggleButton = new RectButton("Toggle Loop Record") {
       @Override
       public void handle(Object o) {
+        super.handle(o);
+
         VibratorService.vibrate();
         engine.toggleLooperRecording();
 
@@ -25,23 +27,47 @@ public class LooperTab extends Tab {
     };
     toggleButton.setBorder(BORDER_SIZE);
     toggleButton.setMargin(MARGIN_SIZE);
-    toggleButton.setClear(false);
     toggleButton.setTextSize(TEXT_SIZE);
+    toggleButton.setClear(false);
+
+    RectButton undoButton = new RectButton("Undo") {
+      @Override
+      public void handle(Object o) {
+        super.handle(o);
+
+        VibratorService.vibrate();
+        engine.undoLooper();
+
+        // Undo stops any current loop recording
+        toggleButton.setFocus(false);
+      }
+    };
+    undoButton.setBorder(BORDER_SIZE);
+    undoButton.setMargin(MARGIN_SIZE);
+    undoButton.setTextSize(TEXT_SIZE);
+    undoButton.setClear(true);
+
+    RectButton resetButton = new RectButton("Reset") {
+      @Override
+      public void handle(Object o) {
+        super.handle(o);
+
+        VibratorService.vibrate();
+        engine.resetLooper();
+
+        // Reset stops any current loop recording
+        toggleButton.setFocus(false);
+      }
+    };
+    resetButton.setBorder(BORDER_SIZE);
+    resetButton.setMargin(MARGIN_SIZE);
+    resetButton.setTextSize(TEXT_SIZE);
+    resetButton.setClear(true);
 
     panel.addChild(
       toggleButton,
-      makeLooperButton("Undo", new Handler<Boolean>() {
-        public void handle(Boolean o) {
-          engine.undoLooper();
-          VibratorService.vibrate();
-        }
-      }),
-      makeLooperButton("Reset", new Handler<Boolean>() {
-        public void handle(Boolean o) {
-          engine.resetLooper();
-          VibratorService.vibrate();
-        }
-      })
+      undoButton,
+      resetButton
     );
   }
   
