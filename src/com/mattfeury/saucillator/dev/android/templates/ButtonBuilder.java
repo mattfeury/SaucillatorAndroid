@@ -2,13 +2,16 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 
 public class ButtonBuilder {
-  public static enum Type { RECT, KNOB };
+  public static enum Type { RECT, KNOB, SLIDER };
   private Button button;
 
   private ButtonBuilder(Type type, String name) {
     switch(type) {
       case KNOB:
         button = new KnobButton(name);
+        break;
+      case SLIDER:
+        button = new SliderButton(name);
         break;
       default:
         button = new RectButton(name);
@@ -34,6 +37,16 @@ public class ButtonBuilder {
     button.setMargin(size);
     return this;
   }
+  public ButtonBuilder withBounds(int min, int max) {
+    return withBounds(min, max, min);
+  }
+  public ButtonBuilder withBounds(int min, int max, int current) {
+    if (button instanceof SliderButton)
+      ((SliderButton)button).setBounds(min, max, current);
+
+    return this;
+  }
+
   public Button finish() {
     return button;
   }
