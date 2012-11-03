@@ -9,7 +9,7 @@ import com.mattfeury.saucillator.dev.android.services.VibratorService;
 
 public class LooperTab extends Tab {
   
-  private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15;
+  private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15, TEXT_SIZE = 18;
 
   public LooperTab(final AudioEngine engine) {
     super("Looper", engine);
@@ -26,6 +26,7 @@ public class LooperTab extends Tab {
     toggleButton.setBorder(BORDER_SIZE);
     toggleButton.setMargin(MARGIN_SIZE);
     toggleButton.setClear(false);
+    toggleButton.setTextSize(TEXT_SIZE);
 
     panel.addChild(
       toggleButton,
@@ -54,6 +55,7 @@ public class LooperTab extends Tab {
       builder
         .withBorderSize(BORDER_SIZE)
         .withMargin(MARGIN_SIZE)
+        .withTextSize(TEXT_SIZE)
         .withClear(true)
         .finish();
 

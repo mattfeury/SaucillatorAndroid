@@ -42,7 +42,6 @@ public abstract class Button extends SmartRect implements Fingerable {
     text.setTextAlign(Align.CENTER);
     
     bg.setStrokeWidth(5);
-
   }
   public String getName() {
     return name;
@@ -76,7 +75,10 @@ public abstract class Button extends SmartRect implements Fingerable {
     focused = ! focused;
     return focused;
   }
-  
+
+  public void setTextSize(int size) {
+    text.setTextSize(size);
+  }
   public void setBorder(int stroke) {
     this.borderSize = stroke;
   }

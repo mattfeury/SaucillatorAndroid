@@ -46,6 +46,10 @@ public class ButtonBuilder {
 
     return this;
   }
+  public ButtonBuilder withTextSize(int textSize) {
+    button.setTextSize(textSize);
+    return this;
+  }
 
   public Button finish() {
     return button;
