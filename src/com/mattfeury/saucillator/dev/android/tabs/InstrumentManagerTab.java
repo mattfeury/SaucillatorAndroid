@@ -17,6 +17,7 @@ import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.services.ActivityService;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 
 public class InstrumentManagerTab extends Tab {
 
@@ -83,6 +84,7 @@ public class InstrumentManagerTab extends Tab {
     } else {
       ActivityService.makeToast("Instrument Loaded: " + instrumentName);
       engine.setOscillator(newOsc);
+      ViewService.updateOscillatorSettings(newOsc);
     }
   }
   private void showInstrumentChooser() {

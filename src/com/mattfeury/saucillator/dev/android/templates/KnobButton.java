@@ -37,7 +37,7 @@ public class KnobButton extends Button {
     bg.setStrokeWidth(2);
   }
 
-  private void changeProgress(float f) {
+  public void changeProgress(float f) {
     if (f < 0) f = 0;
     if (f > 1) f = 1;
 

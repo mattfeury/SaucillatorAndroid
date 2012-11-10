@@ -30,4 +30,53 @@ public class ViewService {
   public static void unregisterButton(String name) {
     buttonsByName.remove(name);
   }
+
+  public static void updateButton(String name, Handler<Button> handler) {
+    Button button = buttonsByName.get(name);
+
+    if (button != null)
+      handler.handle(button);
+  }
+
+  // This is kinda lame having this here, but it's better than the alternatives
+  // IT should maybe be in the Button object itself: e.g. an updateHandler.
+  public static void updateOscillatorSettings(ComplexOsc osc) {
+    // LFO knobs
+    Button lfoRate = buttonsByName.get("LFO Rate");
+    if (lfoRate != null) {
+      float rate = osc.getModRate() / (float)AudioEngine.MOD_RATE_MAX;
+      ((KnobButton)lfoRate).changeProgress(rate);
+    }
+    Button lfoDepth = buttonsByName.get("LFO Depth");
+    if (lfoDepth != null) {
+      float rate = osc.getModDepth() / (float)AudioEngine.MOD_DEPTH_MAX;
+      ((KnobButton)lfoDepth).changeProgress(rate);
+    }
+
+    // Delay knobs
+    Button delayRate = buttonsByName.get("Delay Rate");
+    if (delayRate != null) {
+      float rate = osc.getDelayRate() / (float)AudioEngine.DELAY_RATE_MAX;
+      ((KnobButton)delayRate).changeProgress(rate);
+    }
+    Button delayDecay = buttonsByName.get("Delay Decay");
+    if (delayDecay != null) {
+      ((KnobButton)delayDecay).changeProgress(osc.getDelayDecay());
+    }
+
+    // Envelope
+    Button attack = buttonsByName.get("Attack");
+    if (attack != null) {
+      ((KnobButton)attack).changeProgress(osc.getAttack());
+    }
+    Button release = buttonsByName.get("Release");
+    if (release != null) {
+      ((KnobButton)release).changeProgress(osc.getRelease());
+    }
+
+    Button glide = buttonsByName.get("Glide");
+    if (glide != null) {
+      ((KnobButton)glide).changeProgress(osc.getLag());
+    }
+  }
 }
