@@ -23,9 +23,5 @@
             </intent-filter>
         </activity>
         <activity android:name=".settings.Settings" android:label="@string/app_name"/>
-        <activity android:name=".settings.ModifyInstrument" android:label="@string/app_name"/>
-        <activity android:name=".settings.ModifyTimbre" android:label="@string/app_name"/>
-        <activity android:name=".settings.TimbrePreferences" android:label="@string/app_name"/>
-        <activity android:name=".settings.EffectsPreferences" android:label="@string/app_name"/>
     </application>
 </manifest>

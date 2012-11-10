@@ -1,12 +1,9 @@
 package com.mattfeury.saucillator.dev.android;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.*;
-import com.mattfeury.saucillator.dev.android.settings.ModifyInstrument;
-import com.mattfeury.saucillator.dev.android.settings.Settings;
 import com.mattfeury.saucillator.dev.android.sound.*;
 import com.mattfeury.saucillator.dev.android.tabs.*;
 import com.mattfeury.saucillator.dev.android.utilities.*;
@@ -45,10 +42,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
     // which finger ID corresponds to which fingerable layout element. e.g. buttons, knobs, etc.
     private ConcurrentHashMap<Integer, Fingerable> fingersById = new ConcurrentHashMap<Integer, Fingerable>();
 
-    private SubMenu instrumentMenu;
-    private final int instrumentMenuId = 9;
     public static final String DATA_FOLDER = "sauce/";
-    public static final int MODIFY_ACTION = 1;
 
     private static final String tutorialName = "showAlfredoTutorial";
     
@@ -109,7 +103,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
         tabManager.addTab(new InstrumentManagerTab(audioEngine));
         tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new RecorderTab(audioEngine));
-        // TODO setup visual layout that depends on audio shtuff
       }
     }
 
@@ -265,65 +258,8 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }
 
 
-    /**
-     * Settings handlers
-     */
-    private boolean launchSettings() {
-    	Intent intent = new Intent(SauceEngine.this, Settings.class);
-    	//intent.putExtra("octave", octave);
-    	//intent.putExtra("note", note);
-    	//intent.putExtra("file name", WavWriter.filePrefix);
-    	//intent.putExtra("visuals", view.getVisuals());
-      //intent.putExtra("scale", scaleId);
-    	//startActivityForResult(intent, 0);
-    	return true;
-    }
-    private void launchModifyInstrument(boolean create) {
-    	Intent intent = new Intent(SauceEngine.this, ModifyInstrument.class);
-    	intent.putExtra("createNew", create);
-    	startActivityForResult(intent, SauceEngine.MODIFY_ACTION);
-    }
-    private void editInstrument() {
-      launchModifyInstrument(false);
-    }
-    private void createInstrument() {
-      launchModifyInstrument(true);
-    }
-    // Called when settings activity ends. Updates proper params
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      /*if (requestCode == 0 && data != null) {
-        Bundle extras = data.getExtras();
-
-        if (extras != null) {
-          WavWriter.filePrefix = extras.getString("file name");
-          note = extras.getInt("note");
-          octave = extras.getInt("octave");
-          scaleId = extras.getString("scale");
-
-          view.setVisuals(extras.getBoolean("visuals"));
-          selectScale(scaleId);
-        }
-      } else if (requestCode == SauceEngine.MODIFY_ACTION) {
-        if (ModifyInstrument.modifying == null)
-          return;
-
-        currentOscillator = ModifyInstrument.modifying;
-        resetOscillators();
-        setupParamHandlers();
-      }*/
-      //updateOscSettings();
-    }
-
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
-        case R.id.createInstrumentItem:
-          createInstrument();
-          return true;
-        case R.id.editInstrumentItem:
-          editInstrument();
-          return true;
-    		case R.id.settings:
-    			return launchSettings();
         case R.id.quit:
           onDestroy();
           return true;
