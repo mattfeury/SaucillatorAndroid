@@ -3,6 +3,8 @@ package com.mattfeury.saucillator.dev.android.visuals;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.services.ViewService;
+
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -23,12 +25,21 @@ public class SauceView extends View {
 
     public SauceView(Context context) {
       super(context);
+
+      init();
     }
     public SauceView(Context context, AttributeSet attrs) {
       super(context, attrs);
+
+      init();
     }
     public SauceView(Context context, AttributeSet attrs, int defStyle) {
     	 super(context, attrs, defStyle);
+
+       init();
+    }
+    private void init() {
+      ViewService.setup(this);
     }
 
     @Override
