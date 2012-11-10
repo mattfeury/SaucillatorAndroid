@@ -15,6 +15,7 @@ import com.mattfeury.saucillator.dev.android.templates.Handler;
 import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.services.ActivityService;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 
 public class RecorderTab extends Tab {
 
@@ -82,6 +83,7 @@ public class RecorderTab extends Tab {
               Editable value = input.getText();
               WavWriter.filePrefix = value.toString();
               filenameInput.setName(fileFieldPrefix + value.toString());
+              ViewService.refresh();
             }
           }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
