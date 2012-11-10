@@ -33,7 +33,7 @@ public class PadTab extends Tab {
     });
     baseNotePicker.setClear(true);
 
-    PickerButton<Integer> baseOctavePicker = new PickerButton<Integer>("Base Octave", Theory.octaves);
+    PickerButton<Integer> baseOctavePicker = new PickerButton<Integer>("Base Octave", Theory.octaves, (Integer)4);
     baseOctavePicker.addHandler(new Handler<Integer>() {
       public void handle(Integer octave) {
         engine.updateBaseOctave(octave);

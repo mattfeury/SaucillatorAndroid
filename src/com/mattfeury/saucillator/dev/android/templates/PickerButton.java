@@ -1,5 +1,7 @@
 package com.mattfeury.saucillator.dev.android.templates;
 
+import java.util.Arrays;
+
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import android.graphics.Canvas;
@@ -7,18 +9,24 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 
 public class PickerButton<K> extends Button {
-  //protected Paint status;
-
   private K[] choices;
   private int selected;
   
   private RectButton incr, decr;
 
   public PickerButton(String name, K[] choices) {
+    // Cast to int. The generic could be Integer. What would happen?
+    this(name, choices, (int)0);
+  }
+  public PickerButton(String name, K[] choices, K choice) {
+    this(name, choices, (int)(Arrays.asList(choices).indexOf(choice)));
+  }
+
+  public PickerButton(String name, K[] choices, int choice) {
     super(name, 0, 0, 0, 0);
 
     this.choices = choices;
-    chooseChoice(0);
+    chooseChoice(choice);
 
     decr = new RectButton("-");
     decr.addHandler(new Handler<Boolean>() {
