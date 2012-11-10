@@ -38,6 +38,9 @@ public class RecorderTab extends Tab {
           this.focused = false;
           this.name = recordName;
         }
+
+        Button recorderTab = ViewService.getButton("Recorder");
+        ((TabSelector)recorderTab).toggleAlert();
       }
     };
     recordButton.setBorder(BORDER_SIZE);

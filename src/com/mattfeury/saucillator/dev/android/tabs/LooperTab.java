@@ -6,6 +6,7 @@ import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.dev.android.templates.Handler;
 import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 
 public class LooperTab extends Tab {
   
@@ -21,6 +22,8 @@ public class LooperTab extends Tab {
 
         VibratorService.vibrate();
         engine.toggleLooperRecording();
+        Button loopTab = ViewService.getButton("Looper");
+        ((TabSelector)loopTab).toggleAlert();
 
         toggleFocus();
       }
@@ -40,6 +43,8 @@ public class LooperTab extends Tab {
 
         // Undo stops any current loop recording
         toggleButton.setFocus(false);
+        Button loopTab = ViewService.getButton("Looper");
+        ((TabSelector)loopTab).setAlert(false);
       }
     };
     undoButton.setBorder(BORDER_SIZE);
@@ -57,6 +62,8 @@ public class LooperTab extends Tab {
 
         // Reset stops any current loop recording
         toggleButton.setFocus(false);
+        Button loopTab = ViewService.getButton("Looper");
+        ((TabSelector)loopTab).setAlert(false);
       }
     };
     resetButton.setBorder(BORDER_SIZE);

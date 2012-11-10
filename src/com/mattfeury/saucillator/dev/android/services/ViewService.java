@@ -30,12 +30,8 @@ public class ViewService {
   public static void unregisterButton(String name) {
     buttonsByName.remove(name);
   }
-
-  public static void updateButton(String name, Handler<Button> handler) {
-    Button button = buttonsByName.get(name);
-
-    if (button != null)
-      handler.handle(button);
+  public static Button getButton(String name) {
+    return buttonsByName.get(name);
   }
 
   // This is kinda lame having this here, but it's better than the alternatives
