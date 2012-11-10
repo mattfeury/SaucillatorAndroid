@@ -14,6 +14,9 @@ public class TabSelector extends RectButton {
   private Path textPath = new Path();
   private static final float angleHeight = 0.2f;
 
+  private Paint alertBg = new Paint();
+  private boolean alerted = false;
+
   public TabSelector(String name) {
     this(name, 0, 0, 0, 0);
   }
@@ -24,16 +27,25 @@ public class TabSelector extends RectButton {
 
     bg.setARGB(200, 12, 81, 4);
     focusedBg.setARGB(255, 12, 81, 4);
-
+    alertBg.setARGB(200, 200, 20, 20);
     bg.setStyle(Paint.Style.STROKE);
     focusedBg.setStyle(Paint.Style.FILL_AND_STROKE);
+    alertBg.setStyle(Paint.Style.FILL_AND_STROKE);
     bg.setStrokeWidth(2);
     focusedBg.setStrokeWidth(2);
+    alertBg.setStrokeWidth(2);
     
     text.setSubpixelText(false);
     text.setAntiAlias(false);
   }
   
+  public void toggleAlert() {
+    alerted = ! alerted;
+  }
+  public void setAlert(boolean alert) {
+    this.alerted = alert;
+  }
+
   public void set(int left, int top, int right, int bottom) {
     super.set(left, top, right, bottom);
 
@@ -54,11 +66,13 @@ public class TabSelector extends RectButton {
   }
 
   public void draw(Canvas canvas) {
-    if (focused) {
-      canvas.drawPath(polygon, focusedBg);
-    } else {
-      canvas.drawPath(polygon, bg);
-    }
+    Paint bg = this.bg;
+    if (alerted)
+      bg = alertBg;
+    else if (focused)
+      bg = focusedBg;
+
+    canvas.drawPath(polygon, bg);
 
     canvas.save();
     canvas.rotate(-90, (right + left) / 2f, (bottom + top) / 2);
