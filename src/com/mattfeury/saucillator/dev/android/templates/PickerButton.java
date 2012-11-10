@@ -43,12 +43,6 @@ public class PickerButton<K> extends Button {
       }
     });
 
-    //incr.setMargin(20);
-    //decr.setMargin(20);
-
-    //status = new Paint();
-    //status.setARGB(200, 246, 255, 66);
-    //setBorder(3);
     setTextSize(22);
   }
   
