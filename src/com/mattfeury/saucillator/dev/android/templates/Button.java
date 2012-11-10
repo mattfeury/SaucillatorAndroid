@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 
@@ -42,6 +43,8 @@ public abstract class Button extends SmartRect implements Fingerable {
     text.setTextAlign(Align.CENTER);
     
     bg.setStrokeWidth(5);
+
+    ViewService.registerButton(name, this);
   }
   public String getName() {
     return name;
@@ -92,7 +95,10 @@ public abstract class Button extends SmartRect implements Fingerable {
     this.clearFloat = clear;
   }
   public void setName(String name) {
+    ViewService.unregisterButton(this.name);
+
     this.name = name;
+    ViewService.registerButton(this.name, this);
   }
 
   @Override
