@@ -102,13 +102,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
         init = true;
 
         this.tabManager = new TabManager();
-        
+
         view.addDrawable(tabManager);
-        tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new FxTab(audioEngine));
         tabManager.addTab(new LooperTab(audioEngine));
         tabManager.addTab(new InstrumentManagerTab(audioEngine));
-
+        tabManager.addTab(new PadTab(audioEngine));
+        tabManager.addTab(new RecorderTab(audioEngine));
         // TODO setup visual layout that depends on audio shtuff
       }
     }
