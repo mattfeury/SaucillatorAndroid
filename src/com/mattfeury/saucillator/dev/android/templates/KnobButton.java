@@ -20,12 +20,15 @@ public class KnobButton extends Button {
   private static final float margin = 0.2f;
 
   public KnobButton(String name) {
-    this(name, 0, 0);
+    this(name, 0);
   }
-  public KnobButton(String name, int x, int y) {
+  public KnobButton(String name, float progress) {
+    this(name, progress, 0, 0);
+  }
+  public KnobButton(String name, float progress, int x, int y) {
     super(name, x, y, x, y); // no width/height by default?
 
-    changeProgress(0);
+    changeProgress(progress);
 
     status = new Paint();
     status.setARGB(255, 255, 120, 120);
