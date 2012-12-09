@@ -61,39 +61,53 @@ public class TabPanel extends SmartRect {
 
     // Determine table structure
     SparseIntArray columnCountPerRow = new SparseIntArray();
-    int row = 0;
+    SparseIntArray rowspanCountPerRow = new SparseIntArray();
+    int row = 0, rowCount = 0;
     for (Drawable child : children) {
       int columnCount = columnCountPerRow.get(row, 0);
+      int colspan = child.getColspan();
+      int rowspan = child.getRowspan();
 
       if (child.shouldClearFloat()) {
-        columnCountPerRow.put(++row, 1);
+        columnCountPerRow.put(++row, colspan);
       } else {
-        columnCountPerRow.put(row, columnCount + 1);
+        columnCountPerRow.put(row, columnCount + colspan);
+      }
+
+      int maxRowspan = rowspanCountPerRow.get(row);
+      if (maxRowspan < rowspan) {
+        rowspanCountPerRow.put(row, rowspan);
+        rowCount += rowspan - maxRowspan;
       }
     }
 
     // Do the math and position the table elements appropriately
-    int totalRows = row + 1; // row was 0 indexed
     int contentPadding = (int) (width * TabPanel.contentPadding);
     int contentWidth = (int) (width - contentPadding * 2);
-    int rowHeight = (int) (height - fontSize * 4) / totalRows;
+    int rowHeight = (int) (height - fontSize * 4) / rowCount;
 
     int column = 0;
     row = 0;
+    int spannedRows = 0;
     for (Drawable child : children) {
       if (child.shouldClearFloat()) {
+        int maxRowspan = rowspanCountPerRow.get(row, 1);
+        spannedRows += maxRowspan;
+
         row++;
         column = 0;
       }
 
+      int colspan = child.getColspan();
+      int rowspan = child.getRowspan();
       int columnCount = columnCountPerRow.get(row, 1);
       int columnWidth = contentWidth / columnCount;
 
       int newLeft = (int)(left + contentPadding) + column * columnWidth;
-      int newHeight = (int)(top + contentPadding) + (row * rowHeight);
-      child.set(newLeft, newHeight, columnWidth, rowHeight);
+      int newTop = (int)(top + contentPadding) + (spannedRows * rowHeight);
+      child.set(newLeft, newTop, columnWidth * colspan, rowHeight * rowspan);
 
-      column++;
+      column += colspan;
     }
   }
 

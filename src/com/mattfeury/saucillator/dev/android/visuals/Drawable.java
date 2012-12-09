@@ -10,4 +10,6 @@ public interface Drawable {
   public boolean contains(int x, int y);
   
   public boolean shouldClearFloat();
+  public int getColspan();
+  public int getRowspan();
 }

@@ -13,7 +13,7 @@ import android.view.MotionEvent;
 public class TabManager implements Drawable {
   private LinkedList<Tab> tabs = new LinkedList<Tab>();
   private Tab currentTab = null;
-  private int width = 0, height = 0;
+  private int width = 0, height = 0, colspan = 1, rowspan = 1;
 
   public void addTab(final Tab tab) {
     tabs.add(tab);
@@ -110,5 +110,11 @@ public class TabManager implements Drawable {
   @Override
   public boolean shouldClearFloat() {
     return true;
+  }
+  public int getColspan() {
+    return colspan;
+  }
+  public int getRowspan() {
+    return rowspan;
   }
 }

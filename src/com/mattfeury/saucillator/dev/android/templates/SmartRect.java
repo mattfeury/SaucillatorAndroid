@@ -13,6 +13,7 @@ import android.graphics.RectF;
 public abstract class SmartRect extends RectF implements Drawable {
 
   protected Paint defaultPaint = new Paint();
+  protected int colspan = 1, rowspan = 1;
 
   public SmartRect(int x, int y, int width, int height) {
     super(x, y, x + width, y + height);
@@ -39,4 +40,16 @@ public abstract class SmartRect extends RectF implements Drawable {
     return false;
   }
 
+  public int getColspan() {
+    return colspan;
+  }
+  public int getRowspan() {
+    return rowspan;
+  }
+  public void setColspan(int span) {
+    this.colspan = span;
+  }
+  public void setRowspan(int span) {
+    this.rowspan = span;
+  }
 }
