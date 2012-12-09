@@ -97,10 +97,6 @@ public class Table extends SmartRect implements Fingerable {
       int newLeft = (int)(left + contentPadding) + column * columnWidth;
       int newTop = (int)(top + contentPadding) + (spannedRows * rowHeight);
       child.set(newLeft, newTop, columnWidth * colspan, rowHeight * rowspan);
-      
-      if (child instanceof Table) {
-        ((Table)child).recalculateChildren();
-      }
 
       column += colspan;
     }
