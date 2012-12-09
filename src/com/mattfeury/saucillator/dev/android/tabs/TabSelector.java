@@ -53,6 +53,9 @@ public class TabSelector extends RectButton {
   }
 
   private void recalculatePath() {
+    polygon.reset();
+    textPath.reset();
+
     polygon.moveTo(right, top);
     polygon.lineTo(right, bottom);
     polygon.lineTo(left, bottom - (bottom - top) * angleHeight);
