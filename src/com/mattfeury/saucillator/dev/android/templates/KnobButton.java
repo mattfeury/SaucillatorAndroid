@@ -16,15 +16,14 @@ public class KnobButton extends Button {
 
   private float progress, progressSin, progressCos, lastR, lastTheta = 0f;
 
-  // TODO should this scale with the button?
-  public static final int width = 75,
-                          textSize = 14;
+  public static final int textSize = 14;
+  private static final float margin = 0.2f;
 
   public KnobButton(String name) {
     this(name, 0, 0);
   }
   public KnobButton(String name, int x, int y) {
-    super(name, x, y, x + width, y + width);
+    super(name, x, y, x, y); // no width/height by default?
 
     changeProgress(0);
 
@@ -51,9 +50,13 @@ public class KnobButton extends Button {
     handle(progress);
   }
 
+  private int getRadius() {
+    return (int)(Math.min(right - left, bottom - top) / 2 * (1f - margin));
+  }
+
   @Override
   public void draw(Canvas canvas) {
-    int radius = width / 2,
+    int radius = getRadius(),
         rectCenterX = (int) ((right - left) / 2f + left),
         rectCenterY = (int) ((bottom - top) / 2f + top),
         xCenter = rectCenterX,
@@ -75,8 +78,9 @@ public class KnobButton extends Button {
     final int y = (int) event.getY(index);
     final int x = (int) event.getX(index);
 
-    int centerX = (int) (left + width / 2f);
-    int centerY = (int) (top + width / 2f);
+    int radius = getRadius();
+    int centerX = (int) (left + radius);
+    int centerY = (int) (top + radius);
     int dx = x - centerX;
     int dy = y - centerY;
     float r = FloatMath.sqrt(dx * dx + dy * dy);
