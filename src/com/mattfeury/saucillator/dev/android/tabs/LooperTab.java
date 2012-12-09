@@ -77,20 +77,4 @@ public class LooperTab extends Tab {
       resetButton
     );
   }
-  
-  private Button makeLooperButton(String name, Handler... handlers) {
-    ButtonBuilder builder = ButtonBuilder.build(ButtonBuilder.Type.RECT, name);
-    
-    for (Handler handler : handlers)
-      builder.withHandler(handler);
-
-    return
-      builder
-        .withBorderSize(BORDER_SIZE)
-        .withMargin(MARGIN_SIZE)
-        .withTextSize(TEXT_SIZE)
-        .withClear(true)
-        .finish();
-
-  }
 }
