@@ -2,7 +2,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 
 import java.util.LinkedList;
 
-import com.mattfeury.saucillator.dev.android.templates.RectButton;
+import com.mattfeury.saucillator.dev.android.templates.Label;
 import com.mattfeury.saucillator.dev.android.templates.Table;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
@@ -37,7 +37,7 @@ public class TabPanel extends Table {
     contents.setClear(true);
     contents.setBorder(0);
 
-    RectButton header = new RectButton(name);
+    Label header = new Label(name);
     header.setTextSize(30);
 
     super.addChild(header);
