@@ -25,7 +25,7 @@ public class TimbreTab extends Tab {
   private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15, TEXT_SIZE = 18;
   private TimbreTable timbreTable;
   
-  private static final float HARMONIC_MAX = 5, PHASE_MAX = 360;
+  private static final float HARMONIC_MIN = 1, HARMONIC_MAX = 5, PHASE_MIN = 0, PHASE_MAX = 360;
 
   public TimbreTab(final AudioEngine engine) {
     super("Timbre", engine);
@@ -141,14 +141,14 @@ public class TimbreTab extends Tab {
         }
       });
 
-      float harmonic = Utilities.unscale(timbre.getHarmonic(), 1f, HARMONIC_MAX);
+      float harmonic = Utilities.unscale(timbre.getHarmonic(), HARMONIC_MIN, HARMONIC_MAX);
       KnobButton harmonicKnob = new KnobButton("Harmonic", harmonic);
       harmonicKnob.addHandler(new Handler<Float>() {
         public void handle(final Float progress) {
           engine.updateOscillatorProperty(new OscillatorUpdater() {
             public void update(ComplexOsc osc) {
               Oscillator timbre = osc.getComponent(timbreIndex);
-              timbre.setHarmonic(Utilities.scale(progress, 1, (int)HARMONIC_MAX));
+              timbre.setHarmonic(Utilities.scale(progress, (int)HARMONIC_MIN, (int)HARMONIC_MAX));
             }
           });
         }
@@ -166,14 +166,14 @@ public class TimbreTab extends Tab {
         }
       });
 
-      float phase = Utilities.unscale(timbre.getPhase(), 0f, PHASE_MAX);
+      float phase = Utilities.unscale(timbre.getPhase(), PHASE_MIN, PHASE_MAX);
       KnobButton phaseKnob = new KnobButton("Phase", phase);
       phaseKnob.addHandler(new Handler<Float>() {
         public void handle(final Float progress) {
           engine.updateOscillatorProperty(new OscillatorUpdater() {
             public void update(ComplexOsc osc) {
               Oscillator timbre = osc.getComponent(timbreIndex);
-              timbre.setPhase(Utilities.scale(progress, 0, (int)PHASE_MAX));
+              timbre.setPhase(Utilities.scale(progress, (int)PHASE_MIN, (int)PHASE_MAX));
             }
           });
         }
