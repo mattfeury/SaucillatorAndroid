@@ -143,8 +143,8 @@ public class Table extends RectButton {
 
     for (Drawable child : children) {
       if (child.contains(x, y) && child instanceof Fingerable) {
-        ((Fingerable)child).handleTouch(id, event);
-        return new Full<Fingerable>((Fingerable)child);
+        Box<Fingerable> handled = ((Fingerable)child).handleTouch(id, event);
+        return handled;
       }
     }
     return new Empty<Fingerable>();
