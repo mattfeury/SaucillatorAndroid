@@ -76,7 +76,7 @@ public class PickerButton<K> extends Button {
   public void draw(Canvas canvas) {
     incr.draw(canvas);
     decr.draw(canvas);
-    canvas.drawText(choices[selected].toString(), left + (right - left) / 2f, top + (bottom - top) / 2f, text);
+    canvas.drawText(choices[selected].toString(), left + (right - left) / 2f, top + (bottom - top) / 2f + text.getTextSize() / 2, text);
   }
 
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {
