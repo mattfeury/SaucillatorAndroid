@@ -22,7 +22,7 @@ public class Table extends RectButton {
     this(name, 0, 0, 0, 0);
   }
   public Table(String name, int x, int y, int width, int height) {
-    super(name, x, y, x + width, y + height);
+    super(name + "-Table", x, y, x + width, y + height);
 
     bg = new Paint();
     bg.setStyle(Paint.Style.STROKE);

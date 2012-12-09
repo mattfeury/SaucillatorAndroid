@@ -76,7 +76,7 @@ public class TimbreTab extends Tab {
   
   public class TimbreTable extends Table {
     public TimbreTable() {
-      super("timbre-table");
+      super("Timbre");
     }
 
     public void fill(ComplexOsc osc) {

@@ -79,7 +79,7 @@ public class ViewService {
     }
 
     // Timbre
-    Button timbreTable = buttonsByName.get("timbre-table");
+    Button timbreTable = buttonsByName.get("Timbre-Table");
     if (timbreTable != null) {
       ((TimbreTable)timbreTable).fill(osc);
     }
