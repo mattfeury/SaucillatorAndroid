@@ -3,6 +3,9 @@ package com.mattfeury.saucillator.dev.android.tabs;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.instruments.Oscillator;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
@@ -26,9 +29,15 @@ public class TimbreTab extends Tab {
   private TimbreTable timbreTable;
   
   private static final float HARMONIC_MIN = 1, HARMONIC_MAX = 5, PHASE_MIN = 0, PHASE_MAX = 360;
+  private Paint textPaint = new Paint();
 
   public TimbreTab(final AudioEngine engine) {
     super("Timbre", engine);
+
+    textPaint.setARGB(255, 255, 120, 120);
+    textPaint.setTextSize(24);
+    textPaint.setFakeBoldText(true);
+    textPaint.setTextAlign(Align.CENTER);
 
     final RectButton toggleButton = new RectButton("Add") {
       @Override
@@ -179,7 +188,25 @@ public class TimbreTab extends Tab {
         }
       });
 
-      this.addChild(typePicker, harmonicKnob, amplitudeKnob, phaseKnob);
+      RectButton delete = new RectButton("X");
+      delete.setTextPaint(textPaint);
+      delete.addHandler(new Handler<Object>() {
+        public void handle(Object o) {
+          VibratorService.vibrate();
+
+          engine.updateOscillatorProperty(new OscillatorUpdater() {
+            public void update(ComplexOsc osc) {
+              osc.removeComponent(timbreIndex);
+            }
+          });
+
+          // Do we have to refill here? We could potentially decrement the row indexes above this one
+          timbreTable.fill(AudioEngine.currentOscillator);
+        }
+      });
+      delete.setMargin(30);
+
+      this.addChild(typePicker, harmonicKnob, amplitudeKnob, phaseKnob, delete);
     }
   }
 }
