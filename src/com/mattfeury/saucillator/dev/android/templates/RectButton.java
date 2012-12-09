@@ -27,9 +27,10 @@ public class RectButton extends Button {
 
   @Override
   public void draw(Canvas canvas) {
+    // TODO reduce repeated calculations here
     if (focused) {
       canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, focusedBg); //top line
-      canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, focusedBg);
+      canvas.drawText(name, (right + left) / 2f, top + (bottom - top) * .5f + focusedBg.getTextSize() / 2, focusedBg);
     } else {
       canvas.drawRect(left + margin, top + margin, left + margin + borderSize, bottom - margin, bg); //left line
       canvas.drawRect(right - margin - borderSize, top + margin, right - margin, bottom - margin, bg); //right line
@@ -37,7 +38,7 @@ public class RectButton extends Button {
       canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, bg); //top line
       canvas.drawRect(left + margin + borderSize, bottom - margin - borderSize, right - margin - borderSize, bottom - margin, bg); //bottom line
       
-      canvas.drawText(name, (right + left) / 2f, top + (bottom - top)* .5f, text);
+      canvas.drawText(name, (right + left) / 2f, top + (bottom - top) * .5f + text.getTextSize() / 2, text);
     }
   }
 
