@@ -370,6 +370,7 @@ public class InstrumentService {
     }
     
     json.put("timbre", timbres);
+    json.put("isInternal", osc.isInternal());
       
     // FX
     JSONObject fx = new JSONObject();
