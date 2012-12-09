@@ -10,18 +10,18 @@ import android.graphics.*;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
 
-public class Table extends SmartRect implements Fingerable {
+public class Table extends RectButton {
   protected Paint bg;
   protected LinkedList<Drawable> children = new LinkedList<Drawable>();
 
   protected float contentPadding = 0;
   private boolean shouldClearFloat = false;
 
-  public Table() {
-    this(0, 0, 0, 0);
+  public Table(String name) {
+    this(name, 0, 0, 0, 0);
   }
-  public Table(int x, int y, int width, int height) {
-    super(x, y, x + width, y + height);
+  public Table(String name, int x, int y, int width, int height) {
+    super(name, x, y, x + width, y + height);
 
     bg = new Paint();
     bg.setStyle(Paint.Style.STROKE);

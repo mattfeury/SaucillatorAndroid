@@ -22,7 +22,7 @@ public class TabPanel extends Table {
     this(name, 0, 0, 0, 0);
   }
   public TabPanel(String name, int x, int y, int width, int height) {
-    super(x, y, x + width, y + height);
+    super(name, x, y, x + width, y + height);
 
     this.name = name;
 
@@ -31,7 +31,7 @@ public class TabPanel extends Table {
     text.setTextSize(fontSize);
     text.setTextAlign(Align.CENTER);
 
-    contents = new Table();
+    contents = new Table("tab-panel-contents-" + name);
     contents.setPadding(.05f);
     contents.setRowspan(9);
     contents.setClear(true);
