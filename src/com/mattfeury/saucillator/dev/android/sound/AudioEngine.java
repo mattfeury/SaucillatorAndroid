@@ -197,7 +197,7 @@ public class AudioEngine {
   }
 
   public void setOscillator(ComplexOsc newOsc) {
-    currentOscillator = newOsc;
+    currentOscillator = InstrumentService.copyInstrument(newOsc);
     removeAllOscillators();
 
     connectOsc(newOsc);
