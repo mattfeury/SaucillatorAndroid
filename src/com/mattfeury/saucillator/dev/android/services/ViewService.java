@@ -4,7 +4,10 @@ import java.util.HashMap;
 
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
+import com.mattfeury.saucillator.dev.android.tabs.TimbreTab;
+import com.mattfeury.saucillator.dev.android.tabs.TimbreTab.TimbreTable;
 import com.mattfeury.saucillator.dev.android.templates.*;
+import com.mattfeury.saucillator.dev.android.visuals.Drawable;
 
 import android.view.View;
 
@@ -73,6 +76,12 @@ public class ViewService {
     Button glide = buttonsByName.get("Glide");
     if (glide != null) {
       ((KnobButton)glide).changeProgress(osc.getLag());
+    }
+
+    // Timbre
+    Button timbreTable = buttonsByName.get("timbre-table");
+    if (timbreTable != null) {
+      ((TimbreTable)timbreTable).fill(osc);
     }
   }
 }

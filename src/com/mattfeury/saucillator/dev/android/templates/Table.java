@@ -2,6 +2,7 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 import com.mattfeury.saucillator.dev.android.templates.SmartRect;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
@@ -35,6 +36,16 @@ public class Table extends RectButton {
     }
 
     recalculateChildren();
+  }
+  public void removeChildren() {
+    for (Drawable child : children) {
+      if (child instanceof Button) {
+        ViewService.unregisterButton(((Button)child).getName());
+      }
+    }
+
+    children.clear();
+    //recalculateChildren();
   }
 
   /**
