@@ -7,10 +7,12 @@ public class ParametricEQ extends UGen {
   public static final float minFreq = 20,
                             maxFreq = (SAMPLE_RATE - 50f) / 2f, //if we go much higher, we get strAnGe fx (e.g. ringing)
                             minQ = .33f,
-                            maxQ = 12f;
+                            maxQ = 12f,
+                            minGain = -12,
+                            maxGain = 12;
 
   private float frequency = maxFreq,
-                gain = -10f, // -12 to 12db
+                gain = -10f,
                 q = maxQ;
 
   // Internal variables used for calculating IIF
@@ -37,18 +39,25 @@ public class ParametricEQ extends UGen {
    * These setters expect a percentage value (0.0 to 1.0) that they then scale to actual bounds
    */
   public void setFrequency(float freq) {
-    this.frequency = Utilities.scale(freq, minFreq, maxFreq);
+    this.frequency = freq;
     recalculate();
   }
   public void setQ(float q) {
-    this.q = Utilities.scale(q, minQ, maxQ);
+    this.q = q;
+    recalculate();
+  }
+  public void setGain(float gain) {
+    this.gain = gain;
     recalculate();
   }
   public float getFrequency() {
-    return Utilities.unscale(frequency, minFreq, maxFreq);
+    return frequency;
   }
   public float getQ() {
-    return Utilities.unscale(q, minQ, maxQ);
+    return q;
+  }
+  public float getGain() {
+    return gain;
   }
 
   private void recalculate() {

@@ -37,6 +37,13 @@ public class ButtonBuilder {
     button.setMargin(size);
     return this;
   }
+  public ButtonBuilder withProgress(float progress) {
+    if (button instanceof KnobButton)
+      ((KnobButton)button).changeProgress(progress);
+
+    return this;
+  }
+
   public ButtonBuilder withBounds(int min, int max) {
     return withBounds(min, max, min);
   }

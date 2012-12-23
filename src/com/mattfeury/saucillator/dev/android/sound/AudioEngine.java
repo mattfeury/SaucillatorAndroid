@@ -101,6 +101,10 @@ public class AudioEngine {
     looper.undo();
   }
 
+  public ParametricEQ getEq() {
+    return this.eq;
+  }
+
   public void stopAllOscillators() {
     Set<Entry<Integer, ComplexOsc>> oscs = oscillatorsById.entrySet();
     for (Entry<Integer, ComplexOsc> oscEntry : oscs) {
