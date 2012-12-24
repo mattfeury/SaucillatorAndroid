@@ -17,9 +17,9 @@ public class ParametricEQ extends UGen {
                             minGain = -12,
                             maxGain = 12;
 
-  private float frequency = maxFreq,
-                gain = -10f,
-                q = maxQ;
+  private float frequency = (maxFreq + minFreq) / 2f,
+                gain = (maxGain + minGain) / 2f,
+                q = (maxQ + minQ) / 2f;
 
   // Internal variables used for calculating IIF
   // Sorry these are named so C-style (i.e. shittily),
