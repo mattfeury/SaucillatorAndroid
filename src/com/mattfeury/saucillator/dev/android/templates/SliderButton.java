@@ -9,7 +9,7 @@ public class SliderButton extends Button {
   protected Paint status;
 
   protected float progress = 0f;
-  protected int min = 0, max = 1, scaled = 0;
+  protected int min = 0, max = 1, current = 0;
 
   public SliderButton(String name) {
     this(0, 1, name);
@@ -56,27 +56,29 @@ public class SliderButton extends Button {
     if (p > 1) p = 1;
 
     this.progress = p;
-    this.scaled = Utilities.scale(progress, min, max);
+    this.current = Utilities.scale(progress, min, max);
 
-    handle(scaled);
+    handle(current);
   }
 
   @Override
   public void draw(Canvas canvas) {
+    int height = (int) (bottom - top);
+    int centerY = (int) (top + height / 2f);
+    int progressWidth = (int) ((right - left - margin * 2) * progress);
+    int width = (int) (right - left);
+
     // Ends
     canvas.drawLine(margin + left, margin + top, margin + left, bottom - margin, bg);
     canvas.drawLine(right - margin, margin + top, right - margin, bottom - margin, bg);
     
     // Status
-    int height = (int) (bottom - top);
-    int centerY = (int) (top + height / 2f);
-    int progressWidth = (int) ((right - left - margin * 2) * progress);
     canvas.drawLine(margin + left, centerY, right - margin, centerY, bg);
     canvas.drawLine(margin + left, centerY, margin + left + progressWidth - borderSize / 2f, centerY, status); 
 
     // Marker
-    canvas.drawLine(margin + left + progressWidth, top + height / 4f, margin + left + progressWidth, bottom - height / 4f, status);
-    canvas.drawText("" + scaled, margin + left + progressWidth, bottom - margin, status);
+    canvas.drawLine(margin + left + progressWidth, top + height / 3f, margin + left + progressWidth, bottom - height / 3f, status);
+    canvas.drawText("" + current, margin + left + progressWidth, bottom - margin, status);
   }
 
   public Box<Fingerable> handleTouch(int id, MotionEvent event) {

@@ -92,17 +92,15 @@ public class TimbreTab extends Tab {
       this.removeChildren();
 
       LinkedList<Oscillator> timbres = osc.getComponents();
-      
+
       // TODO should this check to see if it's basic or internal? SingingSaw is internal but not basic...
       String[] disallowed = osc.isInternal() ? new String[0] : new String[]{ osc.getName() }; 
 
-      boolean first = true;
       int i = 0;
       for (Oscillator timbre : timbres) {
         TimbreRow row = makeTimbreRowFor(timbre, i++, disallowed);
-        if (first) {
+        if (i == 1) {
           row.setClear(false);
-          first = false;
         }
 
         this.addChild(row);
