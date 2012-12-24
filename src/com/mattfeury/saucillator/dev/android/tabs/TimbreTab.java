@@ -136,6 +136,7 @@ public class TimbreTab extends Tab {
         public void handle(final String type) {
           engine.updateOscillatorProperty(new OscillatorUpdater() {
             public void update(ComplexOsc osc) {
+              Oscillator timbre = osc.getComponent(timbreIndex);
               Oscillator newTimbre = InstrumentService.getOscillatorForTimbre(type);
               newTimbre.setAmplitude(timbre.getAmplitude());
               newTimbre.setHarmonic(timbre.getHarmonic());
