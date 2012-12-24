@@ -25,7 +25,7 @@ import com.mattfeury.saucillator.dev.android.services.ViewService;
 
 public class TimbreTab extends Tab {
   
-  private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15, TEXT_SIZE = 18;
+  private static final int BORDER_SIZE = 5, MARGIN_SIZE = 8, TEXT_SIZE = 18;
   private TimbreTable timbreTable;
   
   private static final float HARMONIC_MIN = 1, HARMONIC_MAX = 5, PHASE_MIN = 0, PHASE_MAX = 360;
