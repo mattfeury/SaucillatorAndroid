@@ -106,6 +106,8 @@ public class ComplexOsc extends Oscillator {
     setModRate(0);
     setModDepth(0);
     setLag(0);
+    setDelayRate(0);
+    setDelayDecay(0);
 
     envelopeEnabled = false;
     //setAttack(0);
