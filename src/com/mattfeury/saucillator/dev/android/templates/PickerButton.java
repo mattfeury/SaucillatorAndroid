@@ -64,6 +64,15 @@ public class PickerButton<K> extends Button {
   }
 
   @Override
+  public int calculateTextSize() {
+    int size = super.calculateTextSize();
+    incr.setTextSize(size);
+    decr.setTextSize(size);
+
+    return size;
+  }
+
+  @Override
   public void set(int x, int y, int width, int height) {
     super.set(x, y, width, height);
     

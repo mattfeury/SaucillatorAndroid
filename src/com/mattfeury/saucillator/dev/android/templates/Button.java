@@ -38,10 +38,10 @@ public abstract class Button extends SmartRect implements Fingerable {
 
     // Some magic-y defaults.
     bg.setARGB(200, 12, 81, 4);
+    bg.setTextAlign(Paint.Align.CENTER);
     text.setARGB(255, 255,255,255);
-    text.setTextSize(14);
     text.setTextAlign(Align.CENTER);
-    
+
     bg.setStrokeWidth(5);
 
     ViewService.registerButton(name, this);
@@ -56,6 +56,21 @@ public abstract class Button extends SmartRect implements Fingerable {
   public void handle(Object o) {
     for (Handler handler : handlers)
       handler.handle(o);
+  }
+
+  @Override
+  public void set(int x, int y, int width, int height) {
+    super.set(x, y, width, height);
+
+    calculateTextSize();
+  }
+
+  public int calculateTextSize() {
+    int newSize = (int) Math.min(((bottom - top) / 6), (right - left) / 4);
+    bg.setTextSize(newSize);
+    text.setTextSize(newSize);
+
+    return newSize;
   }
 
   @Override

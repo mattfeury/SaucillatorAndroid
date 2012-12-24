@@ -23,9 +23,18 @@ public class SliderButton extends Button {
 
     status = new Paint();
     status.setARGB(200, 246, 255, 66);
+    status.setTextAlign(Paint.Align.CENTER);
     setBorder(borderSize);
   }
-  
+
+  @Override
+  public int calculateTextSize() {
+    int newSize = super.calculateTextSize();
+    status.setTextSize(newSize);
+
+    return newSize;
+  }
+
   @Override
   public void setBorder(int size) {
     super.setBorder(size);
