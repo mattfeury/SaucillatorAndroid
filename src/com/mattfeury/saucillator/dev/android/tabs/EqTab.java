@@ -80,19 +80,17 @@ public class EqTab extends Tab {
     private static final int drawIncrement = 1;
 
     public EqPanel(ParametricEQ eq) {
-      this.frequency = (int) eq.getFrequency();
-      this.q = eq.getQ();
-      this.gain = eq.getGain();
-
       path = new Path();
       //path.setFillType(Path.FillType.EVEN_ODD);
       
       eqPaint = new Paint();
       eqPaint.setARGB(255, 28, 171, 11);
 
-      recalculatePath();
+      setFrequency((int) eq.getFrequency());
+      setQ(eq.getQ());
+      setGain(eq.getGain());
     }
-    
+
     public void setFrequency(int frequency) {
       this.frequency = frequency;
       recalculatePath();
@@ -115,9 +113,10 @@ public class EqTab extends Tab {
     }
 
     private void recalculatePath() {
-      // Quadratic equation in form A*(x - h)^2 + B*x + C
-      float a = this.q,
-            b = 0,
+      // Quadratic equation in form A*(x - h)^2 + C
+      // Orientation is backwards since y values on the canvas go start at 0 and increment as you go down
+      float orientation = (this.gain > 0) ? -1 : 1,
+            a = (float) (Math.pow(ParametricEQ.minQ + ParametricEQ.maxQ - this.q, -2) * orientation),
             c = (bottom - top) / 2f * (this.gain / ParametricEQ.maxGain),
             h = (right - left) * (this.frequency / 20000f) + left;
 
@@ -136,9 +135,8 @@ public class EqTab extends Tab {
         float orientation = (c > 0) ? -1 : 1;
 
         path.lineTo(minRoot, midY);
-
         for (int x = (int) minRoot; x < maxRoot; x = x + drawIncrement) {
-          float y = midY - (orientation * a * (float)Math.pow(x - h, 2) + c);
+          float y = midY - (a * (float)Math.pow(x - h, 2) + c);
           path.lineTo(x, y);
         }
 

@@ -1,7 +1,13 @@
 package com.mattfeury.saucillator.dev.android.sound;
 
-import com.mattfeury.saucillator.dev.android.utilities.Utilities;
-
+/**
+ * Written with the help of this wonderful resource:
+ * http://epubl.luth.se/1402-1773/2003/044/LTU-CUPP-03044-SE.pdf
+ * 
+ * Q is unit-less, as usual, but it seems to correlate that:
+ * 0.33 = about 1,500 Hz affected
+ * 12 = about 8,000 Hz affected
+ */
 public class ParametricEQ extends UGen {
 
   public static final float minFreq = 20,
