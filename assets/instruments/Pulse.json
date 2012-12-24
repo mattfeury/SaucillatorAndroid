@@ -1,0 +1,10 @@
+{
+  name: "Pulse",
+  timbre: [
+    {
+      id: "Pulse"
+    }
+  ],
+  fx: {
+  }
+}

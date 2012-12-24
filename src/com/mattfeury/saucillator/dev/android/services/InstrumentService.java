@@ -6,19 +6,12 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.json.*;
 
 import com.mattfeury.saucillator.dev.android.SauceEngine;
-import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
-import com.mattfeury.saucillator.dev.android.instruments.Noise;
-import com.mattfeury.saucillator.dev.android.instruments.Oscillator;
-import com.mattfeury.saucillator.dev.android.instruments.Saw;
-import com.mattfeury.saucillator.dev.android.instruments.Sine;
-import com.mattfeury.saucillator.dev.android.instruments.Square;
+import com.mattfeury.saucillator.dev.android.instruments.*;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 
 import android.content.res.AssetManager;
@@ -49,7 +42,7 @@ public class InstrumentService {
     return file.substring(0, extensionIndex);
   }
 
-  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Noise", "Singing Saw"};
+  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Pulse", "Noise", "Singing Saw"};
 
   public static boolean ensureProperDirectoryStructure() {
     File file;
@@ -281,6 +274,8 @@ public class InstrumentService {
       return new Square();
     else if ("Noise".equals(id))
       return new Noise();
+    else if ("Pulse".equals(id))
+      return new Pulse();
     else {
       ComplexOsc osc = getInstrument(id);
       return (osc != null) ? osc.resetEffects() : null;
