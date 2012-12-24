@@ -60,6 +60,14 @@ public class Utilities {
 
     return ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN);
   }
+  public static boolean idIsMove(int id, MotionEvent event) {
+    final int action = event.getAction();
+    final int actionCode = action & MotionEvent.ACTION_MASK;
+    final int actionIndex = event.getActionIndex();
+    final int actionId = event.getPointerId(actionIndex);
+
+    return (actionCode == MotionEvent.ACTION_MOVE && actionId == id);
+  }
 
   /**
    * Given a MotionEvent, is the finger of id causing an up event?

@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.dev.android.tabs;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.view.MotionEvent;
 
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
@@ -11,15 +12,18 @@ import com.mattfeury.saucillator.dev.android.sound.ParametricEQ;
 import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.dev.android.templates.Handler;
+import com.mattfeury.saucillator.dev.android.templates.KnobButton;
 import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.templates.ColumnPanel;
+import com.mattfeury.saucillator.dev.android.utilities.Box;
+import com.mattfeury.saucillator.dev.android.utilities.Empty;
+import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.utilities.Full;
 import com.mattfeury.saucillator.dev.android.utilities.Utilities;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 import com.mattfeury.saucillator.dev.android.services.ViewService;
 
 public class EqTab extends Tab {
-  
-  private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15, TEXT_SIZE = 18;
 
   public EqTab(final AudioEngine engine) {
     super("EQ", engine);
@@ -28,9 +32,8 @@ public class EqTab extends Tab {
     final EqPanel eqPanel = new EqPanel(eq);
     eqPanel.setRowspan(3);
 
-    panel.addChild(
-      eqPanel,
-      ButtonBuilder
+    final KnobButton freqButton =
+      (KnobButton) ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Freq")
         .withProgress(Utilities.unscale(eq.getFrequency(), ParametricEQ.minFreq, ParametricEQ.maxFreq))
         .withHandler(new Handler<Float>() {
@@ -41,7 +44,35 @@ public class EqTab extends Tab {
           }
         })
         .withClear(true)
-        .finish(),
+        .finish();
+    
+    final KnobButton gainButton =
+      (KnobButton) ButtonBuilder
+        .build(ButtonBuilder.Type.KNOB, "Gain")
+        .withProgress(Utilities.unscale(eq.getGain(), ParametricEQ.minGain, ParametricEQ.maxGain))
+        .withHandler(new Handler<Float>() {
+          public void handle(final Float progress) {
+            float gain = Utilities.scale(progress, ParametricEQ.minGain, ParametricEQ.maxGain);
+            eqPanel.setGain(gain);
+            eq.setGain(gain);
+          }
+        })
+        .finish();
+
+    eqPanel.setFreqHandler(new Handler<Float>() {
+      public void handle(Float progress) {
+        freqButton.changeProgress(progress);
+      }
+    });
+    eqPanel.setGainHandler(new Handler<Float>() {
+      public void handle(Float progress) {
+        gainButton.changeProgress(progress);
+      }
+    });
+
+    panel.addChild(
+      eqPanel,
+      freqButton,
       ButtonBuilder
         .build(ButtonBuilder.Type.KNOB, "Q")
         .withProgress(Utilities.unscale(eq.getQ(), ParametricEQ.minQ, ParametricEQ.maxQ))
@@ -53,22 +84,11 @@ public class EqTab extends Tab {
           }
         })
         .finish(),
-      ButtonBuilder
-        .build(ButtonBuilder.Type.KNOB, "Gain")
-        .withProgress(Utilities.unscale(eq.getGain(), ParametricEQ.minGain, ParametricEQ.maxGain))
-        .withHandler(new Handler<Float>() {
-          public void handle(final Float progress) {
-            float gain = Utilities.scale(progress, ParametricEQ.minGain, ParametricEQ.maxGain);
-            eqPanel.setGain(gain);
-            eq.setGain(gain);
-          }
-        })
-        .finish()
-
+      gainButton
     );
   }
 
-  class EqPanel extends ColumnPanel {
+  class EqPanel extends Button {
     private Path path;
     private Paint eqPaint;
 
@@ -79,7 +99,13 @@ public class EqTab extends Tab {
 
     private static final int drawIncrement = 1;
 
+    private Handler<Float> freqHandler, gainHandler;
+
+    private int leftAnchor, rightAnchor, topAnchor, bottomAnchor;
+
     public EqPanel(ParametricEQ eq) {
+      super("eq-panel");
+
       path = new Path();
       //path.setFillType(Path.FillType.EVEN_ODD);
       
@@ -89,6 +115,13 @@ public class EqTab extends Tab {
       setFrequency((int) eq.getFrequency());
       setQ(eq.getQ());
       setGain(eq.getGain());
+    }
+
+    public void setFreqHandler(Handler<Float> handler) {
+      this.freqHandler = handler;
+    }
+    public void setGainHandler(Handler<Float> handler) {
+      this.gainHandler = handler;
     }
 
     public void setFrequency(int frequency) {
@@ -148,6 +181,49 @@ public class EqTab extends Tab {
     @Override
     public void draw(Canvas canvas) {
       canvas.drawPath(path, eqPaint);
+    }
+
+    @Override
+    public Box<Fingerable> handleTouch(int id, MotionEvent event) {
+      int width = (int) (right - left);
+      int height = (int) (bottom - top);
+
+      if (Utilities.idIsDown(id, event)) {
+        final int index = event.findPointerIndex(id);
+        int originalX = (int) event.getX(index);
+        int originalY = (int) event.getY(index);
+
+        float gainProgress = 1f - Utilities.unscale(this.gain, ParametricEQ.minGain, ParametricEQ.maxGain);
+        float freqProgress = Utilities.unscale(this.frequency, ParametricEQ.minFreq, ParametricEQ.maxFreq);
+
+        leftAnchor = (int) (originalX - freqProgress * width);
+        rightAnchor = (int) (originalX + (1 - freqProgress) * width);
+
+        topAnchor = (int) (originalY - gainProgress * height);
+        bottomAnchor = (int) (originalY + (1 - gainProgress) * height);
+
+      } else if (Utilities.idIsMove(id, event)) {
+        final int index = event.findPointerIndex(id);
+        final int x = (int) event.getX(index);
+        final int y = (int) event.getY(index);
+
+        if (freqHandler != null) {
+          int diff = x - leftAnchor;
+          float percent = ((diff / (float)(rightAnchor - leftAnchor)));
+          float clampedPercent = Math.max(0f, Math.min(percent, 1f));
+
+          freqHandler.handle(clampedPercent);
+        }
+        if (gainHandler != null) {
+          int diff = bottomAnchor - y;
+          float percent = diff / (float)(bottomAnchor - topAnchor);
+          float clampedPercent = Math.max(0f, Math.min(percent, 1f));
+
+          gainHandler.handle(clampedPercent);
+        }
+      }
+
+      return new Full<Fingerable>(this);
     }
   }
 }
