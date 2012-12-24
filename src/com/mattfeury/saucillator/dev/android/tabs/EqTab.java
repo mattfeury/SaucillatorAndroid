@@ -128,11 +128,8 @@ public class EqTab extends Tab {
       path.moveTo(left, midY);
 
       if (discriminant > 0) {
-        float minRoot = (float) Math.ceil(Math.min(root1, root2));
-        float maxRoot = (float) Math.floor(Math.max(root1, root2));
-
-        // This is backwards since y values on the canvas go start at 0 and increment as you go down
-        float orientation = (c > 0) ? -1 : 1;
+        float minRoot = Math.max(left, (float) Math.ceil(Math.min(root1, root2)));
+        float maxRoot = Math.min(right, (float) Math.floor(Math.max(root1, root2)));
 
         path.lineTo(minRoot, midY);
         for (int x = (int) minRoot; x < maxRoot; x = x + drawIncrement) {
