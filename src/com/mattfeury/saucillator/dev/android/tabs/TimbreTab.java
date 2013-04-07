@@ -46,10 +46,17 @@ public class TimbreTab extends Tab {
 
         VibratorService.vibrate();
       }
+
+      @Override
+      public void set(int x, int y, int width, int height) {
+        super.set(x, y, width, height);
+
+      }
     };
     //toggleButton.setBorder(BORDER_SIZE);
-    //toggleButton.setMargin(MARGIN_SIZE);
+    toggleButton.setMargin(0);
     toggleButton.setTextSize(TEXT_SIZE);
+    toggleButton.setTextSizeMultiplier(3);
     toggleButton.setClear(false);
     
     toggleButton.addHandler(new Handler<Object>() {

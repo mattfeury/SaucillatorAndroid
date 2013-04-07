@@ -16,7 +16,7 @@ import android.view.MotionEvent;
  */
 public abstract class Button extends SmartRect implements Fingerable {
   protected Paint bg, text;
-  protected int borderSize = 0, margin = 0, padding = 0;
+  protected int borderSize = 0, margin = 0, padding = 0, textSizeMultiplier = 1;
   protected String name;
   protected boolean focused = false;
   protected static final int textWidth = -8; //what is this magic number
@@ -66,7 +66,7 @@ public abstract class Button extends SmartRect implements Fingerable {
   }
 
   public int calculateTextSize() {
-    int newSize = (int) Math.min(((bottom - top) / 6), (right - left) / 4);
+    int newSize = ((int) Math.min(((bottom - top) / 6), (right - left) / 4)) * textSizeMultiplier;
     bg.setTextSize(newSize);
     text.setTextSize(newSize);
 
@@ -96,6 +96,10 @@ public abstract class Button extends SmartRect implements Fingerable {
 
   public void setTextSize(int size) {
     text.setTextSize(size);
+  }
+  public void setTextSizeMultiplier(int factor) {
+    this.textSizeMultiplier = factor;
+    this.calculateTextSize();
   }
   public void setBorder(int stroke) {
     this.borderSize = stroke;
