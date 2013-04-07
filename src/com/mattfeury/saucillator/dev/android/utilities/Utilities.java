@@ -60,13 +60,17 @@ public class Utilities {
 
     return ((actionCode == MotionEvent.ACTION_POINTER_DOWN && actionId == id) || actionCode == MotionEvent.ACTION_DOWN);
   }
+
+  // I don't think we really have any way to tell that a pointerId is "moving".
+  // ActionIndexes are only for up/down events. We consider it to be "moving"
+  // if it's in the event at all so this'll trigger if it is down/up as well.
+  // Run isUp/isDown before checking this.
   public static boolean idIsMove(int id, MotionEvent event) {
     final int action = event.getAction();
     final int actionCode = action & MotionEvent.ACTION_MASK;
-    final int actionIndex = event.getActionIndex();
-    final int actionId = event.getPointerId(actionIndex);
+    boolean eventContainsId = event.findPointerIndex(id) != -1;
 
-    return (actionCode == MotionEvent.ACTION_MOVE && actionId == id);
+    return eventContainsId && actionCode == MotionEvent.ACTION_MOVE;
   }
 
   /**
