@@ -1,11 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Edit Instrument (Menu)" android:id="@+id/editInstrumentItem" />
-
-    <item android:title="Create Instrument" android:id="@+id/createInstrumentItem" />
-            
-    <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
-    
     <item android:title="Settings" android:id="@+id/settings" android:icon="@drawable/ic_menu_preferences"/>
-    
     <item android:id="@+id/quit" android:title="Quit" android:icon="@drawable/ic_lock_power_off"/>
 </menu>

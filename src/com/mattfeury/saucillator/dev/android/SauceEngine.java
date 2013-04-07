@@ -9,6 +9,7 @@ import com.mattfeury.saucillator.dev.android.tabs.*;
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.*;
 import com.mattfeury.saucillator.dev.android.services.*;
+import com.mattfeury.saucillator.dev.android.settings.Settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -259,9 +260,19 @@ public class SauceEngine extends Activity implements OnTouchListener {
       return (obj != null && fingersById.containsValue(obj));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.menu, menu);
+      return true;
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
+      switch (item.getItemId()) {
+        case R.id.settings:
+          Intent intent = new Intent(SauceEngine.this, Settings.class);
+          startActivityForResult(intent, 0);
+          return true;
         case R.id.quit:
           onDestroy();
           return true;

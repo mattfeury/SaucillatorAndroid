@@ -13,78 +13,12 @@
 
       <requestFocus/>
 
-      <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1">
-          <TextView
-            android:gravity="center_horizontal"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/padSizeText"
-            android:text="Grid Size (y-axis): "
-            android:layout_gravity="left"
-            android:padding="2px"/>
-          <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="x"
-            android:id="@+id/padSizeValue"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:padding="2px"
-            android:gravity="center_horizontal"
-            android:layout_gravity="right"/>
-      </LinearLayout>
-      <SeekBar
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/padSizeSlider"
-        android:padding="5px"
-        android:layout_weight="1"/>
-
-
-      <TextView 
-        android:layout_width="wrap_content"
-        android:text="File Name:"
-        android:id="@+id/fileLabel"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-      <EditText
-        android:layout_width="match_parent"
-        android:id="@+id/fileName"
-        android:layout_height="wrap_content" />
-
       <TextView
         android:layout_width="wrap_content"
-        android:text="Base Note"
-        android:id="@+id/notesLabel"
+        android:text="Quit by default"
+        android:id="@+id/quitSettingLabel"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-      <Spinner
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/noteChooser" />
-      
-      <TextView
-        android:layout_width="wrap_content"
-        android:text="Base Octave"
-        android:id="@+id/octaveLabel"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-      <Spinner
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/octaveChooser" />
-
-      <TextView
-        android:layout_width="wrap_content"
-        android:text="Scale"
-        android:id="@+id/scaleLabel"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-      <Spinner
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/scaleChooser" />
-
       <ToggleButton
         android:id="@+id/visualsToggler"
         android:layout_width="fill_parent"
