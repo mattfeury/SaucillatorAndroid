@@ -69,7 +69,7 @@ public class SliderButton extends Button {
     int width = (int) (right - left);
 
     // Name
-    canvas.drawText("" + getName(), left + width / 2, top + height * .25f, bg);
+    canvas.drawText("" + getName(), left + width / 2, top + height * .25f, status);
 
     // Ends
     canvas.drawLine(margin + left, margin + top, margin + left, bottom - margin, bg);
