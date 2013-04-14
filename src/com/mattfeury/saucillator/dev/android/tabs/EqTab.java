@@ -141,7 +141,7 @@ public class EqTab extends Tab {
     public void set(int x, int y, int width, int height) {
       super.set(x, y, width, height);
 
-      midY = (bottom - top) / 2f;
+      midY = top + (bottom - top) / 2f;
       recalculatePath();
     }
 
