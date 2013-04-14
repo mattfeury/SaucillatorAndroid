@@ -13,6 +13,7 @@ import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.dev.android.templates.Handler;
+import com.mattfeury.saucillator.dev.android.templates.Label;
 import com.mattfeury.saucillator.dev.android.utilities.Box;
 import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.services.ActivityService;
@@ -24,6 +25,7 @@ public class InstrumentManagerTab extends Tab {
   private static final int BORDER_SIZE = 5, MARGIN_SIZE = 15;
 
   private AlertDialog.Builder chooserBuilder;
+  private Label currentInstrumentLabel;
 
   public InstrumentManagerTab(final AudioEngine engine) {
     super("Synths", "Synth Manager", engine);
@@ -36,8 +38,14 @@ public class InstrumentManagerTab extends Tab {
       }
     });
 
+    currentInstrumentLabel = new Label("Current Instrument: ---");
+    setCurrentInstrument(AudioEngine.getCurrentOscillator().getName());
+    currentInstrumentLabel.setClear(false);
+
     panel.addChild(
-      makeButton("Load", new Handler<Boolean>() {
+      currentInstrumentLabel,
+
+      makeButton("Load", true, new Handler<Boolean>() {
         public void handle(Boolean b) {
           VibratorService.vibrate();
           showInstrumentChooser();
@@ -46,7 +54,7 @@ public class InstrumentManagerTab extends Tab {
       makeButton("Save As", new Handler<Boolean>() {
         public void handle(Boolean b) {
           VibratorService.vibrate();
-          
+
           showSaveAsDialog();
         }
       }),
@@ -64,7 +72,7 @@ public class InstrumentManagerTab extends Tab {
       makeButton("Delete", new Handler<Boolean>() {
         public void handle(Boolean b) {
           VibratorService.vibrate();
-          
+
           showDeleteDialog();
         }
       }),
@@ -82,11 +90,18 @@ public class InstrumentManagerTab extends Tab {
     if (newOsc == null) {
       ActivityService.makeToast("Unable to Load Instrument: " + instrumentName);
     } else {
-      ActivityService.makeToast("Instrument Loaded: " + instrumentName);
       engine.setOscillator(newOsc);
+      setCurrentInstrument(instrumentName);
       ViewService.updateOscillatorSettings(newOsc);
+      ViewService.refresh();
+      ActivityService.makeToast("Instrument Loaded: " + instrumentName);
     }
   }
+
+  private void setCurrentInstrument(String name) {
+    currentInstrumentLabel.setText("Current Instrument: " + name);
+  }
+
   private void showInstrumentChooser() {
     ArrayList<String> instruments = InstrumentService.getAllInstrumentNames();
     final String[] allInstruments = instruments.toArray(new String[instruments.size()]);
