@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
-public class SliderButton extends Button {
+public class SliderButton extends Button implements IntervalButton {
   protected Paint status;
 
   protected float progress = 0f;
@@ -51,7 +51,7 @@ public class SliderButton extends Button {
     return this;
   }
 
-  private void changeProgress(float p) {
+  public void changeProgress(float p) {
     if (p < 0) p = 0;
     if (p > 1) p = 1;
 

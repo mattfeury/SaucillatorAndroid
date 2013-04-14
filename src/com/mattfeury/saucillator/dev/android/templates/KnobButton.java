@@ -11,7 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
-public class KnobButton extends Button {
+public class KnobButton extends Button implements IntervalButton {
   protected Paint status;
 
   private float progress, progressSin, progressCos, lastR, lastTheta = 0f;
