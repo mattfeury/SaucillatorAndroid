@@ -25,9 +25,9 @@ public class AudioEngine {
   //private String scaleId = Theory.allScales[0].toString();
   public static int[] scale = Theory.pentatonicScale;
 
-  public final static int DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
-  public final static int MOD_RATE_MAX = 20;
-  public final static int MOD_DEPTH_MAX = 1000;
+  public final static int DELAY_RATE_MIN = 0, DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
+  public final static int MOD_RATE_MIN = 0, MOD_RATE_MAX = 20;
+  public final static int MOD_DEPTH_MIN = 0, MOD_DEPTH_MAX = 1000;
 
   public final static float DEFAULT_LAG = 0.5f; // i don't think this is used...
 
