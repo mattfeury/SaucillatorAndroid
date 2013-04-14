@@ -59,21 +59,6 @@ public abstract class Button extends SmartRect implements Fingerable {
   }
 
   @Override
-  public void set(int x, int y, int width, int height) {
-    super.set(x, y, width, height);
-
-    calculateTextSize();
-  }
-
-  public int calculateTextSize() {
-    int newSize = ((int) Math.min(((bottom - top) / 6), (right - left) / 4)) * textSizeMultiplier;
-    bg.setTextSize(newSize);
-    text.setTextSize(newSize);
-
-    return newSize;
-  }
-
-  @Override
   public boolean contains(int x, int y) {
     return x >= left + margin && x <= right - margin && y >= top + margin && y <= bottom - margin;
   }
@@ -95,7 +80,8 @@ public abstract class Button extends SmartRect implements Fingerable {
   }
 
   public void setTextSize(int size) {
-    text.setTextSize(size);
+    bg.setTextSize(size * textSizeMultiplier);
+    text.setTextSize(size * textSizeMultiplier);
   }
   public void setTextSizeMultiplier(int factor) {
     this.textSizeMultiplier = factor;

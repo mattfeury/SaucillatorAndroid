@@ -64,12 +64,11 @@ public class PickerButton<K> extends Button {
   }
 
   @Override
-  public int calculateTextSize() {
-    int size = super.calculateTextSize();
+  public void setTextSize(int size) {
+    super.setTextSize(size);
+
     incr.setTextSize(size);
     decr.setTextSize(size);
-
-    return size;
   }
 
   @Override

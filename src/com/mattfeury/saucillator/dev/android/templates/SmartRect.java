@@ -21,10 +21,25 @@ public abstract class SmartRect extends RectF implements Drawable {
     defaultPaint.setARGB(0, 0, 0, 0);
   }
 
+  @Override
   public void set(int x, int y, int width, int height) {
-    super.set(x, y, x + width, y + height);       
+    super.set(x, y, x + width, y + height);
+
+    calculateTextSize();
   }
-  
+
+  public int calculateTextSize() {
+    int newSize = ((int) Math.min(((bottom - top) / 6), (right - left) / 4));
+
+    this.setTextSize(newSize);
+
+    return newSize;
+  }
+
+  public void setTextSize(int size) {
+    // Noop. Override this.
+  }
+
   public void draw(Canvas canvas) {
     canvas.drawRect(this, defaultPaint);
   }
