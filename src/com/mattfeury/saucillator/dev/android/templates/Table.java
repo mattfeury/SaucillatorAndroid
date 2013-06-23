@@ -109,6 +109,10 @@ public class Table extends RectButton {
       int newTop = (int)(top + contentPadding) + (spannedRows * rowHeight);
       child.set(newLeft, newTop, columnWidth * colspan, rowHeight * rowspan);
 
+      if (child instanceof Button) {
+        ((Button)child).calculateTextSize();
+      }
+
       column += colspan;
     }
   }
