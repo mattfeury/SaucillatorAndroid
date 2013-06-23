@@ -300,6 +300,9 @@ public class InstrumentService {
     boolean success = true;
     String name = osc.getName();
 
+    // If we're saving an instrument, it's not internal
+    osc.setInternal(false);
+
     Box<Boolean> validName = isValidInstrumentName(name);
     if (validName.isFailure())
       return new Failure<ComplexOsc>("Invalid name. " + validName.getFailure());
