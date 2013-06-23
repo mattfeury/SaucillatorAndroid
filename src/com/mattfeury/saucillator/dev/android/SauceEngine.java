@@ -45,7 +45,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     public static final String DATA_FOLDER = "sauce/";
 
-    private static final String tutorialName = "showAlfredoTutorial";
+    private static final String tutorialName = "buffalo.0";
     
     private static final int BACKPRESS_DIALOG = 0,
                              TUTORIAL_DIALOG = 1;
@@ -132,7 +132,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
           break;
         case TUTORIAL_DIALOG:
           builder
-            .setTitle("Saucillator 1.0 Alfredo")
+            .setTitle("Saucillator 2.0 Buffalo (beta)")
             .setView(LayoutInflater.from(this).inflate(R.layout.tutorial_dialog,null))
             .setCancelable(false)
             .setNeutralButton("Good Juice. Let's Sauce.", new DialogInterface.OnClickListener() {
