@@ -273,6 +273,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
           Intent intent = new Intent(SauceEngine.this, Settings.class);
           startActivityForResult(intent, 0);
           return true;
+        case R.id.help:
+          showDialog(TUTORIAL_DIALOG);
+          return true;
         case R.id.quit:
           onDestroy();
           return true;
