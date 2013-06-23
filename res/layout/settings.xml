@@ -13,17 +13,11 @@
 
       <requestFocus/>
 
-      <TextView
-        android:layout_width="wrap_content"
-        android:text="Quit by default"
-        android:id="@+id/quitSettingLabel"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
       <ToggleButton
         android:id="@+id/visualsToggler"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textOn="Visuals On"
-        android:textOff="Visuals Off"/>    
+        android:textOff="Visuals Off"/>
   </LinearLayout>
 </ScrollView>
