@@ -29,7 +29,9 @@ public class AudioEngine {
 
   public final static float DEFAULT_LAG = 0.5f; // i don't think this is used...
 
-  //synth elements
+  private final static String defaultInstrument = "Starslide";
+
+  // synth elements
   private Dac dac;
   private Looper looper;
   private ParametricEQ eq;
@@ -45,10 +47,8 @@ public class AudioEngine {
   public AudioEngine(SauceEngine sauce, final Object mutex) {
     this.sauceEngine = sauce;
 
+    currentOscillator = InstrumentService.getInstrument(defaultInstrument);
 
-    //Default
-    currentOscillator = InstrumentService.getInstrument("Sine");
-    
     Thread t = new Thread() {
       public void run() {
         try {
