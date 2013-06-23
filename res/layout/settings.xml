@@ -17,18 +17,21 @@
         android:id="@+id/visualsToggler"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="15dip"
         android:textOn="Visuals On"
         android:textOff="Visuals Off"/>
 
       <Button
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
+        android:layout_margin="15dip"
         android:text="@string/send_feedback_email_button"
         android:onClick="sendFeedbackEmail" />
 
       <Button
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
+          android:layout_margin="15dip"
           android:onClick="saveChanges"
           android:text="Exit Settings" />
 
