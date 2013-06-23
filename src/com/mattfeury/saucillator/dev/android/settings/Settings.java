@@ -39,7 +39,7 @@ public class Settings extends Activity {
     startActivity(Intent.createChooser(emailIntent, "Send email..."));
   }
 
-  private void saveChanges() {
+  public void saveChanges(View view) {
     ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
     boolean showVisuals = toggler.isChecked();
     ViewService.setVisuals(showVisuals);
@@ -54,7 +54,7 @@ public class Settings extends Activity {
   @Override
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK)
-      saveChanges();
+      saveChanges(null);
 
     return true;
   }

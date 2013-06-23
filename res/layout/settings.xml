@@ -26,5 +26,11 @@
         android:text="@string/send_feedback_email_button"
         android:onClick="sendFeedbackEmail" />
 
+      <Button
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:onClick="saveChanges"
+          android:text="Exit Settings" />
+
   </LinearLayout>
 </ScrollView>
