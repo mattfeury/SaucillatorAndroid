@@ -19,5 +19,12 @@
         android:layout_height="wrap_content"
         android:textOn="Visuals On"
         android:textOff="Visuals Off"/>
+
+      <Button
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:text="@string/send_feedback_email_button"
+        android:onClick="sendFeedbackEmail" />
+
   </LinearLayout>
 </ScrollView>

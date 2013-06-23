@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Saucillator (DEV) for Android</string>
-    
+
+    <string name="feedback_email_address">sauce@mattfeury.com</string>
+    <string name="feedback_email_subject">Saucillator feedback</string>
+    <string name="send_feedback_email_button">Send Feedback Email (sauce@mattfeury.com)</string>
+
     <string name="tutorial_text">
       The RIGHT SIDE of the screen is for PLAYING. Use your fingers to control the synthesizer(s) by touching
       the black, blank portion of the screen. You can use as many fingers as you choose. Volume is controlled by the X-axis

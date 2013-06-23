@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -28,6 +29,14 @@ public class Settings extends Activity {
 
     ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
     toggler.setChecked(ViewService.getVisualsToggle());
+  }
+
+  public void sendFeedbackEmail(View view) {
+    Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.feedback_email_address)});
+    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new String[]{getResources().getString(R.string.feedback_email_subject)});
+    emailIntent.setType("plain/text");
+    startActivity(Intent.createChooser(emailIntent, "Send email..."));
   }
 
   private void saveChanges() {
