@@ -75,12 +75,12 @@ public class InstrumentManagerTab extends Tab {
 
           showDeleteDialog();
         }
-      }),
+      })/*,
       makeButton("Share", true, new Handler<Boolean>() {
         public void handle(Boolean b) {
           VibratorService.vibrate();
         }
-      })
+      })*/
     );
   }
 
