@@ -71,9 +71,6 @@ public class RectButton extends Button {
   public boolean shouldClearFloat() {
     return clearFloat;
   }
-  public void setTextSize(int size) {
-    text.setTextSize(size);
-  }
   public void setTextPaint(Paint textPaint) {
     this.text = textPaint;
   }
