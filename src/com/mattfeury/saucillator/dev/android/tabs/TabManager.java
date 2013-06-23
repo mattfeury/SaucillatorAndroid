@@ -72,7 +72,6 @@ public class TabManager implements Drawable {
     }
   }
   public void set(int x, int y, int width, int height) {
-    this.width = width;
     this.height = height;
 
     int i = 0;
@@ -80,6 +79,8 @@ public class TabManager implements Drawable {
     int selectorHeight = (int) (height / (float)tabCount);
     int selectorWidth = (int) (width * LayoutDefinitions.controllerWidth * LayoutDefinitions.tabSelectorWidth);
     int tabWidth = (int) (width * LayoutDefinitions.controllerWidth * (1f - LayoutDefinitions.tabSelectorWidth));
+
+    this.width = selectorWidth + tabWidth;
 
     for (Tab tab : tabs) {
       tab.setSelector(0, selectorHeight * i, selectorWidth, selectorHeight);
