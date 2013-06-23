@@ -66,6 +66,10 @@ public class TabManager implements Drawable {
 
   public void layoutChanged(int width, int height) { 
     set(0, 0, width, height);
+
+    for (Tab tab : tabs) {
+      tab.layoutChanged(width, height);
+    }
   }
   public void set(int x, int y, int width, int height) {
     this.width = width;

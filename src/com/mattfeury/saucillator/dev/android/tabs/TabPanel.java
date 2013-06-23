@@ -45,6 +45,13 @@ public class TabPanel extends Table {
   }
 
   @Override
+  public void layoutChanged(int width, int height) {
+    //super.layoutChanged(width, height);
+
+    contents.recalculateChildren();
+  }
+
+  @Override
   public void addChild(Drawable... newChildren) {
     contents.addChild(newChildren);
   }

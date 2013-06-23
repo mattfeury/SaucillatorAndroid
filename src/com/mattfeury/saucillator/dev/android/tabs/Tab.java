@@ -62,6 +62,10 @@ public abstract class Tab {
     return panel;
   }
 
+  public void layoutChanged(int width, int height) {
+    panel.layoutChanged(width, height);
+  }
+
   public Box<Fingerable> handlePanelTouch(int id, MotionEvent event) {
     return panel.handleTouch(id, event);
   }
