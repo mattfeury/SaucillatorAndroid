@@ -32,7 +32,7 @@ public class InstrumentService {
 
   public static void setup(AssetManager man) {
     manager = man;
-    
+
     if (manager != null)
       canService = true;
   }
@@ -421,6 +421,4 @@ public class InstrumentService {
     // because this isn't guaranteed to have any FX
     return (Oscillator) Utilities.deepCopy(osc);
   }
-
 }
-

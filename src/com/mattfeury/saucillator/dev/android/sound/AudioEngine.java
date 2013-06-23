@@ -68,8 +68,7 @@ public class AudioEngine {
           while (true) {
             dac.tick();
           }
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
           ex.printStackTrace();
           Log.e(SauceEngine.TAG, "bad time " + ex.toString());
           dac.close();
@@ -77,21 +76,23 @@ public class AudioEngine {
         }
       }
     };
-    
+
     t.start();
   }
-  
+
   public boolean isPlaying() {
     return dac.isPlaying();
   }
-  
+
   // Hmm.... should fx things be here?
   public boolean toggleLooperRecording() {
     return looper.toggleRecording();
   }
+
   public void resetLooper() {
     looper.reset();
   }
+
   public void undoLooper() {
     looper.undo();
   }
@@ -108,10 +109,11 @@ public class AudioEngine {
         osc.togglePlayback();
     }
   }
-  
+
   public static ComplexOsc getCurrentOscillator() {
     return currentOscillator;
   }
+
   public void removeAllOscillators() {
     Set<Integer> oscIds = oscillatorsById.keySet();
     for (Integer oscId : oscIds) {
@@ -123,9 +125,11 @@ public class AudioEngine {
     }
 
   }
+
   public ComplexOsc optOscillator(int id) {
     return oscillatorsById.get(id);
   }
+
   public ComplexOsc getOrCreateOscillator(int id) {
     ComplexOsc osc = oscillatorsById.get(id);
     if (osc != null)
@@ -147,24 +151,29 @@ public class AudioEngine {
 
     return osc;
   }
+
   private void connectOsc(ComplexOsc osc) {
     osc.chuck(looper);
   }
+
   private void disconnectOsc(ComplexOsc osc) {
     osc.unchuck(looper);
   }
+
   public void updateAmplitude(int id, float amp) {
     ComplexOsc osc = optOscillator(id);
 
     if (osc != null)
       osc.setAmplitude(amp);
-  }      
+  }
+
   public void updateFrequency(int id, int offset) {
     ComplexOsc osc = optOscillator(id);
 
     if (osc != null)
       osc.setFreqByOffset(scale, offset);
   }
+
   public void updateOscillatorProperty(OscillatorUpdater updater) {
     updater.update(currentOscillator);
     Collection<ComplexOsc> oscs = oscillatorsById.values();
@@ -178,15 +187,18 @@ public class AudioEngine {
     if (note >= 0 && note < Theory.notes.length)
       updateBaseFreq(note, this.octave);
   }
+
   public void updateBaseOctave(int octave) {
     updateBaseFreq(this.note, octave);
   }
+
   public void updateBaseFreq(int note, int octave) {
     this.note = note;
     this.octave = octave;
 
     updateBaseFreq();
   }
+
   public void updateBaseFreq() {
     float newFreq = Theory.getFrequencyForNote(note + 1, octave);
     Collection<ComplexOsc> oscs = oscillatorsById.values();
@@ -223,10 +235,9 @@ public class AudioEngine {
     boolean isRecording = dac.toggleRecording();
     if (isRecording) {
       ActivityService.makeToast("Recording.");
-    }
-    else {
+    } else {
       File saved = WavWriter.getLastFile();
-      if(saved == null) {
+      if (saved == null) {
         ActivityService.makeToast("Stopped Recording. File could not be saved. I blew it.");
       } else {
         ActivityService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
@@ -238,7 +249,7 @@ public class AudioEngine {
         sauceEngine.startActivity(Intent.createChooser(intent, "Share to"));
       }
     }
-    
+
     return isRecording;
   }
 }
