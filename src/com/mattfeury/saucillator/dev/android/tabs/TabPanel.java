@@ -33,7 +33,7 @@ public class TabPanel extends Table {
 
     contents = new Table("tab-panel-contents-" + name);
     contents.setPadding(.05f);
-    contents.setRowspan(9);
+    contents.setRowspan(12);
     contents.setClear(true);
     contents.setBorder(0);
 
