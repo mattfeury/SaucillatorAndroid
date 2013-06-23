@@ -38,7 +38,7 @@ public class TabPanel extends Table {
     contents.setBorder(0);
 
     Label header = new Label(name);
-    header.setTextSize(30);
+    header.setMinTextSize(30);
 
     super.addChild(header);
     super.addChild(contents);

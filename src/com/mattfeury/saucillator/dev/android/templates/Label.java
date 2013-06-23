@@ -8,8 +8,10 @@ public class Label extends SmartRect {
 
   protected String text = "";
   protected Paint paint;
-  protected int textSize = 14;
   protected boolean clearFloat = false;
+
+  protected int textSize = 14;
+  protected int minTextSize = 1;
 
   public Label(String text) {
     this(text, 0, 0, 0, 0);
@@ -38,7 +40,15 @@ public class Label extends SmartRect {
     return clearFloat;
   }
   public void setTextSize(int size) {
-    this.textSize = size;
-    paint.setTextSize(size);
+
+    if (size < this.minTextSize) {
+      this.setTextSize(minTextSize);
+    } else {
+      this.textSize = size;
+      paint.setTextSize(size);
+    }
+  }
+  public void setMinTextSize(int min) {
+    this.minTextSize  = min;
   }
 }
