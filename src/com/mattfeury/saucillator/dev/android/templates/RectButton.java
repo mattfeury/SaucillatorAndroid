@@ -74,4 +74,11 @@ public class RectButton extends Button {
   public void setTextPaint(Paint textPaint) {
     this.text = textPaint;
   }
+
+  @Override
+  public void setTextSize(int size) {
+    super.setTextSize(size);
+
+    focusedBg.setTextSize(size);
+  }
 }
