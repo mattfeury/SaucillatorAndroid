@@ -39,7 +39,7 @@ public class TimbreTab extends Tab {
     textPaint.setFakeBoldText(true);
     textPaint.setTextAlign(Align.CENTER);
 
-    final RectButton toggleButton = new RectButton("Add") {
+    final RectButton addButton = new RectButton("Add") {
       @Override
       public void handle(Object o) {
         super.handle(o);
@@ -53,13 +53,13 @@ public class TimbreTab extends Tab {
 
       }
     };
-    //toggleButton.setBorder(BORDER_SIZE);
-    toggleButton.setMargin(0);
-    toggleButton.setTextSize(TEXT_SIZE);
-    toggleButton.setTextSizeMultiplier(3);
-    toggleButton.setClear(false);
-    
-    toggleButton.addHandler(new Handler<Object>() {
+
+    addButton.setMargin(0);
+    addButton.setTextSize(TEXT_SIZE);
+    addButton.setTextSizeMultiplier(3);
+    addButton.setClear(false);
+
+    addButton.addHandler(new Handler<Object>() {
       public void handle(Object data) {
         engine.updateOscillatorProperty(new OscillatorUpdater() {
           public void update(ComplexOsc osc) {
@@ -79,7 +79,7 @@ public class TimbreTab extends Tab {
     timbreTable.fill(AudioEngine.getCurrentOscillator());
 
     panel.addChild(
-      toggleButton,
+      addButton,
       timbreTable
     );
   }
