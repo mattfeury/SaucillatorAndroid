@@ -2,10 +2,16 @@ package com.mattfeury.saucillator.dev.android.instruments;
 
 import java.util.LinkedList;
 
+import android.view.MotionEvent;
+
 import com.mattfeury.saucillator.dev.android.SauceEngine;
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.sound.Delay;
 import com.mattfeury.saucillator.dev.android.sound.Lagger;
 import com.mattfeury.saucillator.dev.android.sound.Limiter;
+import com.mattfeury.saucillator.dev.android.utilities.Box;
+import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
+import com.mattfeury.saucillator.dev.android.utilities.Full;
 
 /**
  * A complex oscillator.
@@ -39,7 +45,7 @@ public class ComplexOsc extends Oscillator {
   // as they come in. They should always be the same.
   protected int modRate = 0,
                 modDepth = 0;
-  protected float lag = SauceEngine.DEFAULT_LAG;
+  protected float lag = AudioEngine.DEFAULT_LAG;
 
   public ComplexOsc() {
     this(1.0f);
@@ -100,6 +106,8 @@ public class ComplexOsc extends Oscillator {
     setModRate(0);
     setModDepth(0);
     setLag(0);
+    setDelayRate(0);
+    setDelayDecay(0);
 
     envelopeEnabled = false;
     //setAttack(0);
@@ -110,11 +118,17 @@ public class ComplexOsc extends Oscillator {
   }
 
   // LFO methods
+  public void setModRate(float progress) {
+    setModRate((int)(progress * AudioEngine.MOD_RATE_MAX));
+  }
   public void setModRate(int rate) {
     this.modRate = rate;
 
     for(Oscillator osc : components)
       osc.setModRate(rate);
+  }
+  public void setModDepth(float progress) {
+    setModDepth((int)(progress * AudioEngine.MOD_DEPTH_MAX));
   }
   public void setModDepth(int depth) {
     this.modDepth = depth;
@@ -144,6 +158,10 @@ public class ComplexOsc extends Oscillator {
   public void setDelayRate(int rate) {
     delay.setRate(rate);
   }
+  public void setDelayRate(float percentage) {
+    setDelayRate((int)(percentage * AudioEngine.DELAY_RATE_MAX));
+  }
+
   public int getDelayRate() {
     return delay.getRate();
   }

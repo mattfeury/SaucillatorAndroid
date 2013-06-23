@@ -1,6 +1,7 @@
 package com.mattfeury.saucillator.dev.android.instruments;
 
 import com.mattfeury.saucillator.dev.android.SauceEngine;
+import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 
 import android.util.FloatMath;
 
@@ -20,7 +21,7 @@ public abstract class BasicOsc extends Oscillator {
   public int modDepth = 0;
   public int modRate = 0; //in Hz
 
-  private float rate = SauceEngine.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
+  private float rate = AudioEngine.DEFAULT_LAG; //rate at which the LFO lags between frequency changes
   private float t = 0f;
   private float lagOut;
   private float preLfoFrequency = frequency * harmonic; //since LFO modifies the actual frequency variable

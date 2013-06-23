@@ -74,7 +74,11 @@ public class Dac extends UGen {
 	public boolean isPlaying() {
 		return playing;
 	}
-	
+
+  public boolean isRecording() {
+    return recording;
+  }
+
 	public void toggle() {
 		playing = !playing;
 	}
