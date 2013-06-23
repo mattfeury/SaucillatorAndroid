@@ -33,7 +33,7 @@ public class LooperTab extends Tab {
     toggleButton.setTextSize(TEXT_SIZE);
     toggleButton.setClear(false);
 
-    RectButton undoButton = new RectButton("Undo") {
+    RectButton undoButton = new RectButton("Undo Last Loop") {
       @Override
       public void handle(Object o) {
         super.handle(o);
@@ -52,7 +52,7 @@ public class LooperTab extends Tab {
     undoButton.setTextSize(TEXT_SIZE);
     undoButton.setClear(true);
 
-    RectButton resetButton = new RectButton("Reset") {
+    RectButton resetButton = new RectButton("Reset/Clear Looper") {
       @Override
       public void handle(Object o) {
         super.handle(o);

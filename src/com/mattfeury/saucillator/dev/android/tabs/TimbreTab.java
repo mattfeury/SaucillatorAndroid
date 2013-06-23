@@ -39,7 +39,7 @@ public class TimbreTab extends Tab {
     textPaint.setFakeBoldText(true);
     textPaint.setTextAlign(Align.CENTER);
 
-    final RectButton addButton = new RectButton("Add") {
+    final RectButton addButton = new RectButton("Add Timbre") {
       @Override
       public void handle(Object o) {
         super.handle(o);
