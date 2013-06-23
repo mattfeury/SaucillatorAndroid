@@ -8,14 +8,16 @@ import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.sound.AudioEngine;
 import com.mattfeury.saucillator.dev.android.tabs.TimbreTab.TimbreTable;
 import com.mattfeury.saucillator.dev.android.templates.*;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
+
 import android.view.View;
 
 public class ViewService {
-  private static View view;
+  private static SauceView view;
   private static boolean canService = false;
   private static HashMap<String, Button> buttonsByName = new HashMap<String, Button>();
 
-  public static void setup(View view) {
+  public static void setup(SauceView view) {
     ViewService.view = view;
 
     if (view != null)
@@ -34,6 +36,13 @@ public class ViewService {
   }
   public static Button getButton(String name) {
     return buttonsByName.get(name);
+  }
+
+  public static void setVisuals(boolean showVisuals) {
+    view.setVisuals(showVisuals);
+  }
+  public static boolean getVisualsToggle() {
+    return view.getVisuals();
   }
 
   // This is kinda lame having this here, but it's better than the alternatives

@@ -4,6 +4,7 @@ import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.Theory;
 import com.mattfeury.saucillator.dev.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.dev.android.services.ViewService;
 import com.mattfeury.saucillator.dev.android.utilities.ViewBinders;
 
 import android.app.Activity;
@@ -24,9 +25,16 @@ public class Settings extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.settings);
+
+    ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
+    toggler.setChecked(ViewService.getVisualsToggle());
   }
 
   private void saveChanges() {
+    ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
+    boolean showVisuals = toggler.isChecked();
+    ViewService.setVisuals(showVisuals);
+
     Intent intent = new Intent(Settings.this, SauceEngine.class);
 
     setResult(0, intent);
@@ -38,7 +46,7 @@ public class Settings extends Activity {
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK)
       saveChanges();
-    
+
     return true;
   }
 }
