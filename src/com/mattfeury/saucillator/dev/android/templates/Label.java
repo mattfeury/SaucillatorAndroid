@@ -32,6 +32,10 @@ public class Label extends SmartRect {
     canvas.drawText(text, (right + left) / 2f, top + (bottom - top) * .5f + textSize / 2, paint);
   }
 
+  public void setText(String text) {
+    this.text = text;
+  }
+
   public void setClear(boolean clear) {
     this.clearFloat = clear;
   }
