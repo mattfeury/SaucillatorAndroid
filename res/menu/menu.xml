@@ -1,24 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Select Instrument" android:id="@+id/selectInstrument">
-        <menu>
-            <group android:checkableBehavior="single" android:id="@+id/selectInstrumentGroup">
-                <item android:id="@+id/singingsaw" android:title="Singing Saw"></item>
-                <item android:id="@+id/sine" android:title="Sin Wave"></item>
-                <item android:id="@+id/square" android:title="Square Wave" android:checked="true"></item>
-                <item android:id="@+id/saw" android:title="Saw Wave" ></item>
-            </group>
-        </menu>
-    </item>
-
-    <item android:title="Switch Pad Mode" android:id="@+id/toggleMode" />
-
-    <item android:title="Edit Instrument (Menu)" android:id="@+id/editInstrumentItem" />
-
-    <item android:title="Create Instrument" android:id="@+id/createInstrumentItem" />
-            
-    <item android:title="Record" android:id="@+id/record" android:icon="@drawable/ic_rec"/>
-    
     <item android:title="Settings" android:id="@+id/settings" android:icon="@drawable/ic_menu_preferences"/>
-    
+    <item android:title="Help" android:id="@+id/help" android:icon="@drawable/ic_menu_help"/>
     <item android:id="@+id/quit" android:title="Quit" android:icon="@drawable/ic_lock_power_off"/>
 </menu>

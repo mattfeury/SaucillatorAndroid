@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Saucillator for Android</string>
-    
+
+    <string name="feedback_email_address">sauce@mattfeury.com</string>
+    <string name="feedback_email_subject">Saucillator feedback</string>
+    <string name="send_feedback_email_button">Send Feedback Email (sauce@mattfeury.com)</string>
+
     <string name="tutorial_text">
-      Welcome to the latest and greatest Saucillator. Some changes have been made:\n
+      The RIGHT SIDE of the screen is for PLAYING. Use your fingers to control the synthesizer(s) by touching
+      the black, blank portion of the screen. You can use as many fingers as you choose. Volume is controlled by the X-axis
+      and Pitch is controlled by the Y-axis.\n
       \n
-      Create &amp; Edit Instruments!\n
-      -You can now create your own instruments and save them for later use. An instrument is comprised of a timbre (how it sounds) and
-      effects on that timbre.\n
+      The LEFT SIDE of the screen now has TABS. There are different tabs for manipulating different things. For instance, to modify
+      the EFFECTS of the current synth, you can change the values on the EFFECTS Tab. Check out the different tabs for all the things
+      you can do: Record output to a WAV file, Create musical loops, Create/modify how synths sound, etc.\n
       \n
-      New Effects!\n
-      -There is now an EQ effect that runs on top of ALL playing sounds. It is not specific to the current instrument. There are also
-      new instrument effects available: envelope (attack, decay) and delay decay. The other effects have been polished up nicely.\n
-      \n
-      Two Pad Modes!\n
-      -There are two ways to use the pad: to Edit an instrument or to Play multiple instruments. The Edit Pad is default. In this mode,
-      you can assign FX to the pad and manipulate them with your finger. In the Play mode, each finger creates a new version of the
-      current instrument. Save your instruments and edit the timbre from the menu.\n
-      \n
-      Happy Saucing! Bug fixes, improvements, and upgrades to come sooner than this one did.
+      This redesign is still in beta. I very much welcome yr feedback at sauce@mattfeury.com.
     </string>
     
     <string name="note_chooser">Choose a note</string>

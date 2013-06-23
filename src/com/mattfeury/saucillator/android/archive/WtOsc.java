@@ -84,7 +84,7 @@ public class WtOsc extends UGen {
 	public WtOsc fillWithSaw() {
 		float dt = (float)(2.0/ENTRIES);
 		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = (float) (i * dt - Math.floor(i * dt));
+			table[i] = (float) (i * dt - android.util.FloatMath.floor(i * dt));
 		}
 		return this;
 	}

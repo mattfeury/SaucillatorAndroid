@@ -46,8 +46,8 @@ public class DrawableParameter {
     this.xParam = xParam;
     this.yParam = yParam;
 
-    this.x = Utilities.scale(x, SauceView.controllerWidth, 1);
-    this.y = Utilities.scale(y, 1f - SauceView.padHeight, 1);
+    this.x = Utilities.scale(x, LayoutDefinitions.controllerWidth, 1);
+    this.y = Utilities.scale(y, 1f - LayoutDefinitions.padHeight, 1);
     this.maxX = maxX;
     this.maxY = maxY;
     init();
@@ -71,8 +71,8 @@ public class DrawableParameter {
       canvas.drawText(smallName, lastX, lastY + (radius / 4f), textPaint);
 
       if (showCoords) {
-        float xVal = Utilities.roundFloat(Utilities.unscale(x, SauceView.controllerWidth, 1) * maxX, 2);
-        float yVal = Utilities.roundFloat(Utilities.unscale(y, 1f - SauceView.padHeight, 1) * maxY, 2);
+        float xVal = Utilities.roundFloat(Utilities.unscale(x, LayoutDefinitions.controllerWidth, 1) * maxX, 2);
+        float yVal = Utilities.roundFloat(Utilities.unscale(y, 1f - LayoutDefinitions.padHeight, 1) * maxY, 2);
         String text = "(" + xParam + ": " + xVal + ", " + yParam + ": " + yVal + ")";
         
         int textWidth = text.length() * (characterWidth+1),
@@ -96,8 +96,8 @@ public class DrawableParameter {
   }
 
   public void set(float x, float y) {
-    this.x = Utilities.scale(x, SauceView.controllerWidth, 1);
-    this.y = Utilities.scale(y, 1f - SauceView.padHeight, 1);
+    this.x = Utilities.scale(x, LayoutDefinitions.controllerWidth, 1);
+    this.y = Utilities.scale(y, 1f - LayoutDefinitions.padHeight, 1);
 
     handler.updateParameter(x, y);
   }

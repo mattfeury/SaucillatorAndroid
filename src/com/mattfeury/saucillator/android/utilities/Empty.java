@@ -4,7 +4,7 @@ public class Empty<K> implements Box<K> {
   public Empty() {
   }
   @Override
-  public K getOrElse(K other) {
+  public K openOr(K other) {
     return other;
   }
 
@@ -22,6 +22,9 @@ public class Empty<K> implements Box<K> {
   }
   public <R> Box<R> map(MapFunc<K, R> funcHolder) {
     return new Empty<R>();
+  }
+  public void foreach(EachFunc<K> funcHolder) {
+    // Noop
   }
 
 }

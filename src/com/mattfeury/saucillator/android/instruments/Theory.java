@@ -34,6 +34,12 @@ public class Theory {
     }
   }
 
+  // First one is default
+  public static final Scale[] scales = {Scale.PENTATONIC, Scale.MAJOR, Scale.MINOR, Scale.CHROMATIC, Scale.MINOR_BLUES};
+  public static final String[] notes = {"A","A#/Bb","B","C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab"};
+  public static final Integer[] octaves = {1, 2, 3, 4, 5, 6};
+  public static final Integer OCTAVE = 4; // Default.
+
   //music info
   public static int[] chromaticScale = {0,1,2,3,4,5,6,7,8,9,10,11};
   public static int[] majorScale = {0,2,4,5,7,9,11};

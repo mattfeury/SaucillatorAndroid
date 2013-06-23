@@ -1,16 +1,19 @@
 package com.mattfeury.saucillator.android.settings;
 
+import com.mattfeury.saucillator.android.R;
 import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.Theory;
 import com.mattfeury.saucillator.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.android.services.ViewService;
 import com.mattfeury.saucillator.android.utilities.ViewBinders;
-import com.mattfeury.saucillator.android.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -21,85 +24,47 @@ import android.widget.ToggleButton;
 
 public class Settings extends Activity {
 
-  EditText fileTextBox;
-  Spinner noteSpinner, octaveSpinner, scaleSpinner;
-  ToggleButton visualsToggle;
+  private MediaPlayer secretSauce;
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.settings);
 
-    Bundle extras = getIntent().getExtras();
-    String fileName = extras.getString("file name");
-    int note = extras.getInt("note");
-    int octave = extras.getInt("octave");
-    boolean visuals = extras.getBoolean("visuals");
-    String scale = extras.getString("scale");
+    secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
-    try {
-      visualsToggle = (ToggleButton) findViewById(R.id.visualsToggler);
-      visualsToggle.setChecked(visuals);
-
-      fileTextBox = (EditText) findViewById(R.id.fileName);
-      fileTextBox.setText(fileName);
-
-      SeekBar slider = (SeekBar) findViewById(R.id.padSizeSlider);
-      slider.setMax(SauceEngine.TRACKPAD_SIZE_MAX);
-      ViewBinders.bindSliderToVariable(this, R.id.padSizeSlider, R.id.padSizeValue, SauceEngine.TRACKPAD_GRID_SIZE, 1);
-
-      noteSpinner = (Spinner) findViewById(R.id.noteChooser);
-      ArrayAdapter<CharSequence> noteAdapter = ArrayAdapter.createFromResource(this, R.array.notes_array, android.R.layout.simple_spinner_item);
-      noteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      noteSpinner.setAdapter(noteAdapter);
-      noteSpinner.setSelection(note);
-
-      ArrayAdapter<CharSequence> octiveAdapter = ArrayAdapter.createFromResource(this, R.array.octave_array, android.R.layout.simple_spinner_item);
-      octiveAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      octaveSpinner = (Spinner) findViewById(R.id.octaveChooser);
-      octaveSpinner.setAdapter(octiveAdapter);
-      octaveSpinner.setSelection(octave - 1);
-
-      scaleSpinner = (Spinner) findViewById(R.id.scaleChooser);
-      ArrayAdapter<CharSequence> scaleAdapter = ArrayAdapter.createFromResource(this, R.array.scale_array, android.R.layout.simple_spinner_item);
-      scaleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      int selectedScale = scaleAdapter.getPosition(scale);
-      scaleSpinner.setAdapter(scaleAdapter);
-      scaleSpinner.setSelection(selectedScale);      
-		}
-    catch (Exception e) {
-      Log.e("settingsCreation", e.toString());
-    }
+    ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
+    toggler.setChecked(ViewService.getVisualsToggle());
   }
 
-  private void saveChanges() {
-    Intent intent = new Intent(Settings.this, SauceEngine.class);
-    int octave = octaveSpinner.getSelectedItemPosition() + 1;
-    int note = noteSpinner.getSelectedItemPosition();
-    String fileName = fileTextBox.getText().toString();
-    boolean visuals = visualsToggle.isChecked();
-    String scale = (String) scaleSpinner.getSelectedItem();
-    
-    TextView padSizeText = (TextView) findViewById(R.id.padSizeValue);
-    int padSize = Integer.parseInt((String)padSizeText.getText());
-    SauceEngine.TRACKPAD_GRID_SIZE = padSize;
+  public void sendFeedbackEmail(View view) {
+    Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.feedback_email_address)});
+    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new String[]{getResources().getString(R.string.feedback_email_subject)});
+    emailIntent.setType("plain/text");
+    startActivity(Intent.createChooser(emailIntent, "Send email..."));
+  }
 
-    intent.putExtra("octave", octave);
-    intent.putExtra("note", note);
-    intent.putExtra("file name", fileName);
-    intent.putExtra("visuals", visuals);
-    intent.putExtra("scale", scale);
+  public void secretSauce(View view) {
+    secretSauce.start();
+  }
+
+  public void saveChanges(View view) {
+    ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
+    boolean showVisuals = toggler.isChecked();
+    ViewService.setVisuals(showVisuals);
+
+    Intent intent = new Intent(Settings.this, SauceEngine.class);
+
     setResult(0, intent);
 
-		Toast.makeText(this, "Changes Saved.", Toast.LENGTH_SHORT).show();
-		finish();
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// Exit button
+    finish();
+  }
+
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK)
-      saveChanges();
-    
+      saveChanges(null);
+
     return true;
-	}
+  }
 }

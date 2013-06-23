@@ -1,4 +1,4 @@
-package com.mattfeury.saucillator.android.instruments;
+package com.mattfeury.saucillator.android.services;
 
 import java.io.*;
 import java.nio.MappedByteBuffer;
@@ -6,20 +6,19 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.json.*;
 
 import com.mattfeury.saucillator.android.SauceEngine;
+import com.mattfeury.saucillator.android.instruments.*;
 import com.mattfeury.saucillator.android.utilities.*;
 
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
 
-public class InstrumentManager {
+public class InstrumentService {
 
   public static final File dataDirectory = Environment.getExternalStorageDirectory();
   public static final String assetPath = "instruments",
@@ -27,33 +26,44 @@ public class InstrumentManager {
                              dataPath = dataDirectory.getAbsolutePath() + "/" + SauceEngine.DATA_FOLDER,
                              instrumentFolder = "instruments/",
                              instrumentDirPath = dataPath + instrumentFolder;
+
+  private static AssetManager manager = null;
+  private static boolean canService = false;
+
+  public static void setup(AssetManager man) {
+    manager = man;
+
+    if (manager != null)
+      canService = true;
+  }
+
   public static String stripExtension(String file) {
     int extensionIndex = file.lastIndexOf(extension);
     return file.substring(0, extensionIndex);
   }
 
-  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Noise", "Singing Saw"};
+  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Pulse", "Noise", "Singing Saw", "Electric Eel", "Starslide"};
 
   public static boolean ensureProperDirectoryStructure() {
     File file;
-    if (!(file = new File(InstrumentManager.dataPath)).exists()){
+    if (!(file = new File(InstrumentService.dataPath)).exists()){
       if(!file.mkdir())
         return false;
     }
-    if (!(file = new File(InstrumentManager.instrumentDirPath)).exists()){
+    if (!(file = new File(InstrumentService.instrumentDirPath)).exists()){
       if(!file.mkdir())
         return false;
     }
 
     return true;
   }
-  public static ArrayList<String> getAllInstrumentNames(AssetManager man) {
+  public static ArrayList<String> getAllInstrumentNames() {
     ArrayList<String> instruments = new ArrayList<String>();
 
     // Get built-in asset instruments
     // Sort them based on our preferredOrder defined above
     try {
-      String[] assets = man.list(assetPath);
+      String[] assets = manager.list(assetPath);
       String[] ordered = new String[assets.length];
       List<String> preferredOrdered = Arrays.asList(preferredOrder);
       for (String asset : assets) {
@@ -65,8 +75,9 @@ public class InstrumentManager {
       for (String assetName : ordered) {
         instruments.add(assetName);
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
+      ActivityService.makeToast("Unable to load internal synths. :/");
     }
 
     // Get user created
@@ -84,11 +95,11 @@ public class InstrumentManager {
   public static String getAssetPath(String filename) {
     return assetPath + "/" + filename + extension;
   }
-  public static boolean isInternal(AssetManager man, String name) {
+  public static boolean isInternal(String name) {
     boolean isInternal = true;
 
     try {
-      man.open(getAssetPath(name));
+      manager.open(getAssetPath(name));
     } catch(Exception e) {
       isInternal = false;
     }
@@ -96,20 +107,20 @@ public class InstrumentManager {
     return isInternal;
   }
 
-  public static ComplexOsc getInstrument(AssetManager man, String name) {
-    boolean isInternal = isInternal(man ,name);
-    return getInstrument(man, name, isInternal);
+  public static ComplexOsc getInstrument(String name) {
+    boolean isInternal = isInternal(name);
+    return getInstrument(name, isInternal);
   }
 
-  public static ComplexOsc getInstrument(AssetManager man, String name, boolean internal) {
+  public static ComplexOsc getInstrument(String name, boolean internal) {
     try {
       JSONObject json;
       if (internal) {
-        json = getJsonForInternalInstrument(man, name);
+        json = getJsonForInternalInstrument(name);
       } else {
         json = getJsonForCustomInstrument(name);
       }
-      return decomposeJsonInstrument(man, json);
+      return decomposeJsonInstrument(json);
     } catch (Exception e) {
       e.printStackTrace();
       Log.e("INSTR SAUCE", "bad instrument " + e.toString());
@@ -137,8 +148,11 @@ public class InstrumentManager {
     return json;
   }
 
-  private static JSONObject getJsonForInternalInstrument(AssetManager man, String name) throws Exception {
-    InputStream is = man.open(getAssetPath(name));
+  private static JSONObject getJsonForInternalInstrument(String name) throws Exception {
+    if (! canService)
+      return new JSONObject();
+
+    InputStream is = manager.open(getAssetPath(name));
     Writer writer = new StringWriter();
     char[] buffer = new char[1024];
     try {
@@ -158,7 +172,7 @@ public class InstrumentManager {
     return json;
   }
 
-  private static ComplexOsc decomposeJsonInstrument(AssetManager man, JSONObject json) throws Exception {
+  private static ComplexOsc decomposeJsonInstrument(JSONObject json) throws Exception {
     // Lookup and create timbre
     ComplexOsc instrument = new ComplexOsc();
 
@@ -185,7 +199,7 @@ public class InstrumentManager {
 
       // It may have been deleted.
       try {
-        Oscillator osc = getOscillatorForTimbre(man, timbreId);
+        Oscillator osc = getOscillatorForTimbre(timbreId);
         osc.setPhase(phase);
         osc.setHarmonic(harmonic);
         osc.setAmplitude(amplitude);
@@ -251,7 +265,7 @@ public class InstrumentManager {
     return instrument;
   }
 
-  public static Oscillator getOscillatorForTimbre(AssetManager man, String id) {
+  public static Oscillator getOscillatorForTimbre(String id) {
     if ("Sine".equals(id))
       return new Sine();
     else if ("Saw".equals(id))
@@ -260,15 +274,17 @@ public class InstrumentManager {
       return new Square();
     else if ("Noise".equals(id))
       return new Noise();
+    else if ("Pulse".equals(id))
+      return new Pulse();
     else {
-      ComplexOsc osc = getInstrument(man, id);
+      ComplexOsc osc = getInstrument(id);
       return (osc != null) ? osc.resetEffects() : null;
     }
   }
 
-  public static Box<Boolean> isValidInstrumentName(AssetManager man, String name) {
-    if (isInternal(man, name))
-      return new Failure<Boolean>("The name is already in use internally.");
+  public static Box<Boolean> isValidInstrumentName(String name) {
+    if (isInternal(name))
+      return new Failure<Boolean>("The name is already in use internally. Internal synths may not be modified.");
     else if (name.indexOf("*") != -1)
       return new Failure<Boolean>("Invalid character: *");
     else if (name.trim().equals(""))
@@ -277,14 +293,17 @@ public class InstrumentManager {
       return new Full<Boolean>(true);
   }
 
-  public static Box<ComplexOsc> saveInstrument(AssetManager man, ComplexOsc osc) {
+  public static Box<ComplexOsc> saveInstrument(ComplexOsc osc) {
     if (! ensureProperDirectoryStructure())
-      return new Failure<ComplexOsc>("Unable to create SD directories: SDcard/sauce/instruments");
+      return new Failure<ComplexOsc>("Unable to create SD directories: " + instrumentDirPath);
 
     boolean success = true;
     String name = osc.getName();
 
-    Box<Boolean> validName = isValidInstrumentName(man, name);
+    // If we're saving an instrument, it's not internal
+    osc.setInternal(false);
+
+    Box<Boolean> validName = isValidInstrumentName(name);
     if (validName.isFailure())
       return new Failure<ComplexOsc>("Invalid name. " + validName.getFailure());
 
@@ -305,11 +324,11 @@ public class InstrumentManager {
     else
       return new Empty<ComplexOsc>();
   }
-  public static Box<Boolean> deleteInstrument(AssetManager man, String name) {
+  public static Box<Boolean> deleteInstrument(String name) {
     boolean success = true;
     
-    if (isInternal(man, name))
-      return new Failure<Boolean>("Invalid name. You cannot delete a built-in instrument.");
+    if (isInternal(name))
+      return new Failure<Boolean>("You cannot delete a built-in synth.");
 
     try {
       File file = new File(instrumentDirPath + name + extension);
@@ -349,6 +368,7 @@ public class InstrumentManager {
     }
     
     json.put("timbre", timbres);
+    json.put("isInternal", osc.isInternal());
       
     // FX
     JSONObject fx = new JSONObject();
@@ -389,10 +409,10 @@ public class InstrumentManager {
     return json;
   }
 
-  public static ComplexOsc copyInstrument(AssetManager man, ComplexOsc osc) {
+  public static ComplexOsc copyInstrument(ComplexOsc osc) {
     try {
       JSONObject json = decomposeInstrumentToJson(osc);
-      ComplexOsc copy = decomposeJsonInstrument(man, json);
+      ComplexOsc copy = decomposeJsonInstrument(json);
       return copy;
     } catch (Exception e) {
       e.printStackTrace();
@@ -404,6 +424,4 @@ public class InstrumentManager {
     // because this isn't guaranteed to have any FX
     return (Oscillator) Utilities.deepCopy(osc);
   }
-
 }
-

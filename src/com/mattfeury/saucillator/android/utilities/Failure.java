@@ -6,7 +6,7 @@ public class Failure<K> implements Box<K> {
     this.error = val;
   }
   @Override
-  public K getOrElse(K other) {
+  public K openOr(K other) {
     return other;
   }
 
@@ -25,6 +25,9 @@ public class Failure<K> implements Box<K> {
 
   public <R> Box<R> map(MapFunc<K, R> funcHolder) {
     return new Failure<R>(error);
+  }
+  public void foreach(EachFunc<K> funcHolder) {
+    // Noop
   }
 
 }

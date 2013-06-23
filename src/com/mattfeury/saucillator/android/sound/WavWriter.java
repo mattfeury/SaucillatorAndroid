@@ -2,7 +2,7 @@ package com.mattfeury.saucillator.android.sound;
 
 import java.io.*;
 
-import com.mattfeury.saucillator.android.instruments.InstrumentManager;
+import com.mattfeury.saucillator.android.services.InstrumentService;
 
 import android.util.Log;
 
@@ -48,12 +48,12 @@ public class WavWriter {
     File file;
     int i = 0;
     
-    if (! InstrumentManager.ensureProperDirectoryStructure())
+    if (! InstrumentService.ensureProperDirectoryStructure())
       return;
     
     do{
     	i++;
-    	file = new File(InstrumentManager.dataPath + filePrefix + i + ".wav");
+    	file = new File(InstrumentService.dataPath + filePrefix + i + ".wav");
     }while(file.exists());
     
     DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
