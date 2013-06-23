@@ -84,18 +84,32 @@ public class KnobButton extends Button implements IntervalButton {
     int radius = getRadius();
     int centerX = (int) (left + radius);
     int centerY = (int) (top + radius);
-    int dx = x - centerX;
-    int dy = y - centerY;
+    boolean hasHistory = event.getHistorySize() > 0;
+
+    final float lastX = hasHistory ? event.getHistoricalX(index, 0) : centerX;
+    final float lastY = hasHistory ? event.getHistoricalY(index, 0) : centerY;
+
+    final float dx = x - lastX;
+    final float dy = lastY - y;
     float r = FloatMath.sqrt(dx * dx + dy * dy);
-    float theta = Utilities.roundFloat((float) Math.atan(dy / (float)dx), 2);
+    float theta = (float) Math.toDegrees(Math.atan2(dy, dx));
+    if (theta < 0) {
+      theta += 360;
+    }
+
+    if (theta > 315 || theta < 135) {
+      changeProgress(progress + .015f);
+    } else {
+      changeProgress(progress - .015f);
+    }
 
     // Change passed on difference of angles. If angles are the same, compare distance.
-    if (theta > lastTheta || (theta == lastTheta && r > lastR && x > centerX) || (theta == lastTheta && r < lastR && x < centerX)) {
+    /*if (theta > lastTheta || (theta == lastTheta && r > lastR && x > centerX) || (theta == lastTheta && r < lastR && x < centerX)) {
       // FIXME this magic .015f. it should probably not increment progress, but set it directly to the angle of the finger to the center 
       changeProgress(progress + .015f);
     } else if (theta < lastTheta || (theta == lastTheta && r < lastR && x > centerX) || (theta == lastTheta && r > lastR && x < centerX)) {
       changeProgress(progress - .015f);
-    }
+    }*/
 
     lastTheta = theta;
     lastR = r;
