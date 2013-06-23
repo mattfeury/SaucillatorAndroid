@@ -7,11 +7,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 
-import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.dev.android.instruments.Theory;
@@ -44,12 +42,9 @@ public class AudioEngine {
   // We create a deepCopy of it for actually playing.
   public static ComplexOsc currentOscillator;
 
-  //MediaPlayer secretSauce;
-
   public AudioEngine(SauceEngine sauce, final Object mutex) {
     this.sauceEngine = sauce;
 
-    //secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
     //Default
     currentOscillator = InstrumentService.getInstrument("Sine");

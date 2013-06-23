@@ -29,6 +29,13 @@
         android:onClick="sendFeedbackEmail" />
 
       <Button
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_margin="15dip"
+        android:text="Secret Sauce"
+        android:onClick="secretSauce" />
+
+      <Button
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_margin="15dip"

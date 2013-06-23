@@ -9,6 +9,7 @@ import com.mattfeury.saucillator.dev.android.utilities.ViewBinders;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,9 +24,13 @@ import android.widget.ToggleButton;
 
 public class Settings extends Activity {
 
+  private MediaPlayer secretSauce;
+
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.settings);
+
+    secretSauce = MediaPlayer.create(this, R.raw.sauceboss);
 
     ToggleButton toggler = (ToggleButton)findViewById(R.id.visualsToggler);
     toggler.setChecked(ViewService.getVisualsToggle());
@@ -37,6 +42,10 @@ public class Settings extends Activity {
     emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new String[]{getResources().getString(R.string.feedback_email_subject)});
     emailIntent.setType("plain/text");
     startActivity(Intent.createChooser(emailIntent, "Send email..."));
+  }
+
+  public void secretSauce(View view) {
+    secretSauce.start();
   }
 
   public void saveChanges(View view) {
