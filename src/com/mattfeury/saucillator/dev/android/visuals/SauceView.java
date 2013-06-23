@@ -83,25 +83,23 @@ public class SauceView extends View {
 
       canvas.drawColor(backColor.getColor());
 
-      if(visuals)	{
-        // FIXME we don't got no fingas no mo
-        /*fX = (fingers.values().size() > 0 ? 0 : fX);
-        fY = (fingers.values().size() > 0 ? 0 : fY);
+      if (visuals) {
+        LinkedList<FingeredOscillator> fingers = getFingers();
 
-        for(Finger f : fingers.values()){
-          if (f.id == 0) {
-            fX += f.x;
-            fY += f.y;
-          } else {
-            //backColor.setColor(Color.HSVToColor(new float[]{(f.x / canvas.getWidth())* 360, f.y / canvas.getHeight(), f.y / canvas.getHeight()}));
-            fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (f.x / canvas.getWidth()* 360), 1f - f.y / canvas.getHeight(), 1f - f.y / canvas.getHeight()}));
-          }
+        if (fingers.size() > 0) {
+          fX = 0;
+          fY = 0;
+
+          FingeredOscillator finger = fingers.getFirst();
+          fX += finger.x;
+          fY += finger.y;
+          fractGen.paint.setColor(Color.HSVToColor(new float[]{360 - (finger.x / canvas.getWidth()* 360), 1f - finger.y / canvas.getHeight(), 1f - finger.y / canvas.getHeight()}));
+
+          fX /= fingers.size();
+          fY /= fingers.size();
         }
 
-        fX /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-        fY /= (fingers.values().size() > 0 ? fingers.values().size() : 1);
-
-        fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);*/
+        fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
       }
 
       for (Drawable drawable : drawables)
@@ -117,14 +115,19 @@ public class SauceView extends View {
       this.drawables.remove(drawable);
     }
     public void clearFingers() {
-      LinkedList<Drawable> fingers = new LinkedList<Drawable>();
-      for (Drawable drawable : drawables) {
-        if (drawable instanceof FingeredOscillator)
-          fingers.add(drawable);
-      }
-
+      LinkedList<FingeredOscillator> fingers = getFingers();
       drawables.removeAll(fingers);
 
       invalidate();
+    }
+
+    public LinkedList<FingeredOscillator> getFingers() {
+      LinkedList<FingeredOscillator> fingers = new LinkedList<FingeredOscillator>();
+      for (Drawable drawable : drawables) {
+        if (drawable instanceof FingeredOscillator)
+          fingers.add((FingeredOscillator) drawable);
+      }
+
+      return fingers;
     }
 }
