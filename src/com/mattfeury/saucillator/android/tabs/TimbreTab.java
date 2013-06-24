@@ -10,18 +10,14 @@ import com.mattfeury.saucillator.android.instruments.ComplexOsc;
 import com.mattfeury.saucillator.android.instruments.Oscillator;
 import com.mattfeury.saucillator.android.sound.AudioEngine;
 import com.mattfeury.saucillator.android.sound.OscillatorUpdater;
-import com.mattfeury.saucillator.android.templates.Button;
-import com.mattfeury.saucillator.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.android.templates.Handler;
 import com.mattfeury.saucillator.android.templates.KnobButton;
 import com.mattfeury.saucillator.android.templates.PickerButton;
 import com.mattfeury.saucillator.android.templates.RectButton;
-import com.mattfeury.saucillator.android.templates.RowPanel;
 import com.mattfeury.saucillator.android.templates.Table;
 import com.mattfeury.saucillator.android.utilities.Utilities;
 import com.mattfeury.saucillator.android.services.InstrumentService;
 import com.mattfeury.saucillator.android.services.VibratorService;
-import com.mattfeury.saucillator.android.services.ViewService;
 
 public class TimbreTab extends Tab {
   
