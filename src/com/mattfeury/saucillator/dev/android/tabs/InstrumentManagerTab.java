@@ -93,13 +93,13 @@ public class InstrumentManagerTab extends Tab {
       engine.setOscillator(newOsc);
       setCurrentInstrument(instrumentName);
       ViewService.updateOscillatorSettings(newOsc);
-      ViewService.refresh();
       ActivityService.makeToast("Instrument Loaded: " + instrumentName);
     }
   }
 
   private void setCurrentInstrument(String name) {
     currentInstrumentLabel.setText("Current Instrument: " + name);
+    ViewService.refresh();
   }
 
   private void showInstrumentChooser() {
@@ -124,6 +124,7 @@ public class InstrumentManagerTab extends Tab {
     if (savedBox.isDefined()) {
       message = "Instrument saved to SD card: " + latestName;
       AudioEngine.currentOscillator = savedBox.openOr(AudioEngine.currentOscillator);
+      setCurrentInstrument(AudioEngine.currentOscillator.getName());
     } else if (savedBox.isFailure()) {
       message = savedBox.getFailure();
     } else {

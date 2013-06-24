@@ -69,5 +69,7 @@ public class ViewService {
     if (timbreTable != null) {
       ((TimbreTable)timbreTable).fill(osc);
     }
+
+    refresh();
   }
 }
