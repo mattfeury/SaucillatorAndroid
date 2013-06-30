@@ -94,8 +94,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
           e.printStackTrace();
         }
 
-        init = true;
-
         this.tabManager = new TabManager();
 
         view.addDrawable(tabManager);
@@ -107,6 +105,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
         tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new RecorderTab(audioEngine));
       }
+    }
+
+    /**
+     * Called once, generally shortly after onCreate.
+     */
+    public void audioInitialized() {
+      init = true;
     }
 
     protected Dialog onCreateDialog(int id){
