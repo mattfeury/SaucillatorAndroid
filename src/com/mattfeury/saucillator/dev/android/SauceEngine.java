@@ -88,8 +88,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
       // because only the thread that spawned the view can redraw it.
       synchronized(mutex) {
         try {
-          if (! init)
+          if (! init) {
             mutex.wait();
+          }
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
