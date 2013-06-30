@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.mattfeury.saucillator.dev.android"
       android:installLocation="auto"
-      android:versionName="2.0.0 Buffalo" android:versionCode="14">
+      android:versionName="2.0.1 Buffalo" android:versionCode="15">
 
 	<uses-sdk android:targetSdkVersion="10" android:minSdkVersion="8"></uses-sdk><supports-screens
       android:smallScreens="true"
