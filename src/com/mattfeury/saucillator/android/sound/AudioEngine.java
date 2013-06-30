@@ -61,7 +61,10 @@ public class AudioEngine {
             looper.chuck(eq);
 
             dac.open();
+
             Log.i(SauceEngine.TAG, "Sauce ready.");
+
+            sauceEngine.audioInitialized();
             mutex.notify();
           }
 
@@ -70,9 +73,12 @@ public class AudioEngine {
           }
         } catch (Exception ex) {
           ex.printStackTrace();
-          Log.e(SauceEngine.TAG, "bad time " + ex.toString());
           dac.close();
+
+          sauceEngine.audioInitialized();
           mutex.notify();
+
+          Log.e(SauceEngine.TAG, "bad time " + ex.toString());
         }
       }
     };

@@ -88,13 +88,12 @@ public class SauceEngine extends Activity implements OnTouchListener {
       // because only the thread that spawned the view can redraw it.
       synchronized(mutex) {
         try {
-          if (! init)
+          if (! init) {
             mutex.wait();
+          }
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
-
-        init = true;
 
         this.tabManager = new TabManager();
 
@@ -107,6 +106,13 @@ public class SauceEngine extends Activity implements OnTouchListener {
         tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new RecorderTab(audioEngine));
       }
+    }
+
+    /**
+     * Called once, generally shortly after onCreate.
+     */
+    public void audioInitialized() {
+      init = true;
     }
 
     protected Dialog onCreateDialog(int id){
