@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.Theory;
 import com.mattfeury.saucillator.android.instruments.Theory.Scale;
+import com.mattfeury.saucillator.android.services.ViewService;
 import com.mattfeury.saucillator.android.sound.AudioEngine;
 import com.mattfeury.saucillator.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.android.templates.Handler;
@@ -52,6 +53,17 @@ public class PadTab extends Tab {
         .withBorderSize(BORDER_SIZE)
         .withMargin(MARGIN_SIZE)
         .withBounds(SauceEngine.TRACKPAD_SIZE_MIN, SauceEngine.TRACKPAD_SIZE_MAX, SauceEngine.TRACKPAD_GRID_SIZE)
+        .withClear(true)
+        .finish(),
+      ButtonBuilder
+        .build(ButtonBuilder.Type.TOGGLE, "Show/Hide Grid")
+        .withHandler(new Handler<Boolean>() {
+          public void handle(Boolean show) {
+            ViewService.toggleShowGrid();
+          }
+        })
+        .withMargin(MARGIN_SIZE)
+        .withFocus(ViewService.isGridShowing())
         .withClear(true)
         .finish(),
        baseNotePicker,

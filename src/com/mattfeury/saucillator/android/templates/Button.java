@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import com.mattfeury.saucillator.android.services.ViewService;
 import com.mattfeury.saucillator.android.utilities.*;
 import com.mattfeury.saucillator.android.visuals.Drawable;
+import com.mattfeury.saucillator.android.visuals.SauceView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -37,7 +38,7 @@ public abstract class Button extends SmartRect implements Fingerable {
     text = new Paint();
 
     // Some magic-y defaults.
-    bg.setARGB(200, 12, 81, 4);
+    bg.setColor(SauceView.PAD_COLOR);
     bg.setTextAlign(Paint.Align.CENTER);
     text.setARGB(255, 255,255,255);
     text.setTextAlign(Align.CENTER);

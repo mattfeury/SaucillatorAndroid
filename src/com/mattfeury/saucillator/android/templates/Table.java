@@ -12,7 +12,6 @@ import android.util.SparseIntArray;
 import android.view.MotionEvent;
 
 public class Table extends RectButton {
-  protected Paint bg;
   protected LinkedList<Drawable> children = new LinkedList<Drawable>();
 
   protected float contentPadding = 0;
@@ -25,9 +24,8 @@ public class Table extends RectButton {
     super(name + "-Table", x, y, x + width, y + height);
 
     bg = new Paint();
-    bg.setStyle(Paint.Style.STROKE);
-    bg.setStrokeWidth(5);
-    bg.setARGB(200, 12, 81, 4);
+    bg.setStyle(Paint.Style.FILL_AND_STROKE);
+    bg.setColor(SauceView.TAB_COLOR);
   }
 
   public void addChild(Drawable... newChildren) {
@@ -118,8 +116,7 @@ public class Table extends RectButton {
   }
 
   public void draw(Canvas canvas) {
-    if (bg.getStrokeWidth() > 0)
-      canvas.drawRect(left, top, right, bottom, bg);
+    canvas.drawRect(left, top, right, bottom, bg);
 
     for (Drawable child : children)
       child.draw(canvas);

@@ -1,10 +1,9 @@
 package com.mattfeury.saucillator.android.visuals;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.services.ViewService;
-
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -17,8 +16,15 @@ public class SauceView extends View {
 
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
-    private Paint backColor = new Paint(Color.BLACK);
     private boolean visuals = false;
+
+    public static final int SELECTOR_COLOR = 0xff5CB67D;
+    public static final int TAB_COLOR = 0XFF43875A;
+    public static final int PAD_COLOR = 0XFF1B3F24;
+    public static final int ALERT_COLOR = 0XC8C81414;
+
+    private boolean showGrid = false;
+    private Paint gridPaint = new Paint();
 
     // Add drawables to this collection to get drawn whenever the view is drawn.
     private LinkedList<Drawable> drawables = new LinkedList<Drawable>();
@@ -40,12 +46,15 @@ public class SauceView extends View {
     }
     private void init() {
       ViewService.setup(this);
+
+      gridPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+      gridPaint.setARGB(25, 255, 255, 255);
     }
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
       super.onLayout(changed, left, top, right, bottom);
-      
+
       for (Drawable drawable : drawables)
         drawable.layoutChanged(right - left, bottom - top);
     }
@@ -56,6 +65,14 @@ public class SauceView extends View {
     }
     public boolean getVisuals() {
       return visuals;
+    }
+
+    public boolean toggleGrid() {
+      this.showGrid = ! this.showGrid;
+      return this.showGrid;
+    }
+    public boolean isGridShowing() {
+      return showGrid;
     }
 
     public boolean isInPad(float x, float y) {
@@ -81,7 +98,7 @@ public class SauceView extends View {
       if (fractGen == null)
         fractGen = new FractalGen(canvas);
 
-      canvas.drawColor(backColor.getColor());
+      canvas.drawColor(PAD_COLOR);
 
       if (visuals) {
         LinkedList<FingeredOscillator> fingers = getFingers();
@@ -101,6 +118,17 @@ public class SauceView extends View {
 
         fractGen.drawFractal(new ComplexNum(fractGen.toInput(fX, true), fractGen.toInput(fY, false)), new ComplexNum(0,0), -1);
       }
+
+      if (showGrid) {
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        int rowDelta = height / SauceEngine.TRACKPAD_GRID_SIZE;
+        for (int i = 0; i < SauceEngine.TRACKPAD_GRID_SIZE; i++) {
+          int y = rowDelta * i;
+          canvas.drawLine(0, y, width, y, gridPaint);
+        }
+      }
+
 
       for (Drawable drawable : drawables)
         drawable.draw(canvas);

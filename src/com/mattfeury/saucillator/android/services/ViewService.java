@@ -72,4 +72,15 @@ public class ViewService {
 
     refresh();
   }
+  public static void toggleShowGrid() {
+    view.toggleGrid();
+    refresh();
+  }
+  public static boolean isGridShowing() {
+    if (canService) {
+      return view.isGridShowing();
+    } else {
+      return false;
+    }
+  }
 }
