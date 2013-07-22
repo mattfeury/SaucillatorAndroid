@@ -2,7 +2,7 @@ package com.mattfeury.saucillator.dev.android.templates;
 
 
 public class ButtonBuilder {
-  public static enum Type { RECT, KNOB, SLIDER };
+  public static enum Type { RECT, KNOB, SLIDER, TOGGLE };
   private Button button;
 
   private ButtonBuilder(Type type, String name) {
@@ -12,6 +12,9 @@ public class ButtonBuilder {
         break;
       case SLIDER:
         button = new SliderButton(name);
+        break;
+      case TOGGLE:
+        button = new ToggleButton(name);
         break;
       default:
         button = new RectButton(name);
