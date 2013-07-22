@@ -32,7 +32,7 @@ public class SineOLD implements Runnable {
 
         		for( int i = 0; i < samples.length; i++ )
         		{
-        			samples[i] = android.util.FloatMath.sin( angle );
+        			samples[i] = (float) Math.sin(angle);
         			angle += increment;
         		}
                 device.writeSamples( samples );

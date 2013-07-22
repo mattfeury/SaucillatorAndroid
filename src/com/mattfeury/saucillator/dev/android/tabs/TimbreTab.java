@@ -16,6 +16,7 @@ import com.mattfeury.saucillator.dev.android.templates.PickerButton;
 import com.mattfeury.saucillator.dev.android.templates.RectButton;
 import com.mattfeury.saucillator.dev.android.templates.Table;
 import com.mattfeury.saucillator.dev.android.utilities.Utilities;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
 import com.mattfeury.saucillator.dev.android.services.InstrumentService;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 
@@ -192,6 +193,7 @@ public class TimbreTab extends Tab {
 
       RectButton delete = new RectButton("X");
       delete.setTextPaint(textPaint);
+      delete.setBackgroundColor(SauceView.TAB_COLOR);
       delete.addHandler(new Handler<Object>() {
         public void handle(Object o) {
           VibratorService.vibrate();

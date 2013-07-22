@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 import com.mattfeury.saucillator.dev.android.utilities.*;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.MotionEvent;
@@ -29,6 +31,7 @@ public class PickerButton<K> extends Button {
     chooseChoice(choice);
 
     decr = new RectButton("-");
+    decr.setBackgroundColor(SauceView.TAB_COLOR);
     decr.addHandler(new Handler<Boolean>() {
       public void handle(Boolean data) {
         VibratorService.vibrate();
@@ -36,6 +39,7 @@ public class PickerButton<K> extends Button {
       }
     });
     incr = new RectButton("+");
+    incr.setBackgroundColor(SauceView.TAB_COLOR);
     incr.addHandler(new Handler<Boolean>() {
       public void handle(Boolean data) {
         VibratorService.vibrate();
