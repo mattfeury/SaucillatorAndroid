@@ -43,7 +43,7 @@ public class WtOsc extends UGen {
 	public WtOsc fillWithSin() {
 		final float dt = (float)(2.0*Math.PI/ENTRIES);
 		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = FloatMath.sin(i*dt);
+			table[i] = (float) Math.sin(i*dt);
 		}
 		return this;
 	}
@@ -51,7 +51,7 @@ public class WtOsc extends UGen {
 	public WtOsc fillWithHardSin(final float exp) {
 		final float dt = (float)(2.0*Math.PI/ENTRIES);
 		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = (float) Math.pow(FloatMath.sin(i*dt),exp);
+			table[i] = (float) Math.pow(Math.sin(i*dt),exp);
 		}
 		return this;
 	}
@@ -84,7 +84,7 @@ public class WtOsc extends UGen {
 	public WtOsc fillWithSaw() {
 		float dt = (float)(2.0/ENTRIES);
 		for(int i = 0; i < ENTRIES; i++) {
-			table[i] = (float) (i * dt - android.util.FloatMath.floor(i * dt));
+			table[i] = (float) (i * dt - Math.floor(i * dt));
 		}
 		return this;
 	}

@@ -139,7 +139,7 @@ public abstract class BasicOsc extends Oscillator {
   public BasicOsc fillWithHardSin(final float exp) {
     final float dt = (float)(2.0*Math.PI/ENTRIES);
     for(int i = 0; i < ENTRIES; i++) {
-			table[i] = (float) Math.pow(FloatMath.sin(i*dt),exp);
+			table[i] = (float) Math.pow(Math.sin(i*dt),exp);
 		}
 		return this;
 	}
