@@ -40,6 +40,10 @@ public class ButtonBuilder {
     button.setMargin(size);
     return this;
   }
+  public ButtonBuilder withFocus(boolean focused) {
+    button.setFocus(focused);
+    return this;
+  }
   public ButtonBuilder withProgress(float progress) {
     if (button instanceof KnobButton)
       ((KnobButton)button).changeProgress(progress);
