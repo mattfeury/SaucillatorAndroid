@@ -13,6 +13,7 @@ import com.mattfeury.saucillator.dev.android.templates.Button;
 import com.mattfeury.saucillator.dev.android.templates.ButtonBuilder;
 import com.mattfeury.saucillator.dev.android.templates.Handler;
 import com.mattfeury.saucillator.dev.android.templates.RectButton;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
 import com.mattfeury.saucillator.dev.android.services.ActivityService;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 import com.mattfeury.saucillator.dev.android.services.ViewService;
@@ -55,6 +56,7 @@ public class RecorderTab extends Tab {
         showFilenameDialog(this);
       }
     };
+    filenameButton.setBackgroundColor(SauceView.TAB_COLOR);
     //filenameButton.setBorder(0);
     filenameButton.setTextSize(28);
     filenameButton.setClear(true);

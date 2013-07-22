@@ -31,7 +31,7 @@ public class KnobButton extends Button implements IntervalButton {
     changeProgress(progress);
 
     status = new Paint();
-    status.setARGB(255, 255, 120, 120);
+    status.setColor(SauceView.PAD_COLOR);
     status.setStrokeWidth(5);
     
     bg.setARGB(255, 255,255,255);
@@ -47,8 +47,8 @@ public class KnobButton extends Button implements IntervalButton {
 
     float progressAngle = (Utilities.scale(f / 1f, 45, 315) + 180) % 360;
     float radianAngle = (float)Math.toRadians(progressAngle);
-    progressSin = FloatMath.cos(radianAngle);
-    progressCos = FloatMath.sin(radianAngle);
+    progressSin = (float) Math.cos(radianAngle);
+    progressCos = (float) Math.sin(radianAngle);
 
     handle(progress);
   }
@@ -91,7 +91,7 @@ public class KnobButton extends Button implements IntervalButton {
 
     final float dx = x - lastX;
     final float dy = lastY - y;
-    float r = FloatMath.sqrt(dx * dx + dy * dy);
+    float r = (float) Math.sqrt(dx * dx + dy * dy);
     float theta = (float) Math.toDegrees(Math.atan2(dy, dx));
     if (theta < 0) {
       theta += 360;

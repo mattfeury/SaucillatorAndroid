@@ -1,7 +1,10 @@
 package com.mattfeury.saucillator.dev.android.templates;
 
 import com.mattfeury.saucillator.dev.android.utilities.*;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
+
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 
@@ -22,9 +25,11 @@ public class SliderButton extends Button implements IntervalButton {
     changeProgress(0);
 
     status = new Paint();
-    status.setARGB(200, 246, 255, 66);
+    status.setColor(SauceView.PAD_COLOR);
     status.setTextAlign(Paint.Align.CENTER);
     setBorder(borderSize);
+
+    this.bg.setColor(Color.WHITE);
   }
 
   @Override
@@ -69,18 +74,14 @@ public class SliderButton extends Button implements IntervalButton {
     int width = (int) (right - left);
 
     // Name
-    canvas.drawText("" + getName(), left + width / 2, top + height * .25f, status);
+    canvas.drawText("" + getName(), left + width / 2, top + height * .25f, bg);
 
-    // Ends
-    canvas.drawLine(margin + left, margin + top, margin + left, bottom - margin, bg);
-    canvas.drawLine(right - margin, margin + top, right - margin, bottom - margin, bg);
-    
-    // Status
+    // Horizontal Line
     canvas.drawLine(margin + left, centerY, right - margin, centerY, bg);
-    canvas.drawLine(margin + left, centerY, margin + left + progressWidth - borderSize / 2f, centerY, status); 
 
     // Marker
-    canvas.drawLine(margin + left + progressWidth, top + height / 3f, margin + left + progressWidth, bottom - height / 3f, status);
+    //canvas.drawLine(margin + left + progressWidth, top + height / 3f, margin + left + progressWidth, bottom - height / 3f, status);
+    canvas.drawCircle(margin + left + progressWidth, top + height / 2, 15, status);
     canvas.drawText("" + current, margin + left + progressWidth, bottom - margin, status);
   }
 
