@@ -31,7 +31,7 @@ public class KnobButton extends Button implements IntervalButton {
     changeProgress(progress);
 
     status = new Paint();
-    status.setARGB(255, 255, 120, 120);
+    status.setColor(SauceView.PAD_COLOR);
     status.setStrokeWidth(5);
     
     bg.setARGB(255, 255,255,255);

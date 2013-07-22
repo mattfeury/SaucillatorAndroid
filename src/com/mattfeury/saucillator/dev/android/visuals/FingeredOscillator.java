@@ -36,9 +36,9 @@ public class FingeredOscillator extends SmartRect implements Fingerable {
   @Override
   public void draw(Canvas canvas) {
     int width = canvas.getWidth();
-    int height = canvas.getHeight();
-    int pitchColor = Color.argb((int)(500 * pressure),(int)FloatMath.floor((x/(float)width)*255), 255 - (int)FloatMath.floor((y/(float)height)*255), 0);
-    color.setColor(pitchColor);
+
+    //rgb(160,203,69)
+    color.setARGB((int)Math.floor((x/(float)width)*255), 160, 203, 69);
 
     canvas.drawCircle(x, y, size * BASE_SIZE, color);
   }

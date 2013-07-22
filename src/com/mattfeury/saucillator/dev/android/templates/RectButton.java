@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.mattfeury.saucillator.dev.android.utilities.*;
 import com.mattfeury.saucillator.dev.android.visuals.Drawable;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,29 +17,29 @@ public class RectButton extends Button {
   public RectButton(String name) {
     this(name, 0, 0, 0, 0);
   }
+
   public RectButton(String name, int x, int y, int width, int height) {
     super(name, x, y, x + width, y + height);
 
     focusedBg = new Paint();
-    focusedBg.setARGB(255, 28, 171, 11);
+    focusedBg.setColor(SauceView.ALERT_COLOR);
     focusedBg.setTextSize(14);
     focusedBg.setTextAlign(Align.CENTER);
   }
 
   @Override
   public void draw(Canvas canvas) {
-    // TODO reduce repeated calculations here
-    if (focused) {
-      canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, focusedBg); //top line
-      canvas.drawText(name, (right + left) / 2f, top + (bottom - top) * .5f + focusedBg.getTextSize() / 2, focusedBg);
-    } else {
-      canvas.drawRect(left + margin, top + margin, left + margin + borderSize, bottom - margin, bg); //left line
-      canvas.drawRect(right - margin - borderSize, top + margin, right - margin, bottom - margin, bg); //right line
+    this.draw(canvas, focused ? focusedBg : bg);
+  }
 
-      canvas.drawRect(left + margin + borderSize, top + margin, right - margin - borderSize, top + margin + borderSize, bg); //top line
-      canvas.drawRect(left + margin + borderSize, bottom - margin - borderSize, right - margin - borderSize, bottom - margin, bg); //bottom line
-      
+  public void draw(Canvas canvas, Paint paint) {
+    canvas.drawRect(left + margin, top + margin, right - margin, bottom - margin, paint);
+
+    Align align = text.getTextAlign();
+    if (align == Align.CENTER) {
       canvas.drawText(name, (right + left) / 2f, top + (bottom - top) * .5f + text.getTextSize() / 2, text);
+    } else if (align == Align.LEFT) {
+      canvas.drawText(name, left + padding, top + (bottom - top) * .5f + text.getTextSize() / 2, text);
     }
   }
 
@@ -80,5 +81,9 @@ public class RectButton extends Button {
     super.setTextSize(size);
 
     focusedBg.setTextSize(size);
+  }
+
+  public void setBackgroundColor(int color) {
+    bg.setColor(color);
   }
 }

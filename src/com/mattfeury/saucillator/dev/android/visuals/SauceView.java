@@ -1,10 +1,9 @@
 package com.mattfeury.saucillator.dev.android.visuals;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.mattfeury.saucillator.dev.android.SauceEngine;
 import com.mattfeury.saucillator.dev.android.services.ViewService;
-
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -17,8 +16,12 @@ public class SauceView extends View {
 
     FractalGen fractGen;
     float fX = 0, fY = 0; //fractal x and y coords
-    private Paint backColor = new Paint(Color.BLACK);
     private boolean visuals = false;
+
+    public static final int SELECTOR_COLOR = 0xff5CB67D;
+    public static final int TAB_COLOR = 0XFF43875A;
+    public static final int PAD_COLOR = 0XFF1B3F24;
+    public static final int ALERT_COLOR = 0XC8C81414;
 
     private boolean showGrid = false;
     private Paint gridPaint = new Paint();
@@ -95,7 +98,7 @@ public class SauceView extends View {
       if (fractGen == null)
         fractGen = new FractalGen(canvas);
 
-      canvas.drawColor(backColor.getColor());
+      canvas.drawColor(PAD_COLOR);
 
       if (visuals) {
         LinkedList<FingeredOscillator> fingers = getFingers();

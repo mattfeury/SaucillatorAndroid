@@ -20,6 +20,7 @@ import com.mattfeury.saucillator.dev.android.utilities.Empty;
 import com.mattfeury.saucillator.dev.android.utilities.Fingerable;
 import com.mattfeury.saucillator.dev.android.utilities.Full;
 import com.mattfeury.saucillator.dev.android.utilities.Utilities;
+import com.mattfeury.saucillator.dev.android.visuals.SauceView;
 import com.mattfeury.saucillator.dev.android.services.VibratorService;
 import com.mattfeury.saucillator.dev.android.services.ViewService;
 
@@ -110,7 +111,7 @@ public class EqTab extends Tab {
       //path.setFillType(Path.FillType.EVEN_ODD);
       
       eqPaint = new Paint();
-      eqPaint.setARGB(255, 28, 171, 11);
+      eqPaint.setColor(SauceView.PAD_COLOR);
 
       setFrequency((int) eq.getFrequency());
       setQ(eq.getQ());
