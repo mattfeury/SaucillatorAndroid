@@ -152,9 +152,27 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }    
 
     protected void onDestroy() {
-    	android.os.Process.killProcess(android.os.Process.myPid());
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
-    
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // When the audio thread keeps running in the background, it gets put on low priority
+        // which results in pops on the AudioTrack. this should stop it ticking in the meantime. 
+        if (! audioEngine.isLooping()) {
+            audioEngine.pauseDac();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        audioEngine.playDac();
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);

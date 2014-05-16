@@ -39,6 +39,8 @@ public class AudioEngine {
 
   private SauceEngine sauceEngine;
 
+  private DacThread thread;
+
   // The currentOscillator is never actually heard
   // It is kept as a template and updated anytime an instrument is edited/created
   // We create a deepCopy of it for actually playing.
@@ -49,7 +51,20 @@ public class AudioEngine {
 
     currentOscillator = InstrumentService.getInstrument(defaultInstrument);
 
-    Thread t = new Thread() {
+    thread = new DacThread(mutex);
+    thread.start();
+  }
+
+  class DacThread extends Thread {
+      Object mutex;
+      public DacThread(final Object mutex) {
+          this.mutex = mutex;
+      }
+
+      private boolean shouldTick = true;
+      public void stopTicking() { shouldTick = false; }
+      public void startTicking() { shouldTick = true; }
+
       public void run() {
         try {
           synchronized(mutex) {
@@ -69,7 +84,9 @@ public class AudioEngine {
           }
 
           while (true) {
-            dac.tick();
+              if (shouldTick) {
+                  dac.tick();
+              }
           }
         } catch (Exception ex) {
           ex.printStackTrace();
@@ -81,13 +98,22 @@ public class AudioEngine {
           Log.e(SauceEngine.TAG, "bad time " + ex.toString());
         }
       }
-    };
-
-    t.start();
-  }
+  };
 
   public boolean isPlaying() {
     return dac.isPlaying();
+  }
+
+  public void pauseDac() {
+      thread.stopTicking();
+  }
+  public void playDac() {
+      thread.startTicking();
+  }
+
+  public boolean isLooping() {
+      // Looper.isPlaying() isn't used. Oops! :/
+      return looper.recording || looper.defined;
   }
 
   // Hmm.... should fx things be here?
