@@ -47,8 +47,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private static final String tutorialName = "buffalo.0";
     
-    private static final int BACKPRESS_DIALOG = 0,
-                             TUTORIAL_DIALOG = 1;
+    private static final int TUTORIAL_DIALOG = 0;
 
     private Object mutex = new Object();
 
@@ -98,9 +97,10 @@ public class SauceEngine extends Activity implements OnTouchListener {
         this.tabManager = new TabManager();
 
         view.addDrawable(tabManager);
+
         tabManager.addTab(new FxTab(audioEngine));
-        tabManager.addTab(new TimbreTab(audioEngine));
         tabManager.addTab(new InstrumentManagerTab(audioEngine));
+        tabManager.addTab(new TimbreTab(audioEngine));
         tabManager.addTab(new LooperTab(audioEngine));
         tabManager.addTab(new EqTab(audioEngine));
         tabManager.addTab(new PadTab(audioEngine));
@@ -118,24 +118,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     protected Dialog onCreateDialog(int id){
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       switch(id) {
-        case BACKPRESS_DIALOG:
-          builder
-            .setTitle("Exit or hide?")
-            .setMessage("Should the app stay awake and keep playing music? Keeping the app playing in the background may cause popping.")
-            .setCancelable(true)
-            .setPositiveButton("Quit",
-                new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int id) {
-                    SauceEngine.this.finish();
-                  }
-            })
-            .setNegativeButton("Hide",
-                new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    moveTaskToBack(true);
-                  }
-            });
-          break;
         case TUTORIAL_DIALOG:
           builder
             .setTitle("Saucillator 2.0 Buffalo (beta)")
@@ -152,9 +134,27 @@ public class SauceEngine extends Activity implements OnTouchListener {
     }    
 
     protected void onDestroy() {
-    	android.os.Process.killProcess(android.os.Process.myPid());
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
-    
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // When the audio thread keeps running in the background, it gets put on low priority
+        // which results in pops on the AudioTrack. this should stop it ticking in the meantime. 
+        if (! audioEngine.isLooping()) {
+            audioEngine.pauseDac();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        audioEngine.playDac();
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
@@ -291,7 +291,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     @Override
     public void onBackPressed() {
-      showDialog(BACKPRESS_DIALOG);
+        moveTaskToBack(true);
     }
 
 }

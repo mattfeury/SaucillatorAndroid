@@ -42,7 +42,7 @@ public class InstrumentService {
     return file.substring(0, extensionIndex);
   }
 
-  private static final String[] preferredOrder = new String[]{"Sine", "Square", "Saw", "Pulse", "Noise", "Singing Saw", "Electric Eel", "Starslide"};
+  private static final String[] preferredOrder = new String[]{"Starslide", "Theremin", "Electric Eel", "Singing Saw", "Sine", "Square", "Saw", "Pulse", "Noise"};
 
   public static boolean ensureProperDirectoryStructure() {
     File file;
