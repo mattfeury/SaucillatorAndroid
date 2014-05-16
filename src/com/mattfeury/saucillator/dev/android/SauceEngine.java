@@ -1,6 +1,20 @@
 package com.mattfeury.saucillator.dev.android;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.mattfeury.saucillator.dev.android.R;
 import com.mattfeury.saucillator.dev.android.instruments.*;
@@ -14,11 +28,15 @@ import com.mattfeury.saucillator.dev.android.settings.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnTouchListener;
@@ -33,6 +51,8 @@ import android.view.View.OnTouchListener;
  */
 public class SauceEngine extends Activity implements OnTouchListener {
     public static final String TAG = "Sauce";
+
+    final boolean IS_SERVER = true;
 
     //defaults
     public static int TRACKPAD_GRID_SIZE = 12;
@@ -105,6 +125,65 @@ public class SauceEngine extends Activity implements OnTouchListener {
         tabManager.addTab(new EqTab(audioEngine));
         tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new RecorderTab(audioEngine));
+
+
+        if (IS_SERVER)
+        new Thread() {
+          public void run() {
+            ServerSocket server = null;
+            //DataOutputStream dataOutputStream = null;
+            DataInputStream dataInputStream = null;
+
+            try {
+              WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
+              WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+              int ip = wifiInfo.getIpAddress();
+              String ipAddress = Formatter.formatIpAddress(ip);
+              System.out.println("dat new: " + ipAddress);
+
+              server = new ServerSocket(9999);
+              while (true) {
+                Socket socket = server.accept();
+                //BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                dataInputStream = new DataInputStream(socket.getInputStream());
+
+                String str = dataInputStream.readUTF(); //in.readLine();
+                Log.i("received response from server", str);
+
+                onTouch(view, motionEventFromString(str));
+
+                dataInputStream.close();
+                //in.close();
+                socket.close();
+              }
+
+            } catch (Exception e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            } finally{
+              if (server != null){
+                try {
+                  server.close();
+                } catch (IOException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+                }
+              }
+
+              if (dataInputStream != null){
+                try {
+                  dataInputStream.close();
+                } catch (IOException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+                }
+              }
+            }
+
+
+          }
+        }.start();
+
       }
     }
 
@@ -199,6 +278,9 @@ public class SauceEngine extends Activity implements OnTouchListener {
         float y = event.getY(i);
         float x = event.getX(i);
 
+        if (! IS_SERVER)
+          sendSocket(event);
+
         Fingerable controlled = fingersById.get(id);
 
         if (controlled != null) {
@@ -225,6 +307,102 @@ public class SauceEngine extends Activity implements OnTouchListener {
       }
 
       return true; // indicate event was handled
+    }
+
+    private String motionEventToString(MotionEvent event) {
+      Map<String, String> map = new HashMap<String, String>();
+
+      map.put("downTime", "" + event.getDownTime());
+      map.put("eventTime", "" + event.getEventTime());
+      map.put("action", "" + event.getAction());
+      map.put("x", "" + event.getX());
+      map.put("y", "" + event.getY());
+      map.put("pressure", "" + event.getPressure());
+      map.put("size", "" + event.getSize());
+      map.put("metaState", "" + event.getMetaState());
+      map.put("xPrecision", "" + event.getXPrecision());
+      map.put("yPrecision", "" + event.getYPrecision());
+      map.put("deviceId", "" + event.getDeviceId());
+      map.put("edgeFlags", "" + event.getEdgeFlags());
+
+      return new JSONObject(map).toString(); 
+    }
+
+    private MotionEvent motionEventFromString(String s) throws JSONException {
+      JSONObject map = new JSONObject(s);
+
+      return MotionEvent.obtain(
+          Long.parseLong(map.getString("downTime")),
+          Long.parseLong(map.getString("eventTime")),
+          Integer.parseInt(map.getString("action")),
+          Float.parseFloat(map.getString("x")),
+          Float.parseFloat(map.getString("y")),
+          Float.parseFloat(map.getString("pressure")),
+          Float.parseFloat(map.getString("size")),
+          Integer.parseInt(map.getString("metaState")),
+          Float.parseFloat(map.getString("xPrecision")),
+          Float.parseFloat(map.getString("yPrecision")),
+          Integer.parseInt(map.getString("deviceId")),
+          Integer.parseInt(map.getString("edgeFlags"))
+      );
+    }
+
+    private class SendMotionEvent extends AsyncTask<MotionEvent, Void, String> {
+
+      @Override
+      protected String doInBackground(MotionEvent... params) {
+        Socket socket = null;
+        DataOutputStream dataOutputStream = null;
+        //DataInputStream dataInputStream = null;
+
+        try {
+          socket = new Socket("10.0.1.26", 9999);
+          dataOutputStream = new DataOutputStream(socket.getOutputStream());
+          //dataInputStream = new DataInputStream(socket.getInputStream());
+          String payload = motionEventToString(params[0]);
+          Log.i(TAG, " dat load: " + payload);
+          dataOutputStream.writeUTF(payload);
+          //textIn.setText(dataInputStream.readUTF());
+        } catch (UnknownHostException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        finally{
+          if (socket != null){
+            try {
+              socket.close();
+            } catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+
+          if (dataOutputStream != null){
+            try {
+              dataOutputStream.close();
+            } catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+        }
+
+        return null;
+      }
+
+      @Override
+      protected void onPostExecute(String result) {}
+      @Override
+      protected void onPreExecute() {}
+      @Override
+      protected void onProgressUpdate(Void... values) {}
+  }
+
+    private void sendSocket(MotionEvent event) {
+        new SendMotionEvent().execute(event);
     }
 
     private void handleTouchForOscillator(int id, MotionEvent event) {
