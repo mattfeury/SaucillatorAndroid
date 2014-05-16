@@ -47,8 +47,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     private static final String tutorialName = "buffalo.0";
     
-    private static final int BACKPRESS_DIALOG = 0,
-                             TUTORIAL_DIALOG = 1;
+    private static final int TUTORIAL_DIALOG = 0;
 
     private Object mutex = new Object();
 
@@ -118,24 +117,6 @@ public class SauceEngine extends Activity implements OnTouchListener {
     protected Dialog onCreateDialog(int id){
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       switch(id) {
-        case BACKPRESS_DIALOG:
-          builder
-            .setTitle("Exit or hide?")
-            .setMessage("Should the app stay awake and keep playing music? Keeping the app playing in the background may cause popping.")
-            .setCancelable(true)
-            .setPositiveButton("Quit",
-                new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int id) {
-                    SauceEngine.this.finish();
-                  }
-            })
-            .setNegativeButton("Hide",
-                new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    moveTaskToBack(true);
-                  }
-            });
-          break;
         case TUTORIAL_DIALOG:
           builder
             .setTitle("Saucillator 2.0 Buffalo (beta)")
@@ -309,7 +290,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
 
     @Override
     public void onBackPressed() {
-      showDialog(BACKPRESS_DIALOG);
+        moveTaskToBack(true);
     }
 
 }
