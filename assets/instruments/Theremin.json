@@ -1,0 +1,1 @@
+{"fx":{"lfo":{"depth":70,"rate":10},"envelope":{"release":0.9200000166893005,"attack":0.9900000095367432},"delay":{"time":0,"decay":0},"lag":0.949999988079071},"timbre":[{"id":"Sine","phase":0,"harmonic":2,"amplitude":0.507317066192627},{"id":"Sine","phase":0,"harmonic":1,"amplitude":0.49268293380737305}],"isInternal":true,"name":"Theremin"}
