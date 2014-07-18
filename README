@@ -1,13 +1,10 @@
-Inspired by the Kaossilator (by Korg) and the idea of circuit-bending, the Saucillator is an attempt at transforming mobile devices into a platform for digital synthesizers. It uses the touchscreen to manipulate oscillators and effects, and it allows for live-looping and recording.
+Inspired by the Korg Kaossilator and the Moog synthesizer, Saucillator transforms mobile devices into a platform for creating and playing digital synthesizers. It uses the touchscreen to manipulate oscillators and effects, and it also allows for live-looping and recording.
 
-Users are able to create their own instruments, which consist of user-defined timbre and user-defined effects. A small variety of timbres are included: Sine, Square, Saw, Noise (white)* and "Singing Saw".
+Users are able to create their own instruments, which consist of a custom timbre and user-defined effects. A small variety of timbres are included: Sine, Square, Saw, Pulse, Noise (white)*, Theremin, "Singing Saw", "Electric Eel", and "Starslide." These, as well as any user-created instruments, can be mixed and matched at different harmonics, amplitudes, and phases to create custom sounds.
 
-Built-in effect parameters are: Envelope (attack & release), LFO (rate & depth), Delay (rate & decay), Note Lag, and a Parametric EQ (Frequency, Q). The initial four are specific according to the current instrument, while the EQ goes over the top of everything.
+Each synth has customizable effect parameters as well, including Envelope (attack & release), LFO (rate & depth), Delay (rate & decay), and Note Lag.
 
-For the engineeringly-inclined or Belmont students, here is the signal flow:
-Oscillator(s) -> Looper -> Parametric EQ -> Speakers / Recorder.
-
-There are two available modes to use the "pad" in: Edit or MultiPlay. In Edit mode, one finger controls the oscillator while the other fingers manipulate the effects. The timbre must be edited via the menu. In MultiPlay mode, each finger controls a unique oscillator.
+On top of creating alien instruments, you can also play them using the x-y axes of yr touchscreen. The x-axis corresponds to amplitude (volume) and the y-axis corresponds to frequency (pitch). Playback can also be looped, recorded, and EQed using a Parametric EQ.
 
 Other abilities:
 -Choose scale: Pentatonic, Major, Minor, Blues, or Chromatic
@@ -17,14 +14,12 @@ Other abilities:
 -Toggle visualizations. More to come here.
 
 Notes:
--*I fully intend to make noise scale with frequency and actually become useful (e.g. "Red" Noise).
--This is my first Android project and continues on as a playground for new ideas. There are some parts that are still a simple proof of concept and other parts where I invested more time. Many changes to come.
+*I fully intend to make noise scale with frequency and actually become useful (e.g. "Red" Noise).
 
 Permissions Needed:
-- SD card access: for saving instruments and recordings
-- Vibration: For haptic feedback. What could I really do with this, anyway? (Don't answer that)
+- SD card access: for saving instruments and recordings.
+- Vibration: For haptic feedback.
 
-Things to come:
--Add a pad manipulator for Note Lag.
--More meaningful visualizer.
--More goodies.
+Special thanks to Garrett Langley (http://dribbble.com/glangley) for helping with design and general usability.
+
+Saucillator 2.0 Buffalo. I think it's the sauce, boss!
