@@ -27,7 +27,7 @@ import android.view.View.OnTouchListener;
  * Main activity for the App. This class has two main purposes:
  * 
  * 1. Handle user input.
- * 2. Delegate events (based user input or otherwise) between the AudioEngine and the SauceView.
+ * 2. Delegate events (based user input or otherwise) between the AudioEngine and the SauceView.
  * 
  * It also currently handles all the Activity necessities: menus, dialogs, etc.
  */

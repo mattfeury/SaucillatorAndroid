@@ -1,4 +1,6 @@
 syntax: glob
+.idea/
+.gradle/
 *.ser
 *.class
 *~
@@ -14,6 +16,7 @@ local.properties
 build.xml
 
 # building
+app/build/
 target
 bin/
 gen/

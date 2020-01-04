@@ -27,7 +27,7 @@ public class Sine extends BasicOsc {
   public void fill() {
     final float dt = (float) (2.0 * Math.PI / ENTRIES);
     for (int i = 0; i < ENTRIES; i++) {
-      table[i] = (float) (amplitude * FloatMath.sin(i * dt + (float) (oscPhase * Math.PI / 180f)));
+      table[i] = (float) (amplitude * (float)Math.sin(i * dt + (float) (oscPhase * Math.PI / 180f)));
     }
   }
 }

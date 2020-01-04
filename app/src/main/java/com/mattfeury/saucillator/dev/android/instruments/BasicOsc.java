@@ -120,7 +120,7 @@ public abstract class BasicOsc extends Oscillator {
 
     // TODO why does .05 work so well here?
     // also, can we do this smoother?
-    float lfoFn = modDepth/2 * FloatMath.sin(modRate * t);
+    float lfoFn = modDepth/2 * (float)Math.sin(modRate * t);
     t = (float) ((t + .05f) % (2f*Math.PI*modRate));
     return lfoFn;
   }
