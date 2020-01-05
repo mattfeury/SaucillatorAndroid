@@ -1,0 +1,180 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* .idea/
+* .idea/workspace.xml
+* LICENSE
+* README.md
+* app/
+* app/build.gradle
+* app/src/
+* app/src/main/
+* app/src/main/AndroidManifest.xml
+* app/src/main/assets/
+* app/src/main/assets/instruments/
+* app/src/main/assets/instruments/Electric Eel.json
+* app/src/main/assets/instruments/Noise.json
+* app/src/main/assets/instruments/Pulse.json
+* app/src/main/assets/instruments/Saw.json
+* app/src/main/assets/instruments/Sine.json
+* app/src/main/assets/instruments/Singing Saw.json
+* app/src/main/assets/instruments/Square.json
+* app/src/main/assets/instruments/Starslide.json
+* app/src/main/assets/instruments/Theremin.json
+* app/src/main/java/
+* app/src/main/java/com/
+* app/src/main/java/com/mattfeury/
+* app/src/main/java/com/mattfeury/saucillator/
+* app/src/main/java/com/mattfeury/saucillator/dev/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/SauceEngine.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/archive/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/archive/AndroidAudioDeviceOLD.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/archive/ExpEnv.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/archive/SineOLD.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/archive/WtOsc.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/BasicOsc.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/ComplexOsc.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Noise.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Oscillator.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Pulse.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Saw.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Sine.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/SingingSaw.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Square.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/instruments/Theory.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/services/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/services/ActivityService.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/services/InstrumentService.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/services/VibratorService.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/services/ViewService.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/settings/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/settings/Settings.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/AudioEngine.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Dac.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Delay.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Lagger.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Limiter.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Looper.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/OscillatorUpdater.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/ParametricEQ.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/UGen.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/Vibrato.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/sound/WavWriter.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/EqTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/FxTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/InstrumentManagerTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/LooperTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/PadTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/RecorderTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/Tab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/TabManager.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/TabPanel.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/TabSelector.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/tabs/TimbreTab.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/Button.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/ButtonBuilder.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/ColumnPanel.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/Handler.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/IntervalButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/KnobButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/Label.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/PickerButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/RectButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/SliderButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/SmartRect.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/Table.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/templates/ToggleButton.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Box.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/EachFunc.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Empty.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Failure.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/FastByteArrayInputStream.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/FastByteArrayOutputStream.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Fingerable.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Full.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/MapFunc.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/TimbreAdapter.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/Utilities.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/utilities/ViewBinders.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/ComplexNum.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/Drawable.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/DrawableParameter.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/FingeredOscillator.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/FractalGen.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/LayoutDefinitions.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/ParameterHandler.java
+* app/src/main/java/com/mattfeury/saucillator/dev/android/visuals/SauceView.java
+* app/src/main/res/
+* app/src/main/res/drawable-hdpi/
+* app/src/main/res/drawable-hdpi/ic_grey_rec.png
+* app/src/main/res/drawable-hdpi/ic_lock_power_off.png
+* app/src/main/res/drawable-hdpi/ic_menu_help.png
+* app/src/main/res/drawable-hdpi/ic_menu_preferences.png
+* app/src/main/res/drawable-hdpi/ic_rec.png
+* app/src/main/res/drawable-hdpi/icon.png
+* app/src/main/res/drawable-mdpi/
+* app/src/main/res/drawable-mdpi/icon.png
+* app/src/main/res/drawable-xhdpi/
+* app/src/main/res/drawable-xhdpi/icon.png
+* app/src/main/res/drawable-xxhdpi/
+* app/src/main/res/drawable-xxhdpi/icon.png
+* app/src/main/res/layout/
+* app/src/main/res/layout/harmonic_list_item.xml
+* app/src/main/res/layout/main.xml
+* app/src/main/res/layout/settings.xml
+* app/src/main/res/layout/tutorial_dialog.xml
+* app/src/main/res/menu/
+* app/src/main/res/menu/menu.xml
+* app/src/main/res/raw/
+* app/src/main/res/raw/sauceboss.wav
+* app/src/main/res/values/
+* app/src/main/res/values/strings.xml
+* build.gradle
+* default.properties
+* gradle/
+* gradle/wrapper/
+* gradle/wrapper/gradle-wrapper.jar
+* gradle/wrapper/gradle-wrapper.properties
+* gradlew
+* gradlew.bat
+* proguard.cfg
+* settings.gradle
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* assets/ => app/src/main/assets/
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
