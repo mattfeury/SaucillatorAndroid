@@ -21,7 +21,7 @@ public class AudioEngine {
   private int note = 0;
   private int octave = 4;
   //private String scaleId = Theory.allScales[0].toString();
-  public static int[] scale = Theory.pentatonicScale;
+  public static int[] scale = Scale.PENTATONIC_MINOR.scaleOffsets;
 
   public final static int DELAY_RATE_MIN = 0, DELAY_RATE_MAX = UGen.SAMPLE_RATE; //Is this right?
   public final static int MOD_RATE_MIN = 0, MOD_RATE_MAX = 20;
@@ -250,16 +250,9 @@ public class AudioEngine {
   }
 
   public void setScaleById(String scaleId) {
-    if (scaleId.equals(Scale.PENTATONIC.toString())) {
-      scale = Theory.pentatonicScale;
-    } else if (scaleId.equals(Scale.MAJOR.toString())) {
-      scale = Theory.majorScale;
-    } else if (scaleId.equals(Scale.MINOR.toString())) {
-      scale = Theory.minorScale;
-    } else if (scaleId.equals(Scale.MINOR_BLUES.toString())) {
-      scale = Theory.minorBluesScale;
-    } else {
-      scale = Theory.chromaticScale;
+    for (Scale value : Scale.values()) {
+      if (scaleId.equals(value.toString()))
+        scale = value.scaleOffsets;
     }
   }
 

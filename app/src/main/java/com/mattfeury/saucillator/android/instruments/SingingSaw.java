@@ -24,7 +24,7 @@ public class SingingSaw extends ComplexOsc {
   public void setFreq(float freq) {
     frequency = freq;
     fundamental.setFreq(freq);
-    third.setFreq(Theory.getFrequencyForScaleNote(Theory.majorScale, freq, 2));
-    fifth.setFreq(Theory.getFrequencyForScaleNote(Theory.majorScale, freq, 4));
+    third.setFreq(Theory.getFrequencyForScaleNote(Theory.Scale.MAJOR.scaleOffsets, freq, 2));
+    fifth.setFreq(Theory.getFrequencyForScaleNote(Theory.Scale.MAJOR.scaleOffsets, freq, 4));
   }
 }
