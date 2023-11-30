@@ -4,7 +4,7 @@
       android:installLocation="auto"
       android:versionName="2.0.4 Buffalo" android:versionCode="18">
 
-	<uses-sdk android:targetSdkVersion="10" android:minSdkVersion="8"></uses-sdk><supports-screens
+	<uses-sdk android:targetSdkVersion="12" android:minSdkVersion="8"></uses-sdk><supports-screens
       android:smallScreens="true"
       android:normalScreens="true"
       android:largeScreens="true"

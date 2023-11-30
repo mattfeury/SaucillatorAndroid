@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.mattfeury.saucillator.dev.android"
         minSdkVersion 8
-        targetSdkVersion 10
+        targetSdkVersion 12
     }
 
     buildTypes {
