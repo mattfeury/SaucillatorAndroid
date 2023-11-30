@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Saucillator (DEV) for Android</string>
+    <string name="app_name">Saucillator for Android</string>
 
     <string name="feedback_email_address">sauce@mattfeury.com</string>
     <string name="feedback_email_subject">Saucillator feedback</string>
