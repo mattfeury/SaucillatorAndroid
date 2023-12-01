@@ -3,6 +3,7 @@ package com.mattfeury.saucillator.android.sound;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import java.util.Arrays;
 
 /*
  * A Digital to Analog converter
@@ -35,8 +36,11 @@ public class Dac extends UGen {
                 UGen.SAMPLE_RATE,
                 AudioFormat.CHANNEL_CONFIGURATION_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
-                Math.max(UGen.CHUNK_SIZE*4, minSize),
+                Math.max(UGen.CHUNK_SIZE * 4, minSize),
                 AudioTrack.MODE_STREAM);
+
+        final short silentValue = (short) (Short.MAX_VALUE / 2.0);
+        Arrays.fill(silentTarget, silentValue);
     }
 
     public void record() {
@@ -92,14 +96,17 @@ public class Dac extends UGen {
 
         render(localBuffer);
 
-        if(isClean || !playing) {
+        // On initial start, send the silent buffer to init to our baseline
+        if(isClean || !playing || ! started) {
             // sleeping is messy, so lets just queue this silent buffer
-            track.write(silentTarget, 0, silentTarget.length);
             if (recording) {
                 for(int i = 0; i < CHUNK_SIZE; i++) {
                     WavWriter.pushShort((short)0);
                 }
             }
+
+            track.write(silentTarget, 0, silentTarget.length);
+            added += silentTarget.length;
         } else {
             Limiter.limit(localBuffer);
             for(int i = 0; i < CHUNK_SIZE; i++) {
@@ -120,13 +127,13 @@ public class Dac extends UGen {
             }
 
             track.write(target, 0, target.length);
-
             added += target.length;
+        }
 
-            if(! started && added > minSize) {
-                track.play();
-                started = true;
-            }
+        if(! started && added > minSize) {
+            Log.d("SAUCE", "play");
+            track.play();
+            started = true;
         }
     }
 
