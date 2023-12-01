@@ -131,7 +131,6 @@ public class Dac extends UGen {
         }
 
         if(! started && added > minSize) {
-            Log.d("SAUCE", "play");
             track.play();
             started = true;
         }
