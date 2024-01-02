@@ -12,20 +12,19 @@ import org.json.*;
 
 import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.*;
+import com.mattfeury.saucillator.android.templates.Handler;
 import com.mattfeury.saucillator.android.utilities.*;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
 
 public class InstrumentService {
 
-  public static final File dataDirectory = Environment.getExternalStorageDirectory();
   public static final String assetPath = "instruments",
                              extension = ".json",
-                             dataPath = dataDirectory.getAbsolutePath() + "/" + SauceEngine.DATA_FOLDER,
-                             instrumentFolder = "instruments/",
-                             instrumentDirPath = dataPath + instrumentFolder;
+                             instrumentFolder = "instruments/";
 
   private static AssetManager manager = null;
   private static boolean canService = false;
@@ -44,19 +43,21 @@ public class InstrumentService {
 
   private static final String[] preferredOrder = new String[]{"Starslide", "Theremin", "Electric Eel", "Singing Saw", "Sine", "Square", "Saw", "Pulse", "Noise"};
 
-  public static boolean ensureProperDirectoryStructure() {
-    File file;
-    if (!(file = new File(InstrumentService.dataPath)).exists()){
-      if(!file.mkdir())
-        return false;
-    }
-    if (!(file = new File(InstrumentService.instrumentDirPath)).exists()){
-      if(!file.mkdir())
-        return false;
-    }
+  private static String getInternalInstrumentsPath() {
+    final String[] path = {null};
+    ActivityService.withActivity(new Handler<Activity>() {
+      @Override
+      public void handle(Activity activity) {
+        File file = activity.getApplicationContext().getExternalFilesDir(InstrumentService.instrumentFolder);
+        if (file.exists() && file.isDirectory()) {
+          path[0] = file.getPath();
+        }
+      }
+    });
 
-    return true;
+    return path[0];
   }
+
   public static ArrayList<String> getAllInstrumentNames() {
     ArrayList<String> instruments = new ArrayList<String>();
 
@@ -72,23 +73,23 @@ public class InstrumentService {
         if (order > -1 && order < assets.length)
           ordered[order] = stripped;
       }
-      for (String assetName : ordered) {
-        instruments.add(assetName);
-      }
+      instruments.addAll(Arrays.asList(ordered));
     } catch (Exception e) {
       e.printStackTrace();
       ActivityService.makeToast("Unable to load internal synths. :/");
     }
 
     // Get user created
-    File file =  new File(instrumentDirPath);
+    File file = new File(InstrumentService.getInternalInstrumentsPath());
     if (file.exists() && file.isDirectory()) {
       String[] files = file.list();
-      for (String fileName : files) {
-        instruments.add(stripExtension(fileName));
+      if (files != null) {
+        for (String fileName : files) {
+          instruments.add(stripExtension(fileName));
+        }
       }
     }
-    
+
     return instruments;
   }
 
@@ -130,7 +131,7 @@ public class InstrumentService {
   }
 
   private static JSONObject getJsonForCustomInstrument(String name) throws Exception {
-    FileInputStream stream = new FileInputStream(new File(instrumentDirPath + name + extension));
+    FileInputStream stream = new FileInputStream(new File(InstrumentService.getInternalInstrumentsPath() + "/" + name + extension));
 
     String jsonString = "";
     try {
@@ -294,9 +295,6 @@ public class InstrumentService {
   }
 
   public static Box<ComplexOsc> saveInstrument(ComplexOsc osc) {
-    if (! ensureProperDirectoryStructure())
-      return new Failure<ComplexOsc>("Unable to create SD directories: " + instrumentDirPath);
-
     boolean success = true;
     String name = osc.getName();
 
@@ -308,7 +306,7 @@ public class InstrumentService {
       return new Failure<ComplexOsc>("Invalid name. " + validName.getFailure());
 
     try {
-      File file = new File(instrumentDirPath + name + extension);
+      File file = new File(InstrumentService.getInternalInstrumentsPath() + "/" + name + extension);
       FileWriter writer = new FileWriter(file, false);
       JSONObject json = decomposeInstrumentToJson(osc);
       
@@ -331,7 +329,7 @@ public class InstrumentService {
       return new Failure<Boolean>("You cannot delete a built-in synth.");
 
     try {
-      File file = new File(instrumentDirPath + name + extension);
+      File file = new File(InstrumentService.getInternalInstrumentsPath() + "/" + name + extension);
       success = file.delete();
     } catch(Exception e) {
       success = false;
