@@ -2,8 +2,15 @@ package com.mattfeury.saucillator.android.sound;
 
 import java.io.*;
 
-import com.mattfeury.saucillator.android.services.InstrumentService;
+import com.mattfeury.saucillator.android.services.ActivityService;
+import com.mattfeury.saucillator.android.templates.Handler;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 
 /**
@@ -13,10 +20,10 @@ public class WavWriter {
   static int numWavFiles = 0;
   //FIXME make this stuff instances. might prevent memory leaks
   static ByteArrayOutputStream data = new ByteArrayOutputStream();
-  private static File lastFile = null;
-  public static String filePrefix = "Recording";
+  private static String lastFile = null;
+  public static String filePrefix = "saucillator-recording";
 
-  public static File getLastFile(){
+  public static String getLastFile(){
     return lastFile;
   }
   static void pushShort(short s){
@@ -44,47 +51,64 @@ public class WavWriter {
   private static int bitDepth = 16;
   static void writeWav(byte[] buffer) throws IOException{
     int numSamples = buffer.length / 2;
-    
-    File file;
-    int i = 0;
-    
-    if (! InstrumentService.ensureProperDirectoryStructure())
-      return;
-    
-    do{
-    	i++;
-    	file = new File(InstrumentService.dataPath + filePrefix + i + ".wav");
-    }while(file.exists());
-    
-    DataOutputStream outFile  = new DataOutputStream(new FileOutputStream(file));
-    
-    // write the header
-    outFile.writeBytes("RIFF");
-    outFile.write(intToByteArray((int)(numSamples * numChannels * bitDepth / 8 + 36)), 0, 4);
-    outFile.writeBytes("WAVE");
-    outFile.writeBytes("fmt ");
-    outFile.write(intToByteArray((int)16), 0, 4); //16 for PCM
-    outFile.write(shortToByteArray((short)1), 0, 2); //1 for PCM
-    outFile.write(shortToByteArray((short)numChannels), 0, 2); //Mono
-    outFile.write(intToByteArray((int)sampleRate), 0, 4);
-    outFile.write(intToByteArray((int)sampleRate * numChannels * bitDepth / 8), 0, 4);
-    outFile.write(shortToByteArray((short)(numChannels * bitDepth / 8)), 0, 2);
-    outFile.write(shortToByteArray((short)bitDepth), 0, 2);
 
-    // write the data
-    outFile.writeBytes("data");
-    outFile.write(intToByteArray((int)numSamples * numChannels * bitDepth / 8), 0, 4);
-    outFile.write(buffer);
+    ActivityService.withActivity(new Handler<Activity>() {
+       @Override
+       public void handle(Activity activity) {
+         ContentValues values = new ContentValues();
+         String fileName = filePrefix + "-" + System.currentTimeMillis() + ".wav";
 
-    // save
-    outFile.flush();
-    outFile.close();
-    
-    clear();
+         ContentResolver resolver = activity.getApplicationContext().getContentResolver();
 
-    lastFile = file;
-    numWavFiles++;
-	}
+         // Find all audio files on the primary external storage device.
+         Uri audioCollection;
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+           audioCollection = MediaStore.Audio.Media
+                   .getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+         } else {
+           audioCollection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+         }
+
+         // Publish a new song.
+         ContentValues newSongDetails = new ContentValues();
+         newSongDetails.put(MediaStore.Audio.Media.DISPLAY_NAME, fileName);
+
+         // Keep a handle to the new song's URI in case you need to modify it later
+         Uri fileUri = resolver.insert(audioCollection, newSongDetails);
+         OutputStream outFile = null;
+         try {
+           outFile = resolver.openOutputStream(fileUri);
+           outFile.write("RIFF".getBytes());
+           outFile.write(intToByteArray((int)(numSamples * numChannels * bitDepth / 8 + 36)), 0, 4);
+           outFile.write("WAVE".getBytes());
+           outFile.write("fmt ".getBytes());
+           outFile.write(intToByteArray((int)16), 0, 4); //16 for PCM
+           outFile.write(shortToByteArray((short)1), 0, 2); //1 for PCM
+           outFile.write(shortToByteArray((short)numChannels), 0, 2); //Mono
+           outFile.write(intToByteArray((int)sampleRate), 0, 4);
+           outFile.write(intToByteArray((int)sampleRate * numChannels * bitDepth / 8), 0, 4);
+           outFile.write(shortToByteArray((short)(numChannels * bitDepth / 8)), 0, 2);
+           outFile.write(shortToByteArray((short)bitDepth), 0, 2);
+
+           // write the data
+           outFile.write("data".getBytes());
+           outFile.write(intToByteArray((int)numSamples * numChannels * bitDepth / 8), 0, 4);
+           outFile.write(buffer);
+
+           // save
+           outFile.flush();
+           outFile.close();
+
+           clear();
+
+           lastFile = fileName;
+           numWavFiles++;
+         } catch (Exception e) {
+           throw new RuntimeException(e);
+         }
+       }
+    });
+  }
 
   //===========================
   // CONVERT JAVA TYPES TO BYTES
