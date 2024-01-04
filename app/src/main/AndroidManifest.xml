@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.mattfeury.saucillator.android"
       android:installLocation="auto"
-      android:versionName="2.1.0 Buffalo" android:versionCode="20">
+      android:versionName="3.0.0 Chipotle" android:versionCode="21">
 
 	<uses-sdk android:targetSdkVersion="33"></uses-sdk><supports-screens
       android:smallScreens="true"
