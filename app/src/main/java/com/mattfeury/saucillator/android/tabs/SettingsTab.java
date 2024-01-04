@@ -54,7 +54,7 @@ public class SettingsTab extends Tab {
     feedbackButton.setTextSize(TEXT_SIZE);
     feedbackButton.setClear(false);
 
-    final RectButton migrateButton = new RectButton("Migrate V1 Instruments") {
+    final RectButton migrateButton = new RectButton("Import Old Synths") {
       @Override
       public void handle(Object o) {
         super.handle(o);

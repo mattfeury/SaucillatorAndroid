@@ -469,9 +469,16 @@ public class InstrumentService {
         }
       }
     }
+    String msg;
+    if (numAttempted > 0) {
+      msg = "Migrated " + numSuccess + " synths successfully out of " + numAttempted + " total attempts.";
+    } else {
+      msg = "Did not find any synths to migrate. Are you sure you chose the right folder? Contact support for help if needed.";
+    }
+
     AlertDialog alertDialog = new AlertDialog.Builder(context).create();
     alertDialog.setTitle("Migration");
-    alertDialog.setMessage("Migrated " + numSuccess + " instruments successfully out of " + numAttempted + " total attempts.");
+    alertDialog.setMessage(msg);
     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
             new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int which) {
