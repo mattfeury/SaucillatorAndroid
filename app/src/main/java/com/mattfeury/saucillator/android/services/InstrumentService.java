@@ -10,14 +10,18 @@ import java.util.List;
 
 import org.json.*;
 
-import com.mattfeury.saucillator.android.SauceEngine;
 import com.mattfeury.saucillator.android.instruments.*;
 import com.mattfeury.saucillator.android.templates.Handler;
 import com.mattfeury.saucillator.android.utilities.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
-import android.os.Environment;
+import android.net.Uri;
+import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 public class InstrumentService {
@@ -49,7 +53,7 @@ public class InstrumentService {
       @Override
       public void handle(Activity activity) {
         File file = activity.getApplicationContext().getExternalFilesDir(InstrumentService.instrumentFolder);
-        if (file.exists() && file.isDirectory()) {
+        if (file != null && file.exists() && file.isDirectory()) {
           path[0] = file.getPath();
         }
       }
@@ -421,5 +425,59 @@ public class InstrumentService {
     // TODO have this do json like the above. We can't use decomposeInstrument though
     // because this isn't guaranteed to have any FX
     return (Oscillator) Utilities.deepCopy(osc);
+  }
+
+  public static void migrateV1Folder(Context context, Intent data) {
+    Uri uriTree = data.getData();
+
+    DocumentFile documentFile = null;
+    if (uriTree != null) {
+      documentFile = DocumentFile.fromTreeUri(context, uriTree);
+    }
+    int numAttempted = 0, numSuccess = 0;
+    if (documentFile != null) {
+      for (DocumentFile file : documentFile.listFiles()) {
+        try {
+          String name = file.getName();
+          if (name != null && name.endsWith(".json")) {
+            numAttempted++;
+            Log.d("SAUCE", "Migrating old synth: " + file.getName() + "\n");
+
+            InputStream inputStream = context.getContentResolver().openInputStream(file.getUri());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder fileContents = new StringBuilder();
+            String mLine;
+            while ((mLine = reader.readLine()) != null) {
+              fileContents.append(mLine);
+              fileContents.append('\n');
+            }
+
+            File newFile = new File(InstrumentService.getInternalInstrumentsPath() + "/" + name);
+            FileWriter writer = new FileWriter(newFile, false);
+
+            writer.write(fileContents.toString());
+            writer.flush();
+            writer.close();
+
+            // Delete the old file to help with retries
+            file.delete();
+
+            numSuccess++;
+          }
+        } catch (Exception e) {
+          Log.e("SAUCE", "Error converting v1 instrument: " + e.toString());
+        }
+      }
+    }
+    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+    alertDialog.setTitle("Migration");
+    alertDialog.setMessage("Migrated " + numSuccess + " instruments successfully out of " + numAttempted + " total attempts.");
+    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+              }
+            });
+    alertDialog.show();
   }
 }

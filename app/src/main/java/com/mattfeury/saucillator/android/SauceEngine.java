@@ -1,5 +1,11 @@
 package com.mattfeury.saucillator.android;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mattfeury.saucillator.android.R;
@@ -14,14 +20,20 @@ import com.mattfeury.saucillator.android.settings.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.support.v4.provider.DocumentFile;
+import android.text.Editable;
 import android.util.Log;
 import android.view.*;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
+
+import org.json.JSONObject;
 
 /*
  * Main activity for the App. This class has two main purposes:
@@ -105,6 +117,7 @@ public class SauceEngine extends Activity implements OnTouchListener {
         tabManager.addTab(new EqTab(audioEngine));
         tabManager.addTab(new PadTab(audioEngine));
         tabManager.addTab(new RecorderTab(audioEngine));
+        tabManager.addTab(new SettingsTab(audioEngine));
       }
     }
 
@@ -154,6 +167,14 @@ public class SauceEngine extends Activity implements OnTouchListener {
         super.onResume();
 
         audioEngine.playDac();
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (requestCode == ActivityService.V1_INSTRUMENT_MIGRATION_REQUEST_CODE) {
+            InstrumentService.migrateV1Folder(this, data);
+        }
+
     }
 
     @Override

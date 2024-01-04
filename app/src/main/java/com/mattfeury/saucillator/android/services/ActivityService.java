@@ -11,6 +11,8 @@ public class ActivityService {
   private static Activity activity;
   private static boolean canService = false;
 
+  public static final int V1_INSTRUMENT_MIGRATION_REQUEST_CODE = 9;
+
   public static void setup(Activity appActivity) {
     activity = appActivity;
 
