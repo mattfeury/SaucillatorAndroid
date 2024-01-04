@@ -268,17 +268,11 @@ public class AudioEngine {
     if (isRecording) {
       ActivityService.makeToast("Recording.");
     } else {
-      File saved = WavWriter.getLastFile();
+      String saved = WavWriter.getLastFile();
       if (saved == null) {
         ActivityService.makeToast("Stopped Recording. File could not be saved. I blew it.");
       } else {
-        ActivityService.makeToast("Stopped Recording. File saved at: " + saved.getAbsolutePath(), true);
-
-        Intent intent = new Intent(Intent.ACTION_SEND).setType("audio/*");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(saved));
-
-        // TODO maybe turn this into a Service so we can lose the reference to SauceEngine
-        sauceEngine.startActivity(Intent.createChooser(intent, "Share to"));
+        ActivityService.makeToast("Stopped Recording. File saved at: " + saved, true);
       }
     }
 

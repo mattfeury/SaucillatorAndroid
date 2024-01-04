@@ -6,6 +6,11 @@
     <string name="feedback_email_subject">Saucillator feedback</string>
     <string name="send_feedback_email_button">Send Feedback Email (sauce@mattfeury.com)</string>
 
+    <string name="instrument_migration_about">
+    Old versions of Saucillator saved synths in a location that Android no longer provides access to.\n
+    \n
+    If you\'d like to re-import these synths, tap Migrate below and then select the "sauce" -> "instruments" folder on your device.
+    </string>
     <string name="tutorial_text">
       The RIGHT SIDE of the screen is for PLAYING. Use your fingers to control the synthesizer(s) by touching
       the black, blank portion of the screen. You can use as many fingers as you choose. Volume is controlled by the X-axis

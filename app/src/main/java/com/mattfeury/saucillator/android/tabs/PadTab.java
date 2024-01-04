@@ -66,7 +66,18 @@ public class PadTab extends Tab {
         .withFocus(ViewService.isGridShowing())
         .withClear(true)
         .finish(),
-       baseNotePicker,
+      ButtonBuilder
+              .build(ButtonBuilder.Type.TOGGLE, "Show/Hide Visuals")
+              .withHandler(new Handler<Boolean>() {
+                public void handle(Boolean show) {
+                  ViewService.setVisuals(! ViewService.getVisualsToggle());
+                }
+              })
+              .withMargin(MARGIN_SIZE)
+              .withFocus(ViewService.getVisualsToggle())
+              .withClear(true)
+              .finish(),
+            baseNotePicker,
        baseOctavePicker
     );
   }  
