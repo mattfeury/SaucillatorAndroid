@@ -92,7 +92,7 @@ public class SettingsTab extends Tab {
       public void handle(Activity activity) {
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle("Migration");
-        alertDialog.setMessage("Old versions of Saucillator saved instruments in a location that Android no longer supports.\n\nIf you'd like to re-import these instruments, tap Migrate below and then select the \"sauce\" -> \"instruments\" folder on your device.");
+        alertDialog.setMessage(activity.getResources().getString(R.string.instrument_migration_about));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Migrate",
         new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int which) {
