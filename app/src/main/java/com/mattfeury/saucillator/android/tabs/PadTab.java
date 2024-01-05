@@ -18,7 +18,7 @@ public class PadTab extends Tab {
   public PadTab(final AudioEngine engine) {
     super("Pad", "Pad Settings", engine);
 
-    PickerButton<Scale> scalePicker = new PickerButton<Scale>("Scale", Theory.scales);
+    PickerButton<Scale> scalePicker = new PickerButton<Scale>("Scale", Theory.Scale.values());
     scalePicker.addHandler(new Handler<Scale>() {
       public void handle(Scale scale) {
         engine.setScaleById(scale.toString());

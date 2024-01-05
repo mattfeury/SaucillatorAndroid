@@ -48,7 +48,7 @@ public class SauceView extends View {
       ViewService.setup(this);
 
       gridPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-      gridPaint.setARGB(25, 255, 255, 255);
+      gridPaint.setARGB(100, 255, 255, 255);
     }
 
     @Override
